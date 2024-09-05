@@ -1,0 +1,129 @@
+{
+  "title": "Motor Vehicle Accident Form",
+  "sections": [
+    {
+      "title": "General Information",
+      "items": [
+        {
+          "type": "date",
+          "question": "Date of Accident",
+          "format": "YYYY-mm-dd",
+          "required": true
+        },
+        {
+          "type": "time",
+          "question": "Time of Accident",
+          "format": "hh:mm P",
+          "required": true
+        },
+        {
+          "type": "text",
+          "question": "Location of the Accident",
+          "required": true
+        },
+        {
+          "type": "select",
+          "question": "How was your car hit",
+          "required": true,
+          "options": [
+            "Another Vehicle",
+            "Pole",
+            "Pedestrain"
+          ]
+        },
+        {
+          "type": "text",
+          "question": "Where were you sitting in the car",
+          "required": true
+        },
+        {
+          "type": "select",
+          "question": "Did the air bag deployed",
+          "required": true,
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "type": "text",
+          "question": "were you waiting the seatbelt",
+          "required": true
+        },
+        {
+          "type": "select",
+          "question": "Was your head hit by anything during the collision",
+          "required": true,
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "type": "select",
+          "question": "loss of consciousnes",
+          "required": true,
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "type": "select",
+          "question": "Were you able  to exit the car by your own",
+          "required": true,
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "type": "select",
+          "question": "Have you seen Dr. nurse practitioner since the collision",
+          "required": true,
+          "options": [
+            "Both Doctor & Nurse",
+            "Doctor",
+            "Nurse",
+            "No"
+          ]
+        },
+        {
+          "type": "text",
+          "question": "Were EMS sent to the seen",
+          "required": true
+        },
+        {
+          "type": "text",
+          "question": "Other details of the accident if any",
+          "required": true
+        },
+        {
+          "type": "text",
+          "question": "Pain- Location- like head hand feet etc",
+          "required": true
+        },
+        {
+          "type": "text",
+          "question": "How bad is pain 1-10",
+          "required": true
+        },
+        {
+          "type": "text",
+          "question": "Any days missed from work after accident",
+          "required": true
+        },{
+          "type": "select",
+          "question": "Are you able to return to work",
+          "required": true,
+          "options": [
+            "Yes",
+            "No"
+          ]
+        }
+
+        
+      ]
+    }
+  ]
+}

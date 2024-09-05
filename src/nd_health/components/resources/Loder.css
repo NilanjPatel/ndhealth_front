@@ -1,0 +1,49 @@
+:root {
+  --size: 50px; /* Define size as needed */
+  --lite: #ccc; /* Define lite color as needed */
+}
+
+.loader-73 {
+  width: 0;
+  height: calc(var(--size) / 10);
+  display: inline-block;
+  position: relative;
+  background: var(--lite);
+  box-shadow: 0 0 10px rgba(var(--lite), 0.5);
+  animation: animFw 8s linear infinite;
+}
+
+.loader-73::after,
+.loader-73::before {
+  content: '';
+  width: 10px;
+  height: 1px;
+  background: var(--lite);
+  position: absolute;
+  top: 9px;
+  right: -2px;
+  opacity: 0;
+  transform: rotate(-45deg) translateX(0px);
+  animation: coli1 0.3s linear infinite;
+}
+
+.loader-73::before {
+  top: -4px;
+  transform: rotate(45deg);
+  animation: coli2 0.3s linear infinite;
+}
+
+@keyframes animFw {
+  0%, 100% { width: 0; }
+  50% { width: var(--size); }
+}
+
+@keyframes coli1 {
+  0%, 100% { opacity: 0; transform: rotate(-45deg) translateX(0); }
+  50% { opacity: 1; transform: rotate(-45deg) translateX(var(--size)); }
+}
+
+@keyframes coli2 {
+  0%, 100% { opacity: 0; transform: rotate(45deg) translateX(0); }
+  50% { opacity: 1; transform: rotate(45deg) translateX(var(--size)); }
+}
