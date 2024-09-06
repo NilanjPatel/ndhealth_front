@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react';
-import {useParams, useLocation} from 'react-router-dom';
-import API_BASE_PATH from '../apiConfig';
+import { useParams, useLocation } from "react-router-dom";
+import API_BASE_PATH from '../../apiConfig';
 
 
-import Layout from './Layout';
+import Layout from '/nd_health/components/Layout';
 import LinearProgressWithLabel from './processes/LinearProgressWithLabel';
 
 import {

@@ -23,7 +23,8 @@ import "./css/Marquee.css";
 
 import { formatDob, formatHin, redirectHomeM } from "./resources/utils";
 import HelmetComponent from "./SEO/HelmetComponent";
-import CircularProgress from "@mui/joy/CircularProgress";
+// import CircularProgress from "@mui/joy";
+import NdLoader from "nd_health/components/resources/Ndloader";
 
 import hcv_with_version_code from "../assets/images/hcv_version_code.png";
 // Material Kit 2 PRO React components
@@ -544,7 +545,7 @@ const ClinicInfo = () => {
               transform: "translate(-50%, -50%)",
             }}
           >
-            <CircularProgress size="lg" variant="solid" value={70} color="primary" />
+            <NdLoader size="lg" variant="solid" value={70} color="primary" />
           </div>
         )}
       </div>

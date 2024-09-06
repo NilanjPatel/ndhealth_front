@@ -32,7 +32,8 @@ import routes from "routes";
 //clinic elements
 import ClinicLanding from "nd_health/components/clinic/home/ClinicLanding";
 import ClinicInfo from "nd_health/components/clinicInfo";
-
+import FamilyAppointmentPage from "nd_health/components/FamilyAppointmentPage";
+import WalkinAppointmentPage from "nd_health/components/WalkinAppointmentPage";
 export default function App() {
   const { pathname } = useLocation();
 
@@ -66,6 +67,8 @@ export default function App() {
         {/*//Clinic routs*/}
         <Route path="/clinic/:clinicSlug/" element={<ClinicLanding />} />
         <Route path="/clinic/:clinicSlug/appointment" element={<ClinicInfo />} />
+        <Route path="/family-appointment/:clinicSlug" element={<FamilyAppointmentPage />} />
+        <Route path="/walkin-appointment/:clinicSlug" element={<WalkinAppointmentPage />} />
       </Routes>
     </ThemeProvider>
   );
