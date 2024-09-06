@@ -1,24 +1,40 @@
-import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import React from "react";
+import styled, { keyframes } from "styled-components";
 
-const base = '#263238';
-const lite = '#007fff';
-const brand = '#ff3d00';
-const size = '90px';
+// const base = "#263238";
+const lite = "#007fff";
+// const brand = "#ff3d00";
+const size = "90px";
 
 const animFw = keyframes`
-  0% { width: 0; }
-  100% { width: 100%; }
+    0% {
+        width: 0;
+    }
+    100% {
+        width: 100%;
+    }
 `;
 
 const coli1 = keyframes`
-  0% { transform: rotate(-45deg) translateX(0px); opacity: 0.7; }
-  100% { transform: rotate(-45deg) translateX(-45px); opacity: 0; }
+    0% {
+        transform: rotate(-45deg) translateX(0px);
+        opacity: 0.7;
+    }
+    100% {
+        transform: rotate(-45deg) translateX(-45px);
+        opacity: 0;
+    }
 `;
 
 const coli2 = keyframes`
-  0% { transform: rotate(45deg) translateX(0px); opacity: 1; }
-  100% { transform: rotate(45deg) translateX(-45px); opacity: 0.7; }
+    0% {
+        transform: rotate(45deg) translateX(0px);
+        opacity: 1;
+    }
+    100% {
+        transform: rotate(45deg) translateX(-45px);
+        opacity: 0.7;
+    }
 `;
 
 const Loader73 = styled.span`
@@ -80,30 +96,30 @@ const Section = styled.section`
   }
 `;
 
-const AppHeader = styled.header`
-  background: #0d161b;
-  padding: 10px 20px;
-  min-height: 50px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  z-index: 2000;
-  justify-content: space-between;
-`;
-
-const NavBtn = styled.a`
-  color: #fff;
-  text-decoration: none;
-`;
+// const AppHeader = styled.header`
+//   background: #0d161b;
+//   padding: 10px 20px;
+//   min-height: 50px;
+//   position: fixed;
+//   top: 0;
+//   left: 0;
+//   width: 100%;
+//   display: flex;
+//   align-items: center;
+//   z-index: 2000;
+//   justify-content: space-between;
+// `;
+//
+// const NavBtn = styled.a`
+//   color: #fff;
+//   text-decoration: none;
+// `;
 
 const NdLoader = () => {
   return (
     <Section data-index="73">
-       <Loader73 />
-     </Section>
+      <Loader73 />
+    </Section>
   );
 };
 

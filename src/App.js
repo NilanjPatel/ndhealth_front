@@ -31,6 +31,7 @@ import SignUpCover from "layouts/authentication/sign-up/cover/index";
 import routes from "routes";
 //clinic elements
 import ClinicLanding from "nd_health/components/clinic/home/ClinicLanding";
+import ClinicInfo from "nd_health/components/clinicInfo";
 
 export default function App() {
   const { pathname } = useLocation();
@@ -64,6 +65,7 @@ export default function App() {
         <Route path="*" element={<Navigate to="/presentation" />} />
         {/*//Clinic routs*/}
         <Route path="/clinic/:clinicSlug/" element={<ClinicLanding />} />
+        <Route path="/clinic/:clinicSlug/appointment" element={<ClinicInfo />} />
       </Routes>
     </ThemeProvider>
   );

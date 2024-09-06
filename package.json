@@ -1,18 +1,10 @@
 {
-  "name": "material-kit-2-pro-react",
-  "version": "2.1.0",
+  "name": "nd-health",
+  "version": "0.3.9",
   "private": true,
-  "author": "Creative Tim",
-  "license": "See license in https://www.creative-tim.com/license",
-  "description": "React version of Material Kit 2 PRO by Creative Tim",
-  "homepage": "https://demos.creative-tim.com/material-kit-pro-react/#/",
-  "bugs": {
-    "url": "https://github.com/creativetimofficial/ct-material-kit-pro-react/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/creativetimofficial/ct-material-kit-pro-react.git"
-  },
+  "author": "Nilanj Patel",
+  "description": "We help Doctors and patient to communicate, schedule appointment in canada.",
+  "homepage": "https://nd-health.ca/",
   "dependencies": {
     "@emotion/cache": "11.10.7",
     "@emotion/react": "11.10.6",
@@ -40,6 +32,7 @@
     "react-scripts": "5.0.1",
     "react-syntax-highlighter": "15.5.0",
     "rellax": "1.12.1",
+    "styled-components": "^6.1.13",
     "swiper": "9.2.0",
     "typed.js": "2.0.15",
     "uuid": "9.0.0",

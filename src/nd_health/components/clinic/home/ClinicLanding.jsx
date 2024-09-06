@@ -171,7 +171,7 @@ const ClinicLanding = () => {
                             variant="subtitle1"
                             color="text.secondary"
                             component="div"
-                            style={{ color: card.description_color }}
+                            style={{ color: card.description_color, fontWeight: "bold" }}
                           >
                             {card.description}
                           </Typography>
