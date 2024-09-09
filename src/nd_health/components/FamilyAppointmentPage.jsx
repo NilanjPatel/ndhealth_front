@@ -28,7 +28,7 @@ import {
 } from "@mui/material";
 
 // import checkAppStatus from"../components/resources/utils";
-import { isValidEmail, formatPhone } from "nd_health/components/resources/utils";
+import { isValidEmail, formatPhone, redirectHomeM } from "nd_health/components/resources/utils";
 
 // import CircularProgress from "@mui/joy/CircularProgress";
 import NdLoader from "nd_health/components/resources/Ndloader";
@@ -37,6 +37,8 @@ import MKTypography from "components/MKTypography";
 import { Placeholder } from "react-bootstrap";
 import MKBox from "../../components/MKBox";
 import MKButton from "../../components/MKButton";
+import NotificationDialog from "./resources/Notification";
+
 const FamilyAppointmentPage = () => {
   const { clinicSlug } = useParams();
   // const [clinicInfo, setClinicInfo] = useState(null);
@@ -79,6 +81,12 @@ const FamilyAppointmentPage = () => {
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [submitbutton, setSubmitbutton] = useState(true);
 
+  // NotificationDialog
+  const [openModal, setOpenModal] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [modalContent, setModalContent] = useState("");
+
+
   // Simulate fetching locations data
   useEffect(() => {
     // Replace with actual API call
@@ -120,7 +128,7 @@ const FamilyAppointmentPage = () => {
     const data = await response.json();
     if (data.status === "failed") {
       setAppointmentBookContent(
-        "You already book an appointment! this session is expired. If you have provided valid email, You will receive a confirmation email shortly. if you still want to book an appointment please close the window and try again."
+        "You already book an appointment! this session is expired. If you have provided valid email, You will receive a confirmation email shortly. if you still want to book an appointment please close the window and try again.",
       );
       setButtonRedirect("Home");
       setOpenApp(true);
@@ -161,6 +169,10 @@ const FamilyAppointmentPage = () => {
     // showClinicLocation(providerData.name);
     setAppointmentModes(Object.keys(providerData.AppointmentMode));
     setIsAppointmentAvailable(Object.keys(providerData.letestappointmentslots).length > 0);
+    if (Object.keys(providerData.letestappointmentslots).length < 1) {
+      // notify no appointment available for this doctor on selected location
+      handleFailure("No appointment slots available for doctor and location you have selected. ");
+    }
     setSelectedTime(""); // Reset selectedTime when the date changes'
     setSelectedDate("");
     setProgress(28.6);
@@ -318,6 +330,18 @@ const FamilyAppointmentPage = () => {
     setIsEmailValid(isValid);
   };
 
+  // NotificationDialog
+  const handleSuccess = (message) => {
+    setModalContent(message);
+    setIsError(false);
+    setOpenModal(true);
+  };
+  const handleFailure = (message) => {
+    setModalContent(message);
+    setIsError(true);
+    setOpenModal(true);
+  };
+
   if (!responseData) {
     // redirect to clinic page
     redirectHome();
@@ -374,6 +398,19 @@ const FamilyAppointmentPage = () => {
               </Grid>
             )}
             <Grid item xs={12} md={12}>
+              <Typography style={{ color: "red", fontSize: "1rem", padding: "0.8rem" }}>
+                <MKButton
+                  style={{ padding: "0.8rem" }}
+                  onClick={() => redirectHomeM(clinicSlug)}
+                  color="info"
+                  variant={"contained"}
+                >
+                  Back
+                </MKButton>
+              </Typography>
+            </Grid>
+
+            <Grid item xs={12} md={12}>
               <FormControl>
                 <Placeholder>Doctor:</Placeholder>
                 <RadioGroup value={selectedLocation} onChange={handleLocationChange}>
@@ -406,7 +443,7 @@ const FamilyAppointmentPage = () => {
                           const provider =
                             responseData.location[selectedLocation].provider_number[providerNumber];
                           const location = clinicLocation.find(
-                            (loc) => loc.name === provider?.name
+                            (loc) => loc.name === provider?.name,
                           );
 
                           return (
@@ -415,7 +452,7 @@ const FamilyAppointmentPage = () => {
                               {/*{provider?.name}, */}
                             </MenuItem>
                           );
-                        }
+                        },
                       )}
                   </Select>
                 </MKBox>
@@ -451,14 +488,14 @@ const FamilyAppointmentPage = () => {
                       responseData.location[selectedLocation]?.provider_number[selectedProvider]
                         ?.letestappointmentslots
                         ? Object.keys(
-                            responseData.location[selectedLocation]?.provider_number[
-                              selectedProvider
-                            ]?.letestappointmentslots
-                          ).map((date, index) => (
-                            <MenuItem key={`${date}_${index}`} value={date}>
-                              {date}
-                            </MenuItem>
-                          ))
+                          responseData.location[selectedLocation]?.provider_number[
+                            selectedProvider
+                            ]?.letestappointmentslots,
+                        ).map((date, index) => (
+                          <MenuItem key={`${date}_${index}`} value={date}>
+                            {date}
+                          </MenuItem>
+                        ))
                         : null // or replace with appropriate fallback logic
                     }
                   </Select>
@@ -480,7 +517,7 @@ const FamilyAppointmentPage = () => {
                     {selectedDate &&
                       responseData.location[selectedLocation]?.provider_number[
                         selectedProvider
-                      ]?.letestappointmentslots[selectedDate].map((time, index) => (
+                        ]?.letestappointmentslots[selectedDate].map((time, index) => (
                         <MenuItem
                           key={`${time.date}_${index}`}
                           value={time.time + "," + time.duration}
@@ -510,7 +547,7 @@ const FamilyAppointmentPage = () => {
                               disabled={
                                 responseData.location[selectedLocation]?.provider_number[
                                   selectedProvider
-                                ]?.AppointmentMode[mode] === 0
+                                  ]?.AppointmentMode[mode] === 0
                               }
                             />
                           }
@@ -627,7 +664,9 @@ const FamilyAppointmentPage = () => {
         <Dialog open={openAgreementPopup} onClose={handleCloseAgreementPopup}>
           <DialogTitle>Terms and Conditions</DialogTitle>
           <DialogContent>
-            <div dangerouslySetInnerHTML={{ __html: termsInfo }} />
+            <MKBox m={2}>
+              <div dangerouslySetInnerHTML={{ __html: termsInfo }} />
+            </MKBox>
           </DialogContent>
         </Dialog>
 
@@ -677,6 +716,14 @@ const FamilyAppointmentPage = () => {
             <NdLoader size="lg" variant="soft" value={70} color="primary" />
           </div>
         )}
+
+        <NotificationDialog
+          open={openModal}
+          onClose={setOpenModal}
+          content={modalContent}
+          isError={isError}
+
+        />
       </Layout>
     );
   }

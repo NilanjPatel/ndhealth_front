@@ -1,5 +1,5 @@
 // src/components/clinicInfo.js
-import API_BASE_PATH from '../../apiConfig';
+import API_BASE_PATH from '../../../apiConfig';
 
 import React, {useState, useEffect, useRef} from 'react';
 import {Link} from 'react-router-dom';
@@ -14,6 +14,9 @@ import './../css/Marquee.css';
 import {formatDob, formatHin, redirectHomeM} from '../resources/utils';
 import HelmetComponent from './../SEO/HelmetComponent';
 import NotificationDialog from "../resources/Notification";
+import MKTypography from "../../../components/MKTypography";
+import MKBox from "../../../components/MKBox";
+import MKButton from "../../../components/MKButton";
 
 const EformOauth = () => {
     // const location = useLocation();
@@ -132,9 +135,9 @@ const EformOauth = () => {
                         <Card>
                             <Grid item xs={12} md={12}>
                                 <Typography style={{color: 'red', fontSize: '1rem', padding: '0.8rem',}}>
-                                    <Button style={{padding: '0.8rem'}} onClick={() => redirectHomeM(clinicSlug)}
+                                    <MKButton style={{padding: '0.8rem'}} onClick={() => redirectHomeM(clinicSlug)}
                                             color="primary"
-                                            variant={"contained"}>Back</Button>
+                                            variant={"contained"}>Back</MKButton>
                                 </Typography>
                             </Grid>
                             <CardHeader title="Verify Your Identity"
@@ -169,15 +172,15 @@ const EformOauth = () => {
                                 </Grid>
 
                                 <Grid item xs={6}>
-                                    <Button
-                                        color="primary"
+                                    <MKButton
+                                        color="info"
                                         variant="contained"
                                         disabled={!buttonpressed}
                                         onClick={handleRequest}
                                         fullWidth
                                     >
                                         Submit
-                                    </Button>
+                                    </MKButton>
                                 </Grid>
 
 

@@ -22,7 +22,7 @@ import {
 } from "@mui/material";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 
-// import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle"; // Import AccountCircleIcon
 import ndHealthLogo from "nd_health/assets/images/nd-health-logo.png";
 import powered_by_logo from "nd_health/assets/images/powered_by_nd_health_n.png";
@@ -33,17 +33,17 @@ import HelmetComponent from "./SEO/HelmetComponent";
 // login
 import axios from "axios";
 import PropTypes from "prop-types";
-// const lightTheme = createTheme({
-//   palette: {
-//     mode: "light", // Ensure the theme is in light mode
-//     primary: {
-//       main: "#ffffff", // Creamy color for primary elements
-//     },
-//     background: {
-//       default: "#ffffff", // White background
-//     },
-//   },
-// });
+const lightTheme = createTheme({
+  palette: {
+    mode: "light", // Ensure the theme is in light mode
+    primary: {
+      main: "#ffffff", // Creamy color for primary elements
+    },
+    background: {
+      default: "#ffffff", // White background
+    },
+  },
+});
 
 const Layout = ({ clinicInfo, children }) => {
   const [password, setPassword] = useState("");
@@ -203,7 +203,7 @@ const Layout = ({ clinicInfo, children }) => {
               <HelmetComponent />
 
               <CssBaseline />
-              {/*<ThemeProvider theme={lightTheme}>*/}
+              <ThemeProvider theme={lightTheme}>
               <AppBar position="fixed">
                 <Toolbar>
                   {/* <img src={ndHealthLogo} alt="ND Health Logo" style={{ height: '40px' }} /> */}
@@ -273,7 +273,7 @@ const Layout = ({ clinicInfo, children }) => {
                   </Menu>
                 </Toolbar>
               </AppBar>
-              {/*</ThemeProvider>*/}
+              </ThemeProvider>
 
               {/* Login Modal */}
               <Modal
@@ -410,7 +410,7 @@ const Layout = ({ clinicInfo, children }) => {
           return (
             <>
               <CssBaseline />
-              {/*<ThemeProvider theme={lightTheme}>*/}
+              <ThemeProvider theme={lightTheme}>
               <AppBar position="fixed">
                 <Toolbar>
                   <img src={ndHealthLogo} alt="ND Health Logo" style={{ height: "90px" }} />
@@ -429,7 +429,7 @@ const Layout = ({ clinicInfo, children }) => {
                   </Typography>
                 </Toolbar>
               </AppBar>
-              {/*</ThemeProvider>*/}
+              </ThemeProvider>
               <Container
                 component="main"
                 maxWidth="md"

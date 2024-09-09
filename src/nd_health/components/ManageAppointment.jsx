@@ -1,5 +1,5 @@
 // src/components/clinicInfo.js
-import API_BASE_PATH from '../apiConfig';
+import API_BASE_PATH from '../../apiConfig';
 
 
  // Adjust the path based on your project structure
@@ -13,7 +13,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Grid, Card, CardContent, Typography, CardHeader } from '@mui/material';
 import Layout from './Layout';
 import './css/Marquee.css';
-
+import MKTypography from "components/MKTypography";
+import MKBox from "../../components/MKBox";
+import MKButton from "../../components/MKButton";
 
 const ManageAppointment = () => {
     const location = useLocation();
@@ -136,7 +138,7 @@ const ManageAppointment = () => {
                                             <label htmlFor="name">Time : {formatTime(app.startTime)} </label>
                                         </Grid>
                                         <Grid item >
-                                            <Button
+                                            <MKButton
                                                 color="primary"
                                                 variant="contained"
                                                 disabled={!buttonpressed}
@@ -144,7 +146,7 @@ const ManageAppointment = () => {
                                             // fullWidth
                                             >
                                                 Cancel Appointment
-                                            </Button>
+                                            </MKButton>
                                         </Grid>
                                     </CardContent>
                                 </Card>
@@ -152,15 +154,15 @@ const ManageAppointment = () => {
                             ))}
                             <CardActions style={{ display: 'flex', justifyContent: 'center' }}>
                                 <Grid item xs={12} >
-                                    <Button
-                                        color="primary"
+                                    <MKButton
+                                        color="info"
                                         variant="contained"
                                         disabled={!homeButton}
                                         onClick={redirectHome}
                                         fullWidth
                                     >
                                         Go Home
-                                    </Button>
+                                    </MKButton>
                                 </Grid>
 
                             </CardActions>

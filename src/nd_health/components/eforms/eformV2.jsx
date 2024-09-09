@@ -5,9 +5,9 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 // import formData1 from './test.json';
 import { useParams, useLocation } from 'react-router-dom';
 
-import API_BASE_PATH from '../../apiConfig';
+import API_BASE_PATH from '../../../apiConfig';
 
-import Layout from '../Layout';
+import Layout from 'nd_health/components/Layout';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';

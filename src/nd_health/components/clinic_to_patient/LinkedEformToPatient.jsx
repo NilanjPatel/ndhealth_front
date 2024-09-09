@@ -1,4 +1,4 @@
-import API_BASE_PATH from '../../apiConfig';
+import API_BASE_PATH from '../../../apiConfig';
 
 
 import React, {useEffect, useState} from 'react';
@@ -25,6 +25,9 @@ import Layout from '../Layout';
 import {useParams, useLocation} from 'react-router-dom';
 import NotificationDialog from "../resources/Notification";
 import {redirectHomeM} from "../resources/utils";
+import MKTypography from "../../../components/MKTypography";
+import MKBox from "../../../components/MKBox";
+import MKButton from "../../../components/MKButton";
 
 const useStyles = makeStyles((theme) => ({
     tableContainer: {
@@ -159,14 +162,14 @@ const LinkedEformToPatient = () => {
                                                         textAlign: 'center',
                                                         verticalAlign: 'middle'
                                                     }}>
-                                                    <Button
-                                                        color="primary"
+                                                    <MKButton
+                                                        color="info"
                                                         variant="contained"
                                                         disabled={!1} // TODO value of 0
                                                         onClick={() => handleSubmit(row.clinic_eform)}
                                                     >
                                                         Fill
-                                                    </Button>
+                                                    </MKButton>
                                                 </TableCell>
                                             </TableRow>
                                         ))}
@@ -195,7 +198,7 @@ const LinkedEformToPatient = () => {
                                 </CardContent>
                                 <CardActionArea style={{margin: '10px'}}>
                                     {/*<Avatar>*/}
-                                        <Button onClick={() => redirectHomeM(clinicSlug)} color="primary" variant={"contained"}>Back</Button>
+                                        <MKButton onClick={() => redirectHomeM(clinicSlug)} color="primary" variant={"contained"}>Back</MKButton>
                                     {/*</Avatar>*/}
 
                                 </CardActionArea>
