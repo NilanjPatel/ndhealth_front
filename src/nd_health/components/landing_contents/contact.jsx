@@ -64,11 +64,7 @@ export const Contact = (props) => {
                     ></textarea>
                     <p className="help-block text-danger"></p>
                   </div>
-                  <input
-                    name="_formsubmit_id"
-                    type="text"
-                    style={{ display: "none" }}
-                  />
+                  <input name="_formsubmit_id" type="text" style={{ display: "none" }} />
                   <input
                     name="_redirect"
                     type="hidden"

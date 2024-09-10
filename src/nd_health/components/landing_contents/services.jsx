@@ -39,8 +39,8 @@ export const Services = (props) => {
               <div className="service-desc">
                 <h3>Szpachlowanie ścian</h3>
                 <p>
-                  Wyrównywanie powierzchni oraz uzupełnianie braków jak dziury w
-                  tynku czy płytach gipsowo-kartonowych
+                  Wyrównywanie powierzchni oraz uzupełnianie braków jak dziury w tynku czy płytach
+                  gipsowo-kartonowych
                 </p>
               </div>
             </div>
@@ -59,10 +59,7 @@ export const Services = (props) => {
               </i>
               <div className="service-desc">
                 <h3>Malowanie</h3>
-                <p>
-                  Sufity oraz ściany wewnętrzne. Nie zajmujemy się malowaniem
-                  elewacji.
-                </p>
+                <p>Sufity oraz ściany wewnętrzne. Nie zajmujemy się malowaniem elewacji.</p>
               </div>
             </div>
             <div className="col-md-6">
@@ -81,8 +78,8 @@ export const Services = (props) => {
               <div className="service-desc">
                 <h3>Ściany i stelaże</h3>
                 <p>
-                  Podwieszanie sufitów, montaż konstrukcji z profili stalowych
-                  czy montaż płyt gipsowo-kartonowych.
+                  Podwieszanie sufitów, montaż konstrukcji z profili stalowych czy montaż płyt
+                  gipsowo-kartonowych.
                 </p>
               </div>
             </div>
@@ -92,10 +89,7 @@ export const Services = (props) => {
               </i>
               <div className="service-desc">
                 <h3>Dowóz materiału</h3>
-                <p>
-                  Zapewniamy dowóz materiału potrzebnego do przeprowadzenia
-                  prac.
-                </p>
+                <p>Zapewniamy dowóz materiału potrzebnego do przeprowadzenia prac.</p>
               </div>
             </div>
           </div>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 // react-router-dom components
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -25,14 +25,52 @@ import BasicLayout from "pages/Authentication/components/BasicLayout";
 
 // Images
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
+import axios from "axios";
+import API_BASE_PATH from "../../../../apiConfig";
 
 function SignInBasic() {
   const [rememberMe, setRememberMe] = useState(false);
   const [username, setUsername] = useState(""); // localStorage.getItem('username') === 'true'
+  const [password, setPassword] = useState("");
+  const [loginMessage, setLoginMessage] = useState("");
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [loggedIn, setLoggedIn] = useState(localStorage.getItem("loggedIn") === "true");
+  const navigate = useNavigate();
+  const { clinicSlug } = useParams();
+
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
   useEffect(() => {
     console.log(`Username:${username}`);
   }, [username]);
+
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post(`${API_BASE_PATH}/token-auth/`, {
+        username,
+        password,
+      });
+      const accessToken = response.data.token;
+      // Store the token in local storage or state for future requests
+      localStorage.setItem("accessToken", accessToken);
+      // Redirect or update UI as needed
+      setLoginMessage("Login successful!");
+      setLoginModalOpen(false);
+      setAnchorEl(null);
+      setLoggedIn(true);
+      localStorage.setItem("loggedIn", "true");
+      localStorage.setItem("username", username);
+      gotoHome();
+      // window.location.reload();
+    } catch (error) {
+      console.error("Login failed:", error);
+      setLoginMessage("Login unsuccessful!");
+    }
+  };
+  const gotoHome = () => {
+    navigate(`/clinic/${clinicSlug}/home/`);
+  };
+
   return (
     <BasicLayout image={bgImage}>
       <Card>
@@ -80,7 +118,16 @@ function SignInBasic() {
               />
             </MKBox>
             <MKBox mb={2}>
-              <MKInput type="password" label="Password" fullWidth />
+              <MKInput
+                type="password" label="Password" fullWidth
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleLogin();
+                  }
+                }}
+              />
             </MKBox>
             <MKBox display="flex" alignItems="center" ml={-1}>
               <Switch checked={rememberMe} onChange={handleSetRememberMe} />
@@ -95,7 +142,10 @@ function SignInBasic() {
               </MKTypography>
             </MKBox>
             <MKBox mt={4} mb={1}>
-              <MKButton variant="gradient" color="info" fullWidth>
+              <MKButton
+                variant="gradient" color="info" fullWidth
+                onClick={handleLogin}
+              >
                 sign in
               </MKButton>
             </MKBox>

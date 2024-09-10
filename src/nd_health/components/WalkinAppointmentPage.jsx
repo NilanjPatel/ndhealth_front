@@ -41,7 +41,7 @@ const WalkinAppointmentPage = () => {
 
   const [locations, setLocations] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState("");
-  const [providers, setProviders] = useState([]);
+  // const [providers, setProviders] = useState([]);
   const [selectedProvider, setSelectedProvider] = useState("Select Doctor");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
@@ -60,8 +60,8 @@ const WalkinAppointmentPage = () => {
   const [buttonRedirect, setButtonRedirect] = useState("");
   const [progress, setProgress] = useState(0);
   // const [drNotice, setDrNotice] = useState(null);
-  const [clinicAddress, setClinicAddress] = useState("");
-  const [clinicpostalCode, setClinicPostalCode] = useState("");
+  // const [clinicAddress, setClinicAddress] = useState("");
+  // const [clinicpostalCode, setClinicPostalCode] = useState("");
   // const [clinicLocation, setClinicLocation] = useState('');
 
   const [appointmentlist, setAppointmentlist] = useState([]);
@@ -79,39 +79,36 @@ const WalkinAppointmentPage = () => {
   const [titlePaperColor, setTitlePaperColor] = useState("");
   // Simulate fetching locations data
 
-
-  //animation running light
-  const [stylefade, setStylefade] = useState({
-    color: "blue",
-    fontWeight: "bold",
-    transition: "color 2s ease-in-out, font-weight 2s ease-in-out",
-  });
+  // //animation running light
+  // const [stylefade, setStylefade] = useState({
+  //   color: "blue",
+  //   fontWeight: "bold",
+  //   transition: "color 2s ease-in-out, font-weight 2s ease-in-out",
+  // });
 
   // NotificationDialog
   const [openModal, setOpenModal] = useState(false);
   const [isError, setIsError] = useState(false);
   const [modalContent, setModalContent] = useState("");
 
+  // useEffect(() => {
+  //   const timeoutId = setTimeout(() => {
+  //     setStylefade({
+  //       color: "black",
+  //       fontWeight: "normal",
+  //       transition: "color 5s ease-in-out, font-weight 2s ease-in-out",
+  //     });
+  //   }, 500); // Delay before starting the transition
+  //   return () => clearTimeout(timeoutId);
+  // }, [clinicAddress]);
+
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setStylefade({
-        color: "black",
-        fontWeight: "normal",
-        transition: "color 5s ease-in-out, font-weight 2s ease-in-out",
-      });
-    }, 500); // Delay before starting the transition
-    return () => clearTimeout(timeoutId);
-  }, [clinicAddress]);
-
-
-  useEffect(() => {
-
     setLocations(Object.keys(responseData.location));
 
     //  set setApp_list_dilog if there is any appointment
     if (responseData.letest_appointments.length > 0) {
       setApp_list_dilog(true);
-      const appointmentlist = responseData.letest_appointments.map(appointment => (
+      const appointmentlist = responseData.letest_appointments.map((appointment) => (
         <React.Fragment key={appointment.id}>
           <p>Date: {appointment.appointmentDate}</p>
           <p>Start Time: {appointment.startTime}</p>
@@ -124,11 +121,9 @@ const WalkinAppointmentPage = () => {
     // change to pre-select location
     if (Object.keys(responseData.location).length == 1) {
       setSelectedLocation(Object.keys(responseData.location)[0]);
-      showClinicLocation(Object.keys(responseData.location)[0]);
+      // showClinicLocation(Object.keys(responseData.location)[0]);
     }
-
   }, [responseData]);
-
 
   const redirectHome = () => {
     setOpenApp(false);
@@ -141,31 +136,26 @@ const WalkinAppointmentPage = () => {
   }
 
   const paperColor = (progress1) => {
-
     if (progress1 === 100) {
       setTitlePaperColor("#4caf50");
     } else {
       setTitlePaperColor("#2196F3");
     }
-    ;
   };
-
 
   // Handle location change
   const handleLocationChange = (event) => {
     const locationName = event.target.value;
     setSelectedLocation(locationName);
-    setProviders(Object.keys(responseData.location[locationName].provider_number));
+    // setProviders(Object.keys(responseData.location[locationName].provider_number));
     setSelectedProvider("");
     setSelectedDate("");
     setSelectedTime(""); // Reset selectedTime when the date changes'
     setProgress(14.32);
     setIsAppointmentAvailable(false);
-    showClinicLocation(locationName);
+    // showClinicLocation(locationName);
     paperColor(14.32);
     setSelectedAppointmentMode("");
-
-
   };
 
   // Handle provider change
@@ -185,22 +175,18 @@ const WalkinAppointmentPage = () => {
     setAgreementChecked(false);
     paperColor(28.6);
     setSelectedAppointmentMode("");
-
   };
-
 
   // show clinic location
-  const showClinicLocation = (name) => {
-    //  get address from clinicInfo using clinicLocation
-    for (let i = 0; i < clinicLocation.length; i++) {
-      if (clinicLocation[i].name === name) {
-        setClinicAddress(clinicLocation[i].address);
-        setClinicPostalCode(clinicLocation[i].postal);
-      }
-    }
-
-  };
-
+  // const showClinicLocation = (name) => {
+  //   //  get address from clinicInfo using clinicLocation
+  //   for (let i = 0; i < clinicLocation.length; i++) {
+  //     if (clinicLocation[i].name === name) {
+  //       setClinicAddress(clinicLocation[i].address);
+  //       // setClinicPostalCode(clinicLocation[i].postal);
+  //     }
+  //   }
+  // };
 
   // Handle date change
   const handleDateChange = (event) => {
@@ -219,12 +205,10 @@ const WalkinAppointmentPage = () => {
         }
       }
     }
-
   };
 
   // Handle time change
   const handleTimeChange = (event) => {
-
     setSelectedTime(event.target.value);
 
     setProgress(57.16);
@@ -256,13 +240,11 @@ const WalkinAppointmentPage = () => {
     redirectHome();
   };
 
-
   // Handle booking appointment
   const handleBookAppointment = async () => {
     setSubmitbutton(false);
     const time = selectedTime.split(",")[0];
     const duration = selectedTime.split(",")[1];
-
 
     //   call api to book appointment "api/book-appointment/" make post request
 
@@ -284,7 +266,6 @@ const WalkinAppointmentPage = () => {
           xps: responseData.xps,
           phoneNumber: phoneNumber,
           email: email,
-
         }),
       });
       const data = await response.json();
@@ -317,27 +298,26 @@ const WalkinAppointmentPage = () => {
 
   const formatTime = (timeString) => {
     const formattedTime = new Date(`2000-01-01T${timeString}`);
-    return formattedTime.toLocaleString("en-US", { hour: "numeric", minute: "numeric", hour12: true });
+    return formattedTime.toLocaleString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    });
   };
 
-  const handleAgreementChange = (event) => {
+  const handleAgreementChange = () => {
     setAgreementChecked(!agreementChecked);
 
     if (agreementChecked === false) {
       setProgress(100);
       paperColor(100);
-
-
     } else if (agreementChecked === true) {
       setProgress(85.72);
       paperColor(85.72);
-
     }
-
   };
 
   const handleAgreementClick = () => {
-
     const fetchClinicPolicy = async () => {
       if (!termsInfo) {
         try {
@@ -369,11 +349,11 @@ const WalkinAppointmentPage = () => {
   };
 
   // NotificationDialog
-  const handleSuccess = (message) => {
-    setModalContent(message);
-    setIsError(false);
-    setOpenModal(true);
-  };
+  // const handleSuccess = (message) => {
+  //   setModalContent(message);
+  //   setIsError(false);
+  //   setOpenModal(true);
+  // };
   const handleFailure = (message) => {
     setModalContent(message);
     setIsError(true);
@@ -386,16 +366,21 @@ const WalkinAppointmentPage = () => {
   } else {
     return (
       <Layout clinicInfo={clinicInfo}>
-
-        <Paper style={{
-          position: "sticky",
-          top: "1rem",
-          zIndex: 1000,
-          padding: "1rem",
-          marginBottom: "0.3rem",
-          boxShadow: `0 0 10px 2px ${titlePaperColor}`,
-        }}>
-          <MKTypography variant="h6" gutterBottom style={{ fontSize: "0.81rem", fontWeight: "bold" }}>
+        <Paper
+          style={{
+            position: "sticky",
+            top: "1rem",
+            zIndex: 1000,
+            padding: "1rem",
+            marginBottom: "0.3rem",
+            boxShadow: `0 0 10px 2px ${titlePaperColor}`,
+          }}
+        >
+          <MKTypography
+            variant="h6"
+            gutterBottom
+            style={{ fontSize: "0.81rem", fontWeight: "bold" }}
+          >
             Book Walk-in Appointment
             {/* at {clinicInfo?.name} */}
           </MKTypography>
@@ -405,10 +390,7 @@ const WalkinAppointmentPage = () => {
           </Grid>
         </Paper>
 
-
         <Paper sx={{ p: 2 }}>
-
-
           <Grid container spacing={2}>
             {/* <Grid item xs={12}>
                                 <div>
@@ -437,10 +419,8 @@ const WalkinAppointmentPage = () => {
             </Grid>
 
             <Grid item xs={12} md={12} style={{ border: "1px" }}>
-
               <InputLabel>Select Location</InputLabel>
               <FormControl>
-
                 <RadioGroup value={selectedLocation} onChange={handleLocationChange}>
                   {locations.map((location, index) => (
                     <FormControlLabel
@@ -464,21 +444,25 @@ const WalkinAppointmentPage = () => {
             {/*  </Grid>*/}
             {/*)}*/}
 
-
             <Grid item xs={12} md={12}>
               <MKBox width="100%" component="section">
-
                 <InputLabel id="provider-label">Select Doctor</InputLabel>
-                <Select labelId="provider-label" id="provider" label="Select Doctor"
-                        value={selectedProvider} onChange={handleProviderChange}
-                        style={{ minWidth: "15rem", minHeight: "2rem" }}>
-                  {responseData.location[selectedLocation]?.provider_number && Object.keys(responseData.location[selectedLocation]?.provider_number).map((providerNumber, index) => (
-                    <MenuItem key={providerNumber} value={providerNumber}>
-                      {responseData.location[selectedLocation].provider_number[providerNumber]?.name}
-                    </MenuItem>
-
-
-                  ))}
+                <Select
+                  labelId="provider-label"
+                  id="provider"
+                  label="Select Doctor"
+                  value={selectedProvider}
+                  onChange={handleProviderChange}
+                  style={{ minWidth: "15rem", minHeight: "2rem" }}
+                >
+                  {responseData.location[selectedLocation]?.provider_number &&
+                    Object.keys(responseData.location[selectedLocation]?.provider_number).map(
+                      (providerNumber, index) => (
+                        <MenuItem key={providerNumber} value={providerNumber}>
+                          {responseData.location[selectedLocation].provider_number[index]?.name}
+                        </MenuItem>
+                      )
+                    )}
                 </Select>
               </MKBox>
             </Grid>
@@ -487,25 +471,34 @@ const WalkinAppointmentPage = () => {
               <Grid item xs={12} md={6}>
                 <MKBox width="100%" component="section">
                   <InputLabel id="date-label">Select date</InputLabel>
-                  <Select labelId="date-label" id="date" label="Select date" value={selectedDate}
-                          onChange={handleDateChange}
-                          style={{ minWidth: "15rem", minHeight: "2rem" }}
-                          disabled={!isAppointmentAvailable}
+                  <Select
+                    labelId="date-label"
+                    id="date"
+                    label="Select date"
+                    value={selectedDate}
+                    onChange={handleDateChange}
+                    style={{ minWidth: "15rem", minHeight: "2rem" }}
+                    disabled={!isAppointmentAvailable}
                   >
-
                     {/* {Object.keys(responseData.location[selectedLocation]?.provider_number[selectedProvider]?.letestappointmentslots).map((date, index) => (
                                             <MenuItem key={`${date}_${index}`} value={date}>
                                                 {date}
                                             </MenuItem>
                                         ))} */}
 
-                    {responseData.location[selectedLocation]?.provider_number[selectedProvider]?.letestappointmentslots
-                      ? Object.keys(responseData.location[selectedLocation]?.provider_number[selectedProvider]?.letestappointmentslots).map((date, index) => (
-                        <MenuItem key={`${date}_${index}`} value={date}>
-                          {date}
-                        </MenuItem>
-                      ))
-                      : null // or replace with appropriate fallback logic
+                    {
+                      responseData.location[selectedLocation]?.provider_number[selectedProvider]
+                        ?.letestappointmentslots
+                        ? Object.keys(
+                            responseData.location[selectedLocation]?.provider_number[
+                              selectedProvider
+                            ]?.letestappointmentslots
+                          ).map((date, index) => (
+                            <MenuItem key={`${date}_${index}`} value={date}>
+                              {date}
+                            </MenuItem>
+                          ))
+                        : null // or replace with appropriate fallback logic
                     }
                   </Select>
                 </MKBox>
@@ -513,20 +506,26 @@ const WalkinAppointmentPage = () => {
               <Grid item xs={12} md={12}>
                 <MKBox width="100%" component="section">
                   <InputLabel id="time-label">Select time</InputLabel>
-                  <Select labelId="time-label" id="time" label="Select time" value={selectedTime}
-                          onChange={handleTimeChange}
-                          style={{ minWidth: "15rem", minHeight: "2rem" }}
-                          disabled={!isAppointmentAvailable}
+                  <Select
+                    labelId="time-label"
+                    id="time"
+                    label="Select time"
+                    value={selectedTime}
+                    onChange={handleTimeChange}
+                    style={{ minWidth: "15rem", minHeight: "2rem" }}
+                    disabled={!isAppointmentAvailable}
                   >
                     {selectedDate &&
-                      responseData.location[selectedLocation]?.provider_number[selectedProvider]?.letestappointmentslots[selectedDate].map((time, index) => (
-                        <MenuItem key={`${time.date}_${index}`}
-                                  value={time.time + "," + time.duration}>
+                      responseData.location[selectedLocation]?.provider_number[
+                        selectedProvider
+                      ]?.letestappointmentslots[selectedDate].map((time, index) => (
+                        <MenuItem
+                          key={`${time.date}_${index}`}
+                          value={time.time + "," + time.duration}
+                        >
                           {formatTime(time.time)}, {time.duration} Minutes
                         </MenuItem>
                       ))}
-
-
                   </Select>
                 </MKBox>
               </Grid>
@@ -542,8 +541,15 @@ const WalkinAppointmentPage = () => {
                       <FormControlLabel
                         key={mode}
                         value={mode}
-                        control={<Radio
-                          disabled={responseData.location[selectedLocation]?.provider_number[selectedProvider]?.AppointmentMode[mode] === 0} />}
+                        control={
+                          <Radio
+                            disabled={
+                              responseData.location[selectedLocation]?.provider_number[
+                                selectedProvider
+                              ]?.AppointmentMode[index] === 0
+                            }
+                          />
+                        }
                         label={mode}
                       />
                     ))}
@@ -553,10 +559,11 @@ const WalkinAppointmentPage = () => {
               {/* {if responceData.email_valid == noask patient if he want to update email } */}
               {responseData.email_valid === "no" && (
                 <Grid item xs={12}>
-                  <Typography style={{ color: "red", padding: "1rem" }}>Kindly update your email for
-                    receiving appointment updates and clinic communications.
-                    Rest assured, we do not share your information with any third
-                    parties.</Typography>
+                  <Typography style={{ color: "red", padding: "1rem" }}>
+                    Kindly update your email for receiving appointment updates and clinic
+                    communications. Rest assured, we do not share your information with any third
+                    parties.
+                  </Typography>
                   <TextField
                     id="outlined-basic"
                     label="Email Address ( optional )"
@@ -568,18 +575,17 @@ const WalkinAppointmentPage = () => {
                     type="email"
                     helperText={!isEmailValid ? "Invalid email address" : ""}
                   />
-
                 </Grid>
-
               )}
 
               <Grid item xs={12}>
-
                 {selectedOption === "phone" && (
-
-                  <TextField type="tel" label="Phone Number" value={formatPhone(phoneNumber)}
-                             onChange={(e) => setPhoneNumber(e.target.value)} />
-
+                  <TextField
+                    type="tel"
+                    label="Phone Number"
+                    value={formatPhone(phoneNumber)}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                  />
                 )}
 
                 {selectedOption === "email" && (
@@ -588,10 +594,7 @@ const WalkinAppointmentPage = () => {
                     video meeting.
                   </Typography>
                 )}
-
-
               </Grid>
-
 
               <Grid item xs={12}>
                 <TextField
@@ -601,7 +604,6 @@ const WalkinAppointmentPage = () => {
                   fullWidth
                   multiline
                   required
-
                 />
               </Grid>
 
@@ -624,22 +626,30 @@ const WalkinAppointmentPage = () => {
               {/* if same_date_app is true false */}
               {!same_date_app && (
                 <Grid item xs={12}>
-                  <Typography style={{ color: "red" }}>You already have an appointment on this date.
-                    Still, if you want to book appointment, Please select another date.</Typography>
+                  <Typography style={{ color: "red" }}>
+                    You already have an appointment on this date. Still, if you want to book
+                    appointment, Please select another date.
+                  </Typography>
                 </Grid>
               )}
               <Grid item xs={12}>
                 <MKButton
                   variant="contained"
                   color="info"
-                  disabled={!agreementChecked || !selectedDate || !selectedTime || !reason || !selectedAppointmentMode || !same_date_app
-                    || !submitbutton}
+                  disabled={
+                    !agreementChecked ||
+                    !selectedDate ||
+                    !selectedTime ||
+                    !reason ||
+                    !selectedAppointmentMode ||
+                    !same_date_app ||
+                    !submitbutton
+                  }
                   onClick={handleBookAppointment}
                 >
                   Book Appointment
                 </MKButton>
               </Grid>
-
             </>
             {/* )} */}
           </Grid>
@@ -682,7 +692,14 @@ const WalkinAppointmentPage = () => {
         </Dialog>
 
         {!submitbutton && (
-          <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
+          <div
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+            }}
+          >
             <NdLoader size="lg" variant="solid" value={70} color="primary" />
           </div>
         )}
@@ -691,9 +708,7 @@ const WalkinAppointmentPage = () => {
           onClose={setOpenModal}
           content={modalContent}
           isError={isError}
-
         />
-
       </Layout>
     );
   }

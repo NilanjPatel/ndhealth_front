@@ -1,8 +1,5 @@
 // clinichome
 // src/components/clinicInfo.js
-import API_BASE_PATH from '../../apiConfig';
-
-
 import React, { useState, useEffect, useRef } from 'react';
 import { ReactNode, SyntheticEvent } from 'react';
 import { BrowserRouter as Router, Switch, Route, Link, Routes, useLocation } from 'react-router-dom';

@@ -15,7 +15,7 @@
 
 .loader-73::after,
 .loader-73::before {
-  content: '';
+  content: "";
   width: 10px;
   height: 1px;
   background: var(--lite);
@@ -34,16 +34,35 @@
 }
 
 @keyframes animFw {
-  0%, 100% { width: 0; }
-  50% { width: var(--size); }
+  0%,
+  100% {
+    width: 0;
+  }
+  50% {
+    width: var(--size);
+  }
 }
 
 @keyframes coli1 {
-  0%, 100% { opacity: 0; transform: rotate(-45deg) translateX(0); }
-  50% { opacity: 1; transform: rotate(-45deg) translateX(var(--size)); }
+  0%,
+  100% {
+    opacity: 0;
+    transform: rotate(-45deg) translateX(0);
+  }
+  50% {
+    opacity: 1;
+    transform: rotate(-45deg) translateX(var(--size));
+  }
 }
 
 @keyframes coli2 {
-  0%, 100% { opacity: 0; transform: rotate(45deg) translateX(0); }
-  50% { opacity: 1; transform: rotate(45deg) translateX(var(--size)); }
+  0%,
+  100% {
+    opacity: 0;
+    transform: rotate(45deg) translateX(0);
+  }
+  50% {
+    opacity: 1;
+    transform: rotate(45deg) translateX(var(--size));
+  }
 }

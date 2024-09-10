@@ -30,6 +30,8 @@ import hcv_with_version_code from "../assets/images/hcv_version_code.png";
 // Material Kit 2 PRO React components
 import MKTypography from "components/MKTypography";
 import MKButton from "../../components/MKButton";
+import Breadcrumbs from "../../examples/Breadcrumbs";
+import Icon from "@mui/material/Icon";
 
 const ClinicInfo = () => {
   // const location = useLocation();
@@ -123,7 +125,7 @@ const ClinicInfo = () => {
 
       const url = `${API_BASE_PATH}/doctors/${dob.replace(/\//g, "")}/${hin.replace(
         /\//g,
-        ""
+        "",
       )}/${clinicSlug}/book/`;
       const response = await fetch(url);
       // Handle the response as needed
@@ -191,7 +193,7 @@ const ClinicInfo = () => {
       setButtonPressed(false);
       const url = `${API_BASE_PATH}/doctors/${dob.replace(/\//g, "")}/${hin.replace(
         /\//g,
-        ""
+        "",
       )}/${clinicSlug}/manage/`;
       const response = await fetch(url);
       // Handle the response as needed
@@ -285,16 +287,12 @@ const ClinicInfo = () => {
                 )}
 
                 <Grid item xs={12} md={12}>
-                  <Typography style={{ color: "red", fontSize: "1rem", padding: "0.8rem" }}>
-                    <MKButton
-                      style={{ padding: "0.8rem" }}
-                      onClick={() => redirectHomeM(clinicSlug)}
-                      color="info"
-                      variant={"contained"}
-                    >
-                      Back
-                    </MKButton>
-                  </Typography>
+                  <Breadcrumbs
+                    routes={[
+                      { label: "Go home", route: `/clinic/${clinicSlug}/`, icon: <Icon>home</Icon> },
+                      // { label: "Book Appointment", icon: <Icon>appointment</Icon> },
+                    ]}
+                  />
                 </Grid>
 
                 <CardHeader
@@ -473,7 +471,7 @@ const ClinicInfo = () => {
                             </Grid>
                           </Dialog>
                         </>
-                      )
+                      ),
                   )}
               </Grid>
               {/* <Grid container spacing={2} > */}

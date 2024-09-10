@@ -25,11 +25,7 @@
           "type": "select",
           "question": "How was your car hit",
           "required": true,
-          "options": [
-            "Another Vehicle",
-            "Pole",
-            "Pedestrain"
-          ]
+          "options": ["Another Vehicle", "Pole", "Pedestrain"]
         },
         {
           "type": "text",
@@ -40,10 +36,7 @@
           "type": "select",
           "question": "Did the air bag deployed",
           "required": true,
-          "options": [
-            "Yes",
-            "No"
-          ]
+          "options": ["Yes", "No"]
         },
         {
           "type": "text",
@@ -54,39 +47,25 @@
           "type": "select",
           "question": "Was your head hit by anything during the collision",
           "required": true,
-          "options": [
-            "Yes",
-            "No"
-          ]
+          "options": ["Yes", "No"]
         },
         {
           "type": "select",
           "question": "loss of consciousnes",
           "required": true,
-          "options": [
-            "Yes",
-            "No"
-          ]
+          "options": ["Yes", "No"]
         },
         {
           "type": "select",
           "question": "Were you able  to exit the car by your own",
           "required": true,
-          "options": [
-            "Yes",
-            "No"
-          ]
+          "options": ["Yes", "No"]
         },
         {
           "type": "select",
           "question": "Have you seen Dr. nurse practitioner since the collision",
           "required": true,
-          "options": [
-            "Both Doctor & Nurse",
-            "Doctor",
-            "Nurse",
-            "No"
-          ]
+          "options": ["Both Doctor & Nurse", "Doctor", "Nurse", "No"]
         },
         {
           "type": "text",
@@ -112,17 +91,13 @@
           "type": "text",
           "question": "Any days missed from work after accident",
           "required": true
-        },{
+        },
+        {
           "type": "select",
           "question": "Are you able to return to work",
           "required": true,
-          "options": [
-            "Yes",
-            "No"
-          ]
+          "options": ["Yes", "No"]
         }
-
-        
       ]
     }
   ]

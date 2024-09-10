@@ -1,12 +1,10 @@
 // import React, { useEffect, useState } from 'react';
 // import API_BASE_PATH from '../../../../apiConfig';
 
-
 // const ClinicSettingsComponent = ({ clinicSlug, clinicId }) => {
 //     const [clinicSettings, setClinicSettings] = useState({});
 //     const [formData, setFormData] = useState({});
 //     const [characterItems, setCharacterItems] = useState([]);
-
 
 //     useEffect(() => {
 //         // Fetch clinic settings

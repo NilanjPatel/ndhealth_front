@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const PlaceholderAwareInput = ({ value, onChange }) => {
   const [cursorPosition, setCursorPosition] = useState(null);
@@ -12,12 +12,12 @@ const PlaceholderAwareInput = ({ value, onChange }) => {
 
     // Check if the change is within a placeholder
     if (cursorPosition !== null) {
-      const placeholderStart = value.lastIndexOf('{{', cursorPosition - 1);
-      const placeholderEnd = value.indexOf('}}', cursorPosition);
-      
+      const placeholderStart = value.lastIndexOf("{{", cursorPosition - 1);
+      const placeholderEnd = value.indexOf("}}", cursorPosition);
+
       if (placeholderStart !== -1 && placeholderEnd !== -1) {
         const placeholder = value.substring(placeholderStart, placeholderEnd + 2);
-        newValue = value.replace(placeholder, '');
+        newValue = value.replace(placeholder, "");
         setCursorPosition(placeholderStart);
       }
     }
@@ -25,13 +25,7 @@ const PlaceholderAwareInput = ({ value, onChange }) => {
     onChange(newValue);
   };
 
-  return (
-    <textarea
-      value={value}
-      onChange={handleChange}
-      onSelect={handleCursorChange}
-    />
-  );
+  return <textarea value={value} onChange={handleChange} onSelect={handleCursorChange} />;
 };
 
 export default PlaceholderAwareInput;

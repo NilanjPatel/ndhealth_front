@@ -8,143 +8,78 @@
           "type": "radio",
           "question": "1. Anger/irritability",
           "required": true,
-          "options": [
-            "Not at all",
-            "Mild",
-            "Moderate",
-            "Severe"
-          ]
+          "options": ["Not at all", "Mild", "Moderate", "Severe"]
         },
         {
           "type": "radio",
           "question": "2. Anxiety/tension",
-          "options": [
-            "Not at all",
-            "Mild",
-            "Moderate",
-            "Severe"
-          ],
+          "options": ["Not at all", "Mild", "Moderate", "Severe"],
           "required": true
         },
         {
           "type": "radio",
           "question": "3. Tearful/Increased sensitivity to rejection",
-          "options": [
-            "Not at all",
-            "Mild",
-            "Moderate",
-            "Severe"
-          ],
+          "options": ["Not at all", "Mild", "Moderate", "Severe"],
           "required": true
         },
         {
           "type": "radio",
           "question": "4. Decreased mood/hopelessness",
-          "options": [
-            "Not at all",
-            "Mild",
-            "Moderate",
-            "Severe"
-          ],
+          "options": ["Not at all", "Mild", "Moderate", "Severe"],
           "required": true
         },
         {
           "type": "radio",
           "question": "5. Decreased interest in work activities",
-          "options": [
-            "Not at all",
-            "Mild",
-            "Moderate",
-            "Severe"
-          ],
+          "options": ["Not at all", "Mild", "Moderate", "Severe"],
           "required": true
         },
         {
           "type": "radio",
           "question": "6. Decreased interest in home activities",
-          "options": [
-            "Not at all",
-            "Mild",
-            "Moderate",
-            "Severe"
-          ],
+          "options": ["Not at all", "Mild", "Moderate", "Severe"],
           "required": true
         },
         {
           "type": "radio",
           "question": "7. Decreased interest in social activities",
-          "options": [
-            "Not at all",
-            "Mild",
-            "Moderate",
-            "Severe"
-          ],
+          "options": ["Not at all", "Mild", "Moderate", "Severe"],
           "required": true
         },
         {
           "type": "radio",
           "question": "8. Difficulty concentrating",
-          "options": [
-            "Not at all",
-            "Mild",
-            "Moderate",
-            "Severe"
-          ],
+          "options": ["Not at all", "Mild", "Moderate", "Severe"],
           "required": true
         },
         {
           "type": "radio",
           "question": "9. Fatigue/lack of energy",
-          "options": [
-            "Not at all",
-            "Mild",
-            "Moderate",
-            "Severe"
-          ],
+          "options": ["Not at all", "Mild", "Moderate", "Severe"],
           "required": true
         },
         {
           "type": "radio",
           "question": "10. Overeating/food cravings",
-          "options": [
-            "Not at all",
-            "Mild",
-            "Moderate",
-            "Severe"
-          ],
+          "options": ["Not at all", "Mild", "Moderate", "Severe"],
           "required": true
         },
         {
           "type": "radio",
           "question": "11. Insomnia",
-          "options": [
-            "Not at all",
-            "Mild",
-            "Moderate",
-            "Severe"
-          ],
+          "options": ["Not at all", "Mild", "Moderate", "Severe"],
           "required": true
         },
         {
           "type": "radio",
           "question": "12. Hypersomnia(needing more sleep)",
-          "options": [
-            "Not at all",
-            "Mild",
-            "Moderate",
-            "Severe"
-          ],
+          "options": ["Not at all", "Mild", "Moderate", "Severe"],
           "required": true
         },
         {
           "type": "radio",
           "question": "13. Feeling overwhelmed or out of control",
-          "options": [
-            "Not at all",
-            "Mild",
-            "Moderate",
-            "Severe"
-          ],
+          "options": ["Not at all", "Mild", "Moderate", "Severe"],
           "required": true
         }
       ]
@@ -155,46 +90,31 @@
         {
           "type": "radio",
           "question": "Breast tenderness",
-          "options": [
-            "Yes",
-            "No"
-          ],
+          "options": ["Yes", "No"],
           "required": true
         },
         {
           "type": "radio",
           "question": "headaches",
-          "options": [
-            "Yes",
-            "No"
-          ],
+          "options": ["Yes", "No"],
           "required": true
         },
         {
           "type": "radio",
           "question": "joint/muscle pain",
-          "options": [
-            "Yes",
-            "No"
-          ],
+          "options": ["Yes", "No"],
           "required": true
         },
         {
           "type": "radio",
           "question": "bloating",
-          "options": [
-            "Yes",
-            "No"
-          ],
+          "options": ["Yes", "No"],
           "required": true
         },
         {
           "type": "radio",
           "question": "weight gain",
-          "options": [
-            "Yes",
-            "No"
-          ],
+          "options": ["Yes", "No"],
           "required": true
         }
       ]

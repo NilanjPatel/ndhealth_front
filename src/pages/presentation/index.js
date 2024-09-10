@@ -1,17 +1,3 @@
-/*
-=========================================================
-* Material Kit 2 PRO React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-kit-pro-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
 import { useEffect, useRef } from "react";
 // rellax
 import Rellax from "rellax";
@@ -56,6 +42,7 @@ import footerRoutes from "footer.routes";
 import bgImage from "assets/images/bg-presentation.jpg";
 
 // import MKButton from "../../components/MKButton";
+
 import { FaChrome } from "react-icons/fa";
 import { FaFirefox } from "react-icons/fa";
 
@@ -65,6 +52,7 @@ function Presentation() {
 
   // Setting up rellax
   useEffect(() => {
+
     const parallax = new Rellax(headerRef.current, {
       speed: -6,
     });
@@ -86,15 +74,11 @@ function Presentation() {
     return () => typedJS.destroy();
   }, []);
 
-  return (
-    <>
+  return (<>
       <DefaultNavbar
         routes={routes}
         action={{
-          type: "external",
-          route: "/join",
-          label: "Join now",
-          color: "info",
+          type: "external", route: "/join", label: "Join now", color: "info",
         }}
         sticky
       />
@@ -103,11 +87,10 @@ function Presentation() {
         minHeight="75vh"
         width="100%"
         sx={{
-          backgroundImage: ({ functions: { linearGradient, rgba }, palette: { gradients } }) =>
-            `${linearGradient(
-              rgba(gradients.dark.main, 0.6),
-              rgba(gradients.dark.state, 0.6)
-            )}, url(${bgImage})`,
+          backgroundImage: ({
+                              functions: { linearGradient, rgba },
+                              palette: { gradients },
+                            }) => `${linearGradient(rgba(gradients.dark.main, 0.6), rgba(gradients.dark.state, 0.6))}, url(${bgImage})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           display: "grid",
@@ -213,26 +196,24 @@ function Presentation() {
               <FilledInfoCard
                 color="info"
                 icon=<FaChrome />
-                title="Chrome Plugin"
-                action={{
-                  type: "external",
-                  route:
-                    "https://chromewebstore.google.com/detail/nd-health/ppbjmfcjpgddhnhokiaobgklfllnplem?hl=en-US&utm_source=ext_sidebar",
-                  label: "install",
-                }}
+              title="Chrome Plugin"
+              action={{
+              type: "external",
+              route: "https://chromewebstore.google.com/detail/nd-health/ppbjmfcjpgddhnhokiaobgklfllnplem?hl=en-US&utm_source=ext_sidebar",
+              label: "install",
+            }}
               />
             </Grid>
             <Grid item xs={12} lg={4}>
               <FilledInfoCard
                 color="info"
                 icon=<FaFirefox />
-                title="FireFox Plugin"
-                action={{
-                  type: "external",
-                  route:
-                    "https://chromewebstore.google.com/detail/nd-health/ppbjmfcjpgddhnhokiaobgklfllnplem?hl=en-US&utm_source=ext_sidebar",
-                  label: "install",
-                }}
+              title="FireFox Plugin"
+              action={{
+              type: "external",
+              route: "https://chromewebstore.google.com/detail/nd-health/ppbjmfcjpgddhnhokiaobgklfllnplem?hl=en-US&utm_source=ext_sidebar",
+              label: "install",
+            }}
               />
             </Grid>
           </Grid>
@@ -286,8 +267,7 @@ function Presentation() {
       <MKBox pt={6} px={1} mt={6}>
         <DefaultFooter content={footerRoutes} />
       </MKBox>
-    </>
-  );
+    </>);
 }
 
 export default Presentation;

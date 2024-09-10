@@ -86,7 +86,6 @@ const FamilyAppointmentPage = () => {
   const [isError, setIsError] = useState(false);
   const [modalContent, setModalContent] = useState("");
 
-
   // Simulate fetching locations data
   useEffect(() => {
     // Replace with actual API call
@@ -128,7 +127,7 @@ const FamilyAppointmentPage = () => {
     const data = await response.json();
     if (data.status === "failed") {
       setAppointmentBookContent(
-        "You already book an appointment! this session is expired. If you have provided valid email, You will receive a confirmation email shortly. if you still want to book an appointment please close the window and try again.",
+        "You already book an appointment! this session is expired. If you have provided valid email, You will receive a confirmation email shortly. if you still want to book an appointment please close the window and try again."
       );
       setButtonRedirect("Home");
       setOpenApp(true);
@@ -330,12 +329,12 @@ const FamilyAppointmentPage = () => {
     setIsEmailValid(isValid);
   };
 
-  // NotificationDialog
-  const handleSuccess = (message) => {
-    setModalContent(message);
-    setIsError(false);
-    setOpenModal(true);
-  };
+  // // NotificationDialog
+  // const handleSuccess = (message) => {
+  //   setModalContent(message);
+  //   setIsError(false);
+  //   setOpenModal(true);
+  // };
   const handleFailure = (message) => {
     setModalContent(message);
     setIsError(true);
@@ -443,7 +442,7 @@ const FamilyAppointmentPage = () => {
                           const provider =
                             responseData.location[selectedLocation].provider_number[providerNumber];
                           const location = clinicLocation.find(
-                            (loc) => loc.name === provider?.name,
+                            (loc) => loc.name === provider?.name
                           );
 
                           return (
@@ -452,7 +451,7 @@ const FamilyAppointmentPage = () => {
                               {/*{provider?.name}, */}
                             </MenuItem>
                           );
-                        },
+                        }
                       )}
                   </Select>
                 </MKBox>
@@ -488,14 +487,14 @@ const FamilyAppointmentPage = () => {
                       responseData.location[selectedLocation]?.provider_number[selectedProvider]
                         ?.letestappointmentslots
                         ? Object.keys(
-                          responseData.location[selectedLocation]?.provider_number[
-                            selectedProvider
-                            ]?.letestappointmentslots,
-                        ).map((date, index) => (
-                          <MenuItem key={`${date}_${index}`} value={date}>
-                            {date}
-                          </MenuItem>
-                        ))
+                            responseData.location[selectedLocation]?.provider_number[
+                              selectedProvider
+                            ]?.letestappointmentslots
+                          ).map((date, index) => (
+                            <MenuItem key={`${date}_${index}`} value={date}>
+                              {date}
+                            </MenuItem>
+                          ))
                         : null // or replace with appropriate fallback logic
                     }
                   </Select>
@@ -517,7 +516,7 @@ const FamilyAppointmentPage = () => {
                     {selectedDate &&
                       responseData.location[selectedLocation]?.provider_number[
                         selectedProvider
-                        ]?.letestappointmentslots[selectedDate].map((time, index) => (
+                      ]?.letestappointmentslots[selectedDate].map((time, index) => (
                         <MenuItem
                           key={`${time.date}_${index}`}
                           value={time.time + "," + time.duration}
@@ -547,7 +546,7 @@ const FamilyAppointmentPage = () => {
                               disabled={
                                 responseData.location[selectedLocation]?.provider_number[
                                   selectedProvider
-                                  ]?.AppointmentMode[mode] === 0
+                                ]?.AppointmentMode[mode] === 0
                               }
                             />
                           }
@@ -722,7 +721,6 @@ const FamilyAppointmentPage = () => {
           onClose={setOpenModal}
           content={modalContent}
           isError={isError}
-
         />
       </Layout>
     );

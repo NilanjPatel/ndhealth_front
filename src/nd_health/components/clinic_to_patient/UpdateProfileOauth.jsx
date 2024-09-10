@@ -20,7 +20,14 @@ import { Grid, Card, CardContent, Typography, CardHeader } from "@mui/material";
 
 import Layout from "nd_health/components/Layout";
 import "../../components/css/Marquee.css";
-import { formatDob, formatHin, formatPhone, formatPostalCode, isValidEmail, redirectHomeM } from "../resources/utils";
+import {
+  formatDob,
+  formatHin,
+  formatPhone,
+  formatPostalCode,
+  isValidEmail,
+  redirectHomeM,
+} from "../resources/utils";
 import HelmetComponent from "nd_health/components/SEO/HelmetComponent";
 import NotificationDialog from "nd_health/components/resources/Notification";
 import MKTypography from "components/MKTypography";
@@ -41,7 +48,6 @@ const UpdateProfileOauth = () => {
 
   const [isEmailValid, setIsEmailValid] = React.useState(true);
 
-
   const [updatedInfo, setUpdatedInfo] = useState({
     address: "",
     city: "",
@@ -53,7 +59,6 @@ const UpdateProfileOauth = () => {
     demo: "",
   });
 
-
   useEffect(() => {
     const fetchClinicInfo = async () => {
       try {
@@ -64,15 +69,12 @@ const UpdateProfileOauth = () => {
       } catch (error) {
         console.error("Error fetching clinic information:", error);
       }
-
     };
 
     if (!clinicInfoFetched) {
       fetchClinicInfo();
       setClinicInfoFetched(true);
     }
-
-
   }, [clinicSlug, hin, clinicInfoFetched]);
 
   const handleHinChange = (e) => {
@@ -85,14 +87,12 @@ const UpdateProfileOauth = () => {
     }
   };
 
-
   const handleRequest = async () => {
     try {
       // Make a request with clinicSlug, hin, and dob
       if (hin === "" || dob === "") {
         handleFailure("Please enter your health-card number and date of birth.");
         setButtonPressed(true);
-
 
         return;
       }
@@ -119,18 +119,14 @@ const UpdateProfileOauth = () => {
           demo: data.profile.demo || "",
         });
         // navigate(`/clinic-forms/${clinicSlug}`, {state: {demo: data.profile, clinicInfo: clinicInfo,}}); // TODO change the demo
-
       } else if (data.status === "failed") {
-
         setButtonPressed(true);
         handleFailure(data.message);
-
       }
     } catch (error) {
       console.error("Error making request:", error, hin);
     } finally {
       setButtonPressed(false);
-
     }
   };
 
@@ -150,7 +146,6 @@ const UpdateProfileOauth = () => {
     setOpenNotification(true);
   };
 
-
   const handleSubmitCheckIn = async () => {
     setUpdatePressed(false);
     if (isEmailValid) {
@@ -163,7 +158,7 @@ const UpdateProfileOauth = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          "clinicSlug": clinicSlug,
+          clinicSlug: clinicSlug,
           address: updatedInfo.address,
           city: updatedInfo.city,
           postal: updatedInfo.postal,
@@ -172,38 +167,29 @@ const UpdateProfileOauth = () => {
           email: updatedInfo.email,
           cs: updatedInfo.version_code,
           demo: updatedInfo.demo,
-          "update": true,
-          "type": "profileOnly",
+          update: true,
+          type: "profileOnly",
         }),
       });
       const data = await response.json();
       if (data.status === "success") {
         handleSuccess(data.message);
         setUpdatePressed(true);
-
       } else if (data.status === "failed") {
         handleFailure(data.message);
         setUpdatePressed(true);
-
       } else {
         handleFailure("Something went wrong, try again!");
         setUpdatePressed(true);
-
       }
     } else {
       // Email is not valid, handle accordingly (show an error message, etc.)
       handleFailure("Email is not valid, kindly write valid email address.");
       setUpdatePressed(true);
-
     }
-
-
   };
 
-
   const handleEmailChange = (value) => {
-
-
     // Validate email format
     const isValid = isValidEmail(value);
     console.log(value, isValid);
@@ -227,7 +213,6 @@ const UpdateProfileOauth = () => {
       formattedValue = value.toUpperCase();
     }
 
-
     setUpdatedInfo((prevInfo) => ({
       ...prevInfo,
       [field]: formattedValue,
@@ -238,17 +223,13 @@ const UpdateProfileOauth = () => {
     window.location.reload();
   };
 
-
   const gotoHome = () => {
     setOpenNotification(false);
     redirectHomeM(clinicSlug);
   };
 
-
   return (
-
     <Layout clinicInfo={clinicInfo}>
-
       <div>
         <HelmetComponent />
 
@@ -259,14 +240,19 @@ const UpdateProfileOauth = () => {
             <Card>
               <Grid item xs={12} md={12}>
                 <Typography style={{ color: "red", fontSize: "1rem", padding: "0.8rem" }}>
-                  <MKButton style={{ padding: "0.8rem" }} onClick={() => redirectHomeM(clinicSlug)}
-                            color="primary"
-                            variant={"contained"}>Back</MKButton>
+                  <MKButton
+                    style={{ padding: "0.8rem" }}
+                    onClick={() => redirectHomeM(clinicSlug)}
+                    color="primary"
+                    variant={"contained"}
+                  >
+                    Back
+                  </MKButton>
                 </Typography>
               </Grid>
-              <CardHeader title="Verify Your Identity"
-                          titleTypographyProps={{ style: { fontSize: "1rem", fontWeight: "bold" } }}
-
+              <CardHeader
+                title="Verify Your Identity"
+                titleTypographyProps={{ style: { fontSize: "1rem", fontWeight: "bold" } }}
               />
 
               <Grid container spacing={2} paddingLeft={2} paddingRight={2} paddingTop={-1}>
@@ -291,7 +277,6 @@ const UpdateProfileOauth = () => {
                     fullWidth
                     type="tel"
                     inputRef={dobRef} // Assigning the ref to the Date of Birth field
-
                   />
                 </Grid>
 
@@ -308,8 +293,7 @@ const UpdateProfileOauth = () => {
                 </Grid>
               </Grid>
               <CardActionArea>
-                <CardContent>
-                </CardContent>
+                <CardContent></CardContent>
               </CardActionArea>
             </Card>
             <div style={{ top: "0", right: "0", padding: "8px" }}>
@@ -318,14 +302,9 @@ const UpdateProfileOauth = () => {
               </Link>
             </div>
           </>
-
-
         ) : (
-
           <p>Loading...</p>
         )}
-
-
       </div>
 
       <Dialog open={gotpatientInfo} BackdropComponent={Backdrop}>
@@ -343,7 +322,6 @@ const UpdateProfileOauth = () => {
                   Placeholder="Version Code of Health Card"
                   fullWidth
                   type="text"
-
                 />
               </Grid>
 
@@ -356,7 +334,6 @@ const UpdateProfileOauth = () => {
                   Placeholder="Address"
                   fullWidth
                   type="text"
-
                 />
               </Grid>
               <Grid item xs={12} padding={2}>
@@ -368,7 +345,6 @@ const UpdateProfileOauth = () => {
                   Placeholder="City"
                   fullWidth
                   type="text"
-
                 />
               </Grid>
 
@@ -381,7 +357,6 @@ const UpdateProfileOauth = () => {
                   Placeholder="XXX-XXX"
                   fullWidth
                   type="text"
-
                 />
               </Grid>
               <Grid item xs={12} padding={2}>
@@ -393,7 +368,6 @@ const UpdateProfileOauth = () => {
                   Placeholder="e.g. 123-456-7890"
                   fullWidth
                   type="tel"
-
                 />
               </Grid>
 
@@ -406,59 +380,58 @@ const UpdateProfileOauth = () => {
                   Placeholder="e.g. 123-456-7890"
                   fullWidth
                   type="tel"
-
                 />
               </Grid>
               <Grid item xs={12} padding={2}>
                 <TextField
                   label="Email address"
-                  value={(updatedInfo.email)}
+                  value={updatedInfo.email}
                   onChange={(e) => handleInputChange("email", e.target.value)}
                   inputMode="text"
                   Placeholder="email address"
                   fullWidth
                   type="text"
-
                   error={!isEmailValid}
                   helperText={!isEmailValid ? "Invalid email address" : ""}
                 />
               </Grid>
             </DialogContent>
             <DialogActions>
-
-              <MKButton variant="contained" onClick={close_userinfo_model} style={{
-                fontSize: "1rem",
-                fontWeight: "bold",
-              }}
-                        color="primary"
-
-              >Close</MKButton>
-              <MKButton variant="contained" onClick={handleSubmitCheckIn}
-                        disabled={!updatepressed}
-                        color="info"
-                        style={{ fontSize: "1rem", fontWeight: "bold" }}>Update info
+              <MKButton
+                variant="contained"
+                onClick={close_userinfo_model}
+                style={{
+                  fontSize: "1rem",
+                  fontWeight: "bold",
+                }}
+                color="primary"
+              >
+                Close
               </MKButton>
-
+              <MKButton
+                variant="contained"
+                onClick={handleSubmitCheckIn}
+                disabled={!updatepressed}
+                color="info"
+                style={{ fontSize: "1rem", fontWeight: "bold" }}
+              >
+                Update info
+              </MKButton>
             </DialogActions>
           </>
         ) : (
           // setOpenModal(true);
-          <>
-          </>
+          <></>
         )}
       </Dialog>
-
 
       <NotificationDialog
         open={openNotification}
         onClose={gotoHome}
         content={notificationMessage}
         isError={notificationError}
-
       />
     </Layout>
-
-
   );
 };
 

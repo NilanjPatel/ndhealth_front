@@ -1,17 +1,17 @@
 /**
-=========================================================
-* Material Kit 2 PRO React - v2.1.0
-=========================================================
+ =========================================================
+ * Material Kit 2 PRO React - v2.1.0
+ =========================================================
 
-* Product Page: https://www.creative-tim.com/product/material-kit-pro-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
+ * Product Page: https://www.creative-tim.com/product/material-kit-pro-react
+ * Copyright 2023 Creative Tim (https://www.creative-tim.com)
 
-Coded by www.creative-tim.com
+ Coded by www.creative-tim.com
 
  =========================================================
 
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ */
 
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
@@ -25,34 +25,45 @@ import MuiBreadcrumbs from "@mui/material/Breadcrumbs";
 // Material Kit 2 PRO React components
 import MKBox from "components/MKBox";
 import MKTypography from "components/MKTypography";
+import MKButton from "../../components/MKButton";
 
 function Breadcrumbs({ routes, ...rest }) {
   return (
-    <MKBox bgColor="light" borderRadius="md" py={1} px={2} width="100%">
+    <MKBox bgColor="inreate"
+           // borderRadius="md" py={1} px={2} width="100%"
+    >
       <MuiBreadcrumbs {...rest}>
-        {routes.map(({ label, route }) =>
+        {routes.map(({ label, route, icon }) =>
           route ? (
-            <MKTypography
-              key={label}
-              component={Link}
-              to={route}
-              variant="button"
-              color="text"
-              fontWeight="regular"
-              opacity={0.8}
-              sx={{
-                "&:hover, &:focus": {
-                  color: ({ palette: { info } }) => info.main,
-                },
-              }}
-            >
-              {label}
-            </MKTypography>
+            <>
+              <MKButton
+                key={label}
+                component={Link}
+                to={route}
+                variant="button"
+                color="text"
+                fontWeight="regular"
+                opacity={0.8}
+
+                sx={{
+                  "&:hover, &:focus": {
+                    color: ({ palette: { info } }) => info.main,
+                  },
+                  fontSize:"1rem",
+                  padding: "0.8rem"
+                }}
+
+              >
+                {icon}&nbsp;&nbsp;{label}
+
+              </MKButton>
+
+            </>
           ) : (
-            <MKTypography key={label} variant="button" fontWeight="regular">
-              {label}
-            </MKTypography>
-          )
+            <MKButton key={label} fontWeight="regular" disabled>
+              {icon}&nbsp;&nbsp;{label}
+            </MKButton>
+          ),
         )}
       </MuiBreadcrumbs>
     </MKBox>

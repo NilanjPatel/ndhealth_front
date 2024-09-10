@@ -1,73 +1,73 @@
 /* Add your global styling, such as reset and other styles */
 
 body {
-    margin: 0;
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f4; /* Set your preferred background color */
-  }
-  
-  .footer {
-    background-color: #635ae0;
-    color: #fff;
-    padding: -3rem;
-    position: fixed;
-    width: 100%;
-    bottom: 0;
-  }
-  
-  .card_right{
-    background-color: #433e7e;
-    color: #fff;
-    /* padding: -3rem; */
-    /* position: fixed; */
-    width: 100%;
-    /* bottom: 0; */
-    /* right: -1; */
+  margin: 0;
+  font-family: "Arial", sans-serif;
+  background-color: #f4f4f4; /* Set your preferred background color */
+}
+
+.footer {
+  background-color: #635ae0;
+  color: #fff;
+  padding: -3rem;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+}
+
+.card_right {
+  background-color: #433e7e;
+  color: #fff;
+  /* padding: -3rem; */
+  /* position: fixed; */
+  width: 100%;
+  /* bottom: 0; */
+  /* right: -1; */
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-left {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 50px; /* Adjust the size as needed */
+  margin-right: 10px;
+}
+
+.footer-right {
+  display: flex;
+}
+
+.contact-info {
+  text-align: right;
+}
+
+.contact-info p {
+  margin: 0;
+}
+
+/* Add media queries for responsiveness */
+
+@media screen and (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
   }
 
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  
-  .footer-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .footer-left {
-    display: flex;
-    align-items: center;
-  }
-  
-  .logo {
-    width: 50px; /* Adjust the size as needed */
-    margin-right: 10px;
-  }
-  
+  .footer-left,
   .footer-right {
-    display: flex;
+    margin-bottom: 15px;
   }
-  
-  .contact-info {
-    text-align: right;
-  }
-  
-  .contact-info p {
-    margin: 0;
-  }
-  
-  /* Add media queries for responsiveness */
-  
-  @media screen and (max-width: 768px) {
-    .footer-content {
-      flex-direction: column;
-      text-align: center;
-    }
-  
-    .footer-left, .footer-right {
-      margin-bottom: 15px;
-    }
-  }
-  
+}

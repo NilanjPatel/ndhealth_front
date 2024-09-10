@@ -1,114 +1,85 @@
 {
-    "title": "PATIENT HEALTH QUESTIONNAIRE (PHQ-9)",
-    "subheading": "",
-    "sections": [
-      {
-        "title": "A. Over the last 2 weeks, how often have you been bothered by any of the following problems?",
-        "items": [
+  "title": "PATIENT HEALTH QUESTIONNAIRE (PHQ-9)",
+  "subheading": "",
+  "sections": [
+    {
+      "title": "A. Over the last 2 weeks, how often have you been bothered by any of the following problems?",
+      "items": [
+        {
+          "type": "radio",
+          "question": "Feeling tired or having little energy",
+          "options": ["Not at all", "Several days", "More than half the days", "Nearly every day"]
+        },
 
-          {
-            "type": "radio",
-            "question": "Feeling tired or having little energy",
-            "options" : ["Not at all", "Several days" , "More than half the days", "Nearly every day"]
-  
-          },
-        
-          {
-            "type": "radio",
-            "question": "Poor appetitie or overeating",
-            "options" : ["Not at all", "Several days" , "More than half the days", "Nearly every day"]
-  
-          },
-        
-          {
-            "type": "radio",
-            "question": "Feeling bad about yourself or that you are a failure or have let yourself or your family down",
-            "options" : ["Not at all", "Several days" , "More than half the days", "Nearly every day"]
-  
-          },
-        
-          {
-            "type": "radio",
-            "question": "Trouble concentrating on things, such as reading the newspaper or watching television",
-            "options" : ["Not at all", "Several days" , "More than half the days", "Nearly every day"]
-  
-          },
-        
-          {
-            "type": "radio",
-            "question": "",
-            "options" : ["Not at all", "Several days" , "More than half the days", "Nearly every day"]
-  
-          },
-        
-          {
-            "type": "radio",
-            "question": "Moving or speaking so slowly that other people could have noticed. Or the opposite being so fidgety or restless that you have been moving around a lot more than usual",
-            "options" : ["Not at all", "Several days" , "More than half the days", "Nearly every day"]
-  
-          },
-          {
-            "type": "radio",
-            "question":"Thoughts that you would be better off dead, or of hurting yourself in some way",
-            "options" : ["Not at all", "Several days" , "More than half the days", "Nearly every day"]
-  
-          }
-        
-        ]
-      },
-      {
-        "title": "Later Symptoms",
-        "subheading": "( Please note any symptoms that started after the accident occured. Use diagram if necessary)",
-        "items": [
-          {
-            "type": "checkbox",
-            "question": "head",
-            "options": [
-              "headache",
-              "Dizziness",
-              "Blurred Vision",
-              " Light Headedness"
-            ]
-          },
-          {
-            "type": "checkbox",
-            "image": "https://nd-health-big-bucket.s3.amazonaws.com/static/Forms/2024/03/22/Screenshot_from_2024-03-22_11-18-24.png",
-            "question": "Chest",
-            "options": [
-              "Chest Pain",
-              "Pain Around ribs",
-              "Shortness of breath",
-              "Brest Pain"
-            ]
-          },
-          {
-            "title": "Later Symptoms",
-            "subheading": "( Please note any symptoms that started after the accident occured. Use diagram if necessary)",
-            "items": [
-              {
-                "type": "checkbox",
-                "question": "head",
-                "options": [
-                  "headache",
-                  "Dizziness",
-                  "Blurred Vision",
-                  " Light Headedness"
-                ]
-              },
-              {
-                "type": "checkbox",
-                "image": "https://nd-health-big-bucket.s3.amazonaws.com/static/Forms/2024/03/22/Screenshot_from_2024-03-22_11-18-24.png",
-                "question": "Chest",
-                "options": [
-                  "Chest Pain",
-                  "Pain Around ribs",
-                  "Shortness of breath",
-                  "Brest Pain"
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
+        {
+          "type": "radio",
+          "question": "Poor appetitie or overeating",
+          "options": ["Not at all", "Several days", "More than half the days", "Nearly every day"]
+        },
+
+        {
+          "type": "radio",
+          "question": "Feeling bad about yourself or that you are a failure or have let yourself or your family down",
+          "options": ["Not at all", "Several days", "More than half the days", "Nearly every day"]
+        },
+
+        {
+          "type": "radio",
+          "question": "Trouble concentrating on things, such as reading the newspaper or watching television",
+          "options": ["Not at all", "Several days", "More than half the days", "Nearly every day"]
+        },
+
+        {
+          "type": "radio",
+          "question": "",
+          "options": ["Not at all", "Several days", "More than half the days", "Nearly every day"]
+        },
+
+        {
+          "type": "radio",
+          "question": "Moving or speaking so slowly that other people could have noticed. Or the opposite being so fidgety or restless that you have been moving around a lot more than usual",
+          "options": ["Not at all", "Several days", "More than half the days", "Nearly every day"]
+        },
+        {
+          "type": "radio",
+          "question": "Thoughts that you would be better off dead, or of hurting yourself in some way",
+          "options": ["Not at all", "Several days", "More than half the days", "Nearly every day"]
+        }
+      ]
+    },
+    {
+      "title": "Later Symptoms",
+      "subheading": "( Please note any symptoms that started after the accident occured. Use diagram if necessary)",
+      "items": [
+        {
+          "type": "checkbox",
+          "question": "head",
+          "options": ["headache", "Dizziness", "Blurred Vision", " Light Headedness"]
+        },
+        {
+          "type": "checkbox",
+          "image": "https://nd-health-big-bucket.s3.amazonaws.com/static/Forms/2024/03/22/Screenshot_from_2024-03-22_11-18-24.png",
+          "question": "Chest",
+          "options": ["Chest Pain", "Pain Around ribs", "Shortness of breath", "Brest Pain"]
+        },
+        {
+          "title": "Later Symptoms",
+          "subheading": "( Please note any symptoms that started after the accident occured. Use diagram if necessary)",
+          "items": [
+            {
+              "type": "checkbox",
+              "question": "head",
+              "options": ["headache", "Dizziness", "Blurred Vision", " Light Headedness"]
+            },
+            {
+              "type": "checkbox",
+              "image": "https://nd-health-big-bucket.s3.amazonaws.com/static/Forms/2024/03/22/Screenshot_from_2024-03-22_11-18-24.png",
+              "question": "Chest",
+              "options": ["Chest Pain", "Pain Around ribs", "Shortness of breath", "Brest Pain"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

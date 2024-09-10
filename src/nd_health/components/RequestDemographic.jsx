@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useLocation } from "react-router-dom";
-import API_BASE_PATH from "../../apiConfig";
-
+import API_BASE_PATH from "apiConfig";
 
 import Layout from "nd_health/components/Layout";
 import {
   Container,
   Typography,
-  Button,
   Grid,
   FormControl,
   InputLabel,
@@ -21,8 +19,9 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-
-  FormLabel, FormGroup, Checkbox,
+  FormLabel,
+  FormGroup,
+  Checkbox,
 } from "@mui/material";
 
 import { SEX_CHOICES, PROVINCE_CHOICES } from "./resources/variables";
@@ -35,15 +34,14 @@ import {
   formatPhone,
   redirectHomeM,
 } from "nd_health/components/resources/utils";
-import MKTypography from "../../components/MKTypography";
+// import MKTypography from "../../components/MKTypography";
 import MKBox from "../../components/MKBox";
 import MKButton from "../../components/MKButton";
-
 
 const RequestDemographic = () => {
   const { clinicSlug } = useParams();
   const location = useLocation();
-  const [openApp, setOpenApp] = useState(false);
+  // const [openApp, setOpenApp] = useState(false);
   const clinicInfo1 = location.state && location.state.clinicInfo;
   const [clinicInfo, setClinicInfo] = useState(clinicInfo1);
   const [termsInfo, settermsInfo] = useState(null);
@@ -69,23 +67,23 @@ const RequestDemographic = () => {
   const [address, setAddress] = useState("");
   const [province, setProvince] = useState("");
   const [city, setCity] = useState("");
-  const [clinic_id, setClinic_id] = useState("");
+  // const [clinic_id, setClinic_id] = useState("");
   const [notice, setnotice] = useState("");
   const [patinetcheck, setpatinetcheck] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [privarePatient, setPrivatePatient] = useState(true);
+  const [privarePatient] = useState(true);
   const [checkPrivatePatient, setCheckPrivatePatient] = useState(false);
   const [validhin, setValidhin] = useState(true);
   const [validversionCode, setValidversionCode] = useState(true);
   const [validDOB, setValidDOB] = useState(true);
   const [validPhone, setValidPhone] = useState(true);
   const [validpostal, setValidpostal] = useState(true);
-  const [dobError, setDobError] = useState(null);
+  // const [dobError, setDobError] = useState(null);
 
   const [displayfirststep, setdisplayfieststep] = useState("block");
   const [displayNextStep, setdisplayNextStep] = useState("none");
   const [medicationStatus, setMedicationStatus] = useState("no"); // State to hold the selected option
-  const [medication, setMedication] = useState(""); // State to hold the selected option
+  // const [medication, setMedication] = useState(""); // State to hold the selected option
   const [medicationDisplay, setMedicationDisplay] = useState("none");
   const [isOnNarcotic, setIsOnNarcotic] = useState("");
   const [askNarcotic, setAskNarcotic] = useState("none");
@@ -115,17 +113,17 @@ const RequestDemographic = () => {
   });
 
   useEffect(() => {
-
     const fetchClinicInfo = async () => {
       try {
         const response = await fetch(`${API_BASE_PATH}/clinic/${clinicSlug}/`);
 
         const data = await response.json();
         setClinicInfo(data.clinic);
-        setClinic_id(data.clinic.id);
+        // setClinic_id(data.clinic.id);
         try {
-
-          const response1 = await fetch(`${API_BASE_PATH}/clinic/notice/${data.clinic.id}/new_patient_registration/`);
+          const response1 = await fetch(
+            `${API_BASE_PATH}/clinic/notice/${data.clinic.id}/new_patient_registration/`
+          );
           const data1 = await response1.json();
           setnotice(data1.notice);
         } catch (error) {
@@ -136,16 +134,12 @@ const RequestDemographic = () => {
       }
     };
 
-
     if (!clinicInfo1) {
       fetchClinicInfo();
-
     } else {
       setClinicInfo(clinicInfo1);
     }
-
   }, [clinicInfo1]);
-
 
   // check if patietn is already registered
   const checkPatient = async () => {
@@ -155,8 +149,8 @@ const RequestDemographic = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        clinic_id: clinicInfo.id,  // Add clinic_id to the form data
-        clinic_slug: clinicSlug,  // Add clinic_id to the form data
+        clinic_id: clinicInfo.id, // Add clinic_id to the form data
+        clinic_slug: clinicSlug, // Add clinic_id to the form data
         hin: hin,
         ver: versionCode,
         dob: dob,
@@ -171,102 +165,63 @@ const RequestDemographic = () => {
       // navigate(`/confirmation/${clinicSlug}`);
       setpatinetcheck(true);
       setErrorMessage(data.message);
-
     } else {
       // Show an error message
       // setErrorMessage(data.message);
     }
   };
 
-
   const requestDemographic = async () => {
-
-
     const fullName = `${dr_firstname} ${dr_lastname}`;
     const formattedMedicalConditions = Object.entries(medicalConditions)
-      .filter(([condition, isChecked]) => isChecked)
+      .filter(([isChecked]) => isChecked)
       .map(([condition]) => condition)
       .join(", ");
     let fulldata = "";
 
-
     if (medicationStatus === "yes") {
       fulldata += `Are you allergic to any food or Medication?: ${medication_food_allergic}  | `;
     }
-    ;
-
     if (medicationStatus === "no") {
       fulldata += `Are you allergic to any food or Medication?: NO  | `;
     }
-    ;
-
-
     if (regularMedicationStatus === "yes") {
       fulldata += `\nDo you regularly take any medication?: ${regularMedicationNames}  | `;
     }
-    ;
-
     if (regularMedicationStatus === "no") {
       fulldata += `\nDo you regularly take any medication?: NO  | `;
     }
-    ;
-
-
     if (isOnNarcotic === "yes") {
       fulldata += `\nNarcotics, sleeping pills, or stimulants that you are currently using: ${narcoticsnames}  | `;
     }
-    ;
-
     if (isOnNarcotic === "no") {
       fulldata += `\nNarcotics, sleeping pills, or stimulants that you are currently using: NO  | `;
     }
-    ;
-
-
     if (formattedMedicalConditions !== "") {
       fulldata += `\nDo you have any medical condition?: ${formattedMedicalConditions}  | `;
-
     }
-    ;
-
     if (formattedMedicalConditions === "") {
       fulldata += `\nDo you have any medical condition?: NO  | `;
-
     }
-    ;
-
     if (surgeryStatus === "yes") {
       fulldata += `\nname and date of surgery?: ${surgeryName}  | `;
-
     }
-    ;
-
     if (surgeryStatus === "no") {
       fulldata += `\nHave you had any surgery?: NO  | `;
-
     }
-    ;
-
-
     if (fullName !== "") {
       fulldata += `\nFamily Doctor's Name:${fullName}  | `;
-
     }
-    ;
-
-
     if (howknow !== "") {
       fulldata += `\nHow did you got to know about us: ${howknow}`;
     }
-    ;
-
     const response = await fetch(`${API_BASE_PATH}/demographic/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        clinic_slug: clinicSlug,  // Add clinic_id to the form data
+        clinic_slug: clinicSlug, // Add clinic_id to the form data
         province: province,
         postal: postal,
         city: city,
@@ -285,12 +240,13 @@ const RequestDemographic = () => {
       }),
     });
 
-
     if (response.ok) {
       // Successful creation (HTTP status code 201)
       // const data = await response.json();
       setpatinetcheck(true);
-      setErrorMessage("Your Profile is requested for registration with clinic. Kindly follow up with Staff.");
+      setErrorMessage(
+        "Your Profile is requested for registration with clinic. Kindly follow up with Staff."
+      );
     } else {
       // Failed creation
       // const errorData = await response.json();
@@ -299,7 +255,6 @@ const RequestDemographic = () => {
   };
 
   const handleAgreementClick = async () => {
-
     if (!termsInfo) {
       try {
         const response = await fetch(`${API_BASE_PATH}/terms/${clinicSlug}/Appointment Booking/`);
@@ -318,12 +273,11 @@ const RequestDemographic = () => {
     setOpenAgreementPopup(false);
   };
 
-  const handleAgreementChange = (event) => {
+  const handleAgreementChange = () => {
     setAgreementChecked(!agreementChecked);
-    if (agreementChecked === false) {
-
-    } else if (agreementChecked === true) {
-    }
+    // if (agreementChecked === false) {
+    // } else if (agreementChecked === true) {
+    // }
   };
 
   const handleHinChange = (e) => {
@@ -355,7 +309,6 @@ const RequestDemographic = () => {
         if (vrRef.current) {
           vrRef.current.focus();
         }
-
       } else {
         setValidDOB(false);
       }
@@ -363,7 +316,6 @@ const RequestDemographic = () => {
       setValidDOB(false);
     }
   };
-
 
   const handleVersionCodeChange = (e) => {
     // Assuming the version code should be exactly 2 capital letters
@@ -402,7 +354,6 @@ const RequestDemographic = () => {
     if (formattedAltPhone.length === 10 && emailRef.current) {
       emailRef.current.focus();
     }
-
   };
 
   const handlepostalChange = (e) => {
@@ -425,14 +376,12 @@ const RequestDemographic = () => {
 
   const handleClosePatientCheckin = () => {
     window.location.href = `/clinic/${clinicSlug}/`;
-
   };
 
   const handledisplayNextStep = () => {
     setdisplayfieststep("none");
     setdisplayNextStep("block");
     window.scrollTo({ top: 0, behavior: "smooth" });
-
   };
 
   const handledisplayfirstStep = () => {
@@ -471,7 +420,6 @@ const RequestDemographic = () => {
     });
   };
 
-
   const handlesurgeryChange = (event) => {
     setSurgeryStatus(event.target.value);
     if (event.target.value === "yes") {
@@ -482,14 +430,12 @@ const RequestDemographic = () => {
   };
 
   const handleDoctorChange = (event) => {
-
     setAskDoctorStatus(event.target.value);
     if (event.target.value === "no") {
       setAskDoctor("none");
     } else if (event.target.value === "yes") {
       setAskDoctor("block");
     }
-
   };
 
   const handleAllergicChange = (event) => {
@@ -499,130 +445,109 @@ const RequestDemographic = () => {
     } else if (event.target.value === "yes") {
       setMedicationDisplay("block");
     }
-
   };
 
-
-  const handleSubmit = () => {
-    // Create an object to hold all the form data
-    const fullName = `${dr_firstname} ${dr_lastname}`;
-    const formattedMedicalConditions = Object.entries(medicalConditions)
-      .filter(([condition, isChecked]) => isChecked)
-      .map(([condition]) => condition)
-      .join(", ");
-    let fulldata = "";
-
-
-    if (medicationStatus === "yes") {
-      fulldata += `Are you allergic to any food or Medication?: ${medication_food_allergic}`;
-    }
-    ;
-
-    if (medicationStatus === "no") {
-      fulldata += `Are you allergic to any food or Medication?: NO`;
-    }
-    ;
-
-
-    if (regularMedicationStatus === "yes") {
-      fulldata += `\nDo you regularly take any medication?: ${regularMedicationNames}`;
-    }
-    ;
-
-    if (regularMedicationStatus === "no") {
-      fulldata += `\nDo you regularly take any medication?: NO`;
-    }
-    ;
-
-
-    if (isOnNarcotic === "yes") {
-      fulldata += `\nNarcotics, sleeping pills, or stimulants that you are currently using: ${narcoticsnames}`;
-    }
-    ;
-
-    if (isOnNarcotic === "no") {
-      fulldata += `\nNarcotics, sleeping pills, or stimulants that you are currently using: NO`;
-    }
-    ;
-
-
-    if (formattedMedicalConditions !== "") {
-      fulldata += `\nDo you have any medical condition?: ${formattedMedicalConditions}`;
-
-    }
-    ;
-
-    if (formattedMedicalConditions === "") {
-      fulldata += `\nDo you have any medical condition?: NO`;
-
-    }
-    ;
-
-    if (surgeryStatus === "yes") {
-      fulldata += `\nname and date of surgery?: ${surgeryName}`;
-
-    }
-    ;
-
-    if (surgeryStatus === "no") {
-      fulldata += `\nHave you had any surgery?: NO`;
-
-    }
-    ;
-
-
-    if (fullName !== "") {
-      fulldata += `\nFamily Doctor's Name:${fullName}`;
-
-    }
-    ;
-
-
-    if (howknow !== "") {
-      fulldata += `\now did you got to know about us: ${howknow}`;
-    }
-    ;
-  };
-
+  // const handleSubmit = () => {
+  //   // Create an object to hold all the form data
+  //   const fullName = `${dr_firstname} ${dr_lastname}`;
+  //   const formattedMedicalConditions = Object.entries(medicalConditions)
+  //     .filter(([condition, isChecked]) => isChecked)
+  //     .map(([condition]) => condition)
+  //     .join(", ");
+  //   let fulldata = "";
+  //
+  //   if (medicationStatus === "yes") {
+  //     fulldata += `Are you allergic to any food or Medication?: ${medication_food_allergic}`;
+  //   }
+  //   if (medicationStatus === "no") {
+  //     fulldata += `Are you allergic to any food or Medication?: NO`;
+  //   }
+  //   if (regularMedicationStatus === "yes") {
+  //     fulldata += `\nDo you regularly take any medication?: ${regularMedicationNames}`;
+  //   }
+  //   if (regularMedicationStatus === "no") {
+  //     fulldata += `\nDo you regularly take any medication?: NO`;
+  //   }
+  //   if (isOnNarcotic === "yes") {
+  //     fulldata += `\nNarcotics, sleeping pills, or stimulants that you are currently using: ${narcoticsnames}`;
+  //   }
+  //   if (isOnNarcotic === "no") {
+  //     fulldata += `\nNarcotics, sleeping pills, or stimulants that you are currently using: NO`;
+  //   }
+  //   if (formattedMedicalConditions !== "") {
+  //     fulldata += `\nDo you have any medical condition?: ${formattedMedicalConditions}`;
+  //   }
+  //   if (formattedMedicalConditions === "") {
+  //     fulldata += `\nDo you have any medical condition?: NO`;
+  //   }
+  //   if (surgeryStatus === "yes") {
+  //     fulldata += `\nname and date of surgery?: ${surgeryName}`;
+  //   }
+  //   if (surgeryStatus === "no") {
+  //     fulldata += `\nHave you had any surgery?: NO`;
+  //   }
+  //   if (fullName !== "") {
+  //     fulldata += `\nFamily Doctor's Name:${fullName}`;
+  //   }
+  //   if (howknow !== "") {
+  //     fulldata += `\now did you got to know about us: ${howknow}`;
+  //   }
+  // };
 
   return (
     <Layout clinicInfo={clinicInfo}>
       <Container maxWidth="md">
-
         <Grid container spacing={2} justifyContent="center">
           <Grid item xs={12} sm={12} md={12}>
-            <Typography variant="h4" align="center" color="textPrimary" gutterBottom
-                        style={{ fontSize: "1.5rem" }}>
+            <Typography
+              variant="h4"
+              align="center"
+              color="textPrimary"
+              gutterBottom
+              style={{ fontSize: "1.5rem" }}
+            >
               Patient Registration Form
             </Typography>
           </Grid>
           <Grid item xs={12} sm={12} md={12}>
-            <Typography variant="h6" align="center" color="textSecondary" paragraph
-                        style={{ fontSize: "1rem" }}>
+            <Typography
+              variant="h6"
+              align="center"
+              color="textSecondary"
+              paragraph
+              style={{ fontSize: "1rem" }}
+            >
               Please fill up the form and submit to register with the clinic.
             </Typography>
           </Grid>
 
           {notice && (
             <Grid item xs={12} sm={12} md={12}>
-              <Typography variant="body1" align="center" color="red" paragraph style={{ fontSize: "1rem" }}>
+              <Typography
+                variant="body1"
+                align="center"
+                color="red"
+                paragraph
+                style={{ fontSize: "1rem" }}
+              >
                 Clinic Notice: {notice}
               </Typography>
-
             </Grid>
           )}
         </Grid>
-
 
         <Grid container spacing={2} justifyContent="center">
           <Grid item xs={12} sm={12} md={12}>
             {/* <Paper sx={{ p: 2, margin: 'auto', maxWidth: 500, flexGrow: 1 }}> */}
             <Grid container spacing={2} justifyContent="center" display={displayfirststep}>
               <Grid item xs={12} sm={12} md={12}>
-
-                <MKButton onClick={() => redirectHomeM(clinicSlug)} color="primary"
-                          variant={"contained"}>Back</MKButton>
-
+                <MKButton
+                  onClick={() => redirectHomeM(clinicSlug)}
+                  color="primary"
+                  variant={"contained"}
+                >
+                  Back
+                </MKButton>
               </Grid>
               <Grid item xs={12} sm={12} md={12}>
                 <TextField
@@ -684,7 +609,6 @@ const RequestDemographic = () => {
                 </Grid>
               )}
 
-
               <Grid item xs={12} sm={12} md={12}>
                 <TextField
                   label="Date of Birth - YYYY-MM-DD"
@@ -695,11 +619,9 @@ const RequestDemographic = () => {
                   fullWidth
                   type="tel"
                   error={!validDOB}
-
                   helperText={!validDOB ? "Invalid date of birth" : ""}
 
                   // Assigning the ref to the Date of Birth field
-
                 />
               </Grid>
 
@@ -719,7 +641,6 @@ const RequestDemographic = () => {
                       required
                       inputRef={vrRef}
                       error={!validhin}
-
                       helperText={!validhin ? "Invalid health card" : ""}
                     />
                   </Grid>
@@ -734,13 +655,11 @@ const RequestDemographic = () => {
                       value={versionCode}
                       inputRef={dobRef}
                       error={!validversionCode}
-
                       helperText={!validversionCode ? "Invalid version code" : ""}
                     />
                   </Grid>
                 </>
               )}
-
 
               <Grid item xs={12} sm={12} md={12}>
                 <TextField
@@ -753,7 +672,6 @@ const RequestDemographic = () => {
                   value={formatPhone(phone)}
                   inputRef={phoneRef}
                   error={!validPhone}
-
                   helperText={!validPhone ? "Invalid phone number" : ""}
                 />
               </Grid>
@@ -779,7 +697,6 @@ const RequestDemographic = () => {
                   required
                   inputRef={emailRef}
                   error={!isEmailValid}
-
                   helperText={!isEmailValid ? "Invalid email address" : ""}
                 />
               </Grid>
@@ -805,7 +722,6 @@ const RequestDemographic = () => {
                   fullWidth
                   required
                   error={!validpostal}
-
                   helperText={!validpostal ? "Invalid postal code" : ""}
                 />
               </Grid>
@@ -850,38 +766,43 @@ const RequestDemographic = () => {
                   fullWidth
                   onClick={handledisplayNextStep}
                   disabled={
-                    !isEmailValid || !firstName || !lastName || !selectedSex || !validDOB || !validPhone || !isEmailValid || !address || !validpostal || !city || !province ||
+                    !isEmailValid ||
+                    !firstName ||
+                    !lastName ||
+                    !selectedSex ||
+                    !validDOB ||
+                    !validPhone ||
+                    !isEmailValid ||
+                    !address ||
+                    !validpostal ||
+                    !city ||
+                    !province ||
                     (!checkPrivatePatient && (!validhin || !validversionCode))
                   }
                 >
                   Next
                 </MKButton>
               </Grid>
-
-
             </Grid>
 
             <Grid container spacing={2} justifyContent="center" display={displayNextStep}>
-
               <Grid item xs={12} sm={12} md={12}>
-                <MKButton
-                  varient="contained"
-                  color="primary"
-                  onClick={handledisplayfirstStep}
-
-                >
+                <MKButton varient="contained" color="primary" onClick={handledisplayfirstStep}>
                   Back
-
                 </MKButton>
               </Grid>
 
-
               <Grid item xs={12} sm={12} md={12}>
                 <FormControl component="fieldset">
-                  <FormLabel style={{ color: "blue" }}>Are you allergic to any food or
-                    Medication?</FormLabel>
-                  <RadioGroup aria-label="medication" name="medication" value={medicationStatus}
-                              onChange={handleAllergicChange}>
+                  <FormLabel style={{ color: "blue" }}>
+                    Are you allergic to any food or Medication?
+                  </FormLabel>
+                  <RadioGroup
+                    aria-label="medication"
+                    name="medication"
+                    value={medicationStatus}
+                    onChange={handleAllergicChange}
+                  >
                     <FormControlLabel value="yes" control={<Radio />} label="Yes" />
                     <FormControlLabel value="no" control={<Radio />} label="No" />
                   </RadioGroup>
@@ -890,8 +811,9 @@ const RequestDemographic = () => {
 
               <Grid item xs={12} sm={12} md={12} display={medicationDisplay}>
                 <FormControl component="fieldset">
-                  <FormLabel style={{ color: "blue", paddingBottom: "1rem" }}>Please specify any
-                    medications or foods to which you are allergic.</FormLabel>
+                  <FormLabel style={{ color: "blue", paddingBottom: "1rem" }}>
+                    Please specify any medications or foods to which you are allergic.
+                  </FormLabel>
                   <TextField
                     id="outlined-basic"
                     label="Details of Medication / Food you are allergic to."
@@ -902,25 +824,30 @@ const RequestDemographic = () => {
                     onChange={(e) => setMedication_food_allergic(e.target.value)}
                   />
                 </FormControl>
-
               </Grid>
 
               <Grid item xs={12} sm={12} md={12}>
                 <FormControl component="fieldset">
-                  <FormLabel style={{ color: "blue" }}>Do you regularly take any medication?</FormLabel>
-                  <RadioGroup aria-label="medication" name="medication"
-                              value={regularMedicationStatus} onChange={handleMedicationChange}>
+                  <FormLabel style={{ color: "blue" }}>
+                    Do you regularly take any medication?
+                  </FormLabel>
+                  <RadioGroup
+                    aria-label="medication"
+                    name="medication"
+                    value={regularMedicationStatus}
+                    onChange={handleMedicationChange}
+                  >
                     <FormControlLabel value="yes" control={<Radio />} label="Yes" />
                     <FormControlLabel value="no" control={<Radio />} label="No" />
                   </RadioGroup>
                 </FormControl>
               </Grid>
 
-
               <Grid item xs={12} sm={12} md={12} display={regularMedicationStatusDisplay}>
                 <FormControl component="fieldset">
-                  <FormLabel style={{ color: "blue", paddingBottom: "2rem" }}>Please specify medication
-                    that you are taking regularly.</FormLabel>
+                  <FormLabel style={{ color: "blue", paddingBottom: "2rem" }}>
+                    Please specify medication that you are taking regularly.
+                  </FormLabel>
                   <TextField
                     id="outlined-basic"
                     label="Details of Regular Medication"
@@ -931,24 +858,28 @@ const RequestDemographic = () => {
                     onChange={(e) => setRegularMedicationNames(e.target.value)}
                   />
                 </FormControl>
-
               </Grid>
-
 
               <Grid item xs={12} sm={12} md={12}>
                 <FormControl component="fieldset">
-                  <FormLabel style={{ color: "red", fontWeight: "bold" }}>Please be aware that we do not
-                    prescribe narcotics, sleeping pills, or stimulants for walk-in
-                    patients.</FormLabel>
+                  <FormLabel style={{ color: "red", fontWeight: "bold" }}>
+                    Please be aware that we do not prescribe narcotics, sleeping pills, or
+                    stimulants for walk-in patients.
+                  </FormLabel>
                 </FormControl>
               </Grid>
 
               <Grid item xs={12} sm={12} md={12}>
                 <FormControl component="fieldset">
-                  <FormLabel style={{ color: "red", fontWeight: "bold" }}>ARE YOU ON ANY
-                    NARCOTIC?</FormLabel>
-                  <RadioGroup aria-label="narcotic" name="narcotic" value={isOnNarcotic}
-                              onChange={handleNarcoticChange}>
+                  <FormLabel style={{ color: "red", fontWeight: "bold" }}>
+                    ARE YOU ON ANY NARCOTIC?
+                  </FormLabel>
+                  <RadioGroup
+                    aria-label="narcotic"
+                    name="narcotic"
+                    value={isOnNarcotic}
+                    onChange={handleNarcoticChange}
+                  >
                     <FormControlLabel value="yes" control={<Radio />} label="Yes" />
                     <FormControlLabel value="no" control={<Radio />} label="No" />
                   </RadioGroup>
@@ -957,9 +888,10 @@ const RequestDemographic = () => {
 
               <Grid item xs={12} sm={12} md={12} display={askNarcotic}>
                 <FormControl component="fieldset">
-                  <FormLabel style={{ color: "blue", paddingBottom: "2rem" }}>Please mention the names
-                    of any narcotics, sleeping pills, or stimulants that you are currently
-                    using."</FormLabel>
+                  <FormLabel style={{ color: "blue", paddingBottom: "2rem" }}>
+                    Please mention the names of any narcotics, sleeping pills, or stimulants that
+                    you are currently using.
+                  </FormLabel>
                   <TextField
                     id="outlined-basic"
                     label="seperate names by comma ( , )"
@@ -976,46 +908,78 @@ const RequestDemographic = () => {
 
               <Grid item xs={12} sm={12} md={12}>
                 <FormControl component="fieldset">
-                  <FormLabel style={{ color: "blue" }}>Do you have any medical condition?</FormLabel>
+                  <FormLabel style={{ color: "blue" }}>
+                    Do you have any medical condition?
+                  </FormLabel>
                   <FormGroup>
                     <FormControlLabel
-                      control={<Checkbox checked={medicalConditions.diabetic}
-                                         onChange={handleCheckboxChange} name="diabetic" />}
+                      control={
+                        <Checkbox
+                          checked={medicalConditions.diabetic}
+                          onChange={handleCheckboxChange}
+                          name="diabetic"
+                        />
+                      }
                       label="Diabetic"
                     />
                     <FormControlLabel
-                      control={<Checkbox checked={medicalConditions.hypertension}
-                                         onChange={handleCheckboxChange} name="hypertension" />}
+                      control={
+                        <Checkbox
+                          checked={medicalConditions.hypertension}
+                          onChange={handleCheckboxChange}
+                          name="hypertension"
+                        />
+                      }
                       label="Hypertension"
                     />
                     <FormControlLabel
-                      control={<Checkbox checked={medicalConditions.asthma}
-                                         onChange={handleCheckboxChange} name="asthma" />}
+                      control={
+                        <Checkbox
+                          checked={medicalConditions.asthma}
+                          onChange={handleCheckboxChange}
+                          name="asthma"
+                        />
+                      }
                       label="Asthma"
                     />
                     <FormControlLabel
-                      control={<Checkbox checked={medicalConditions.highCholesterol}
-                                         onChange={handleCheckboxChange} name="highCholesterol" />}
+                      control={
+                        <Checkbox
+                          checked={medicalConditions.highCholesterol}
+                          onChange={handleCheckboxChange}
+                          name="highCholesterol"
+                        />
+                      }
                       label="High Cholesterol"
                     />
                     <FormControlLabel
-                      control={<Checkbox checked={medicalConditions.thyroid}
-                                         onChange={handleCheckboxChange} name="thyroid" />}
+                      control={
+                        <Checkbox
+                          checked={medicalConditions.thyroid}
+                          onChange={handleCheckboxChange}
+                          name="thyroid"
+                        />
+                      }
                       label="Thyroid"
                     />
                     <FormControlLabel
-                      control={<Checkbox checked={medicalConditions.other}
-                                         onChange={handleCheckboxChange} name="other" />}
+                      control={
+                        <Checkbox
+                          checked={medicalConditions.other}
+                          onChange={handleCheckboxChange}
+                          name="other"
+                        />
+                      }
                       label="Other"
                     />
-                    {medicalConditions.other &&
+                    {medicalConditions.other && (
                       <TextField
                         id="otherText"
                         label="Please specify other medical condition"
                         value={medicalConditions.otherText}
                         onChange={handleOtherInputChange}
                       />
-                    }
+                    )}
                   </FormGroup>
                 </FormControl>
               </Grid>
@@ -1023,8 +987,12 @@ const RequestDemographic = () => {
               <Grid item xs={12} sm={12} md={12}>
                 <FormControl component="fieldset">
                   <FormLabel style={{ color: "blue" }}>Have you had any surgery?</FormLabel>
-                  <RadioGroup aria-label="surgery" name="surgery" value={surgeryStatus}
-                              onChange={handlesurgeryChange}>
+                  <RadioGroup
+                    aria-label="surgery"
+                    name="surgery"
+                    value={surgeryStatus}
+                    onChange={handlesurgeryChange}
+                  >
                     <FormControlLabel value="yes" control={<Radio />} label="Yes" />
                     <FormControlLabel value="no" control={<Radio />} label="No" />
                   </RadioGroup>
@@ -1032,11 +1000,10 @@ const RequestDemographic = () => {
               </Grid>
 
               <Grid item xs={12} sm={12} md={12} display={askSurgery}>
-
-
                 <FormControl component="fieldset">
-                  <FormLabel style={{ color: "blue", paddingBottom: "2rem" }}>Please mention name and
-                    date(yyyy/mm/dd) of surgery.</FormLabel>
+                  <FormLabel style={{ color: "blue", paddingBottom: "2rem" }}>
+                    Please mention name and date(yyyy/mm/dd) of surgery.
+                  </FormLabel>
                   <TextField
                     id="outlined-basic"
                     label="Details of surgery"
@@ -1047,14 +1014,17 @@ const RequestDemographic = () => {
                     onChange={(e) => setSurgeryName(e.target.value)}
                   />
                 </FormControl>
-
               </Grid>
 
               <Grid item xs={12} sm={12} md={12}>
                 <FormControl component="fieldset">
                   <FormLabel style={{ color: "blue" }}>Do you have a Family Doctor?</FormLabel>
-                  <RadioGroup aria-label="medication" name="medication" value={askDoctorStatus}
-                              onChange={handleDoctorChange}>
+                  <RadioGroup
+                    aria-label="medication"
+                    name="medication"
+                    value={askDoctorStatus}
+                    onChange={handleDoctorChange}
+                  >
                     <FormControlLabel value="yes" control={<Radio />} label="Yes" />
                     <FormControlLabel value="no" control={<Radio />} label="No" />
                   </RadioGroup>
@@ -1062,10 +1032,10 @@ const RequestDemographic = () => {
               </Grid>
 
               <Grid item xs={12} sm={12} md={12} display={askDoctor}>
-
                 {/* <FormControl component="fieldset"> */}
-                <FormLabel style={{ color: "blue", paddingBottom: "2rem" }}>Family Doctor's
-                  Name:</FormLabel>
+                <FormLabel style={{ color: "blue", paddingBottom: "2rem" }}>
+                  Name of Family Doctor :
+                </FormLabel>
                 <TextField
                   id="outlined-basic"
                   label="First Name"
@@ -1074,7 +1044,6 @@ const RequestDemographic = () => {
                   style={{ padding: "3px", paddingBottom: "2rem" }}
                   value={dr_firstname}
                   onChange={(e) => setDr_firstname(e.target.value)}
-
                 />
                 <TextField
                   id="outlined-basic"
@@ -1084,21 +1053,25 @@ const RequestDemographic = () => {
                   style={{ padding: "3px", width: "100%" }}
                   value={dr_lastname}
                   onChange={(e) => setDr_lasttname(e.target.value)}
-
                 />
                 {/* </FormControl> */}
-
               </Grid>
-
 
               <Grid item xs={12} sm={12} md={12}>
                 <FormControl component="fieldset">
                   <FormLabel style={{ color: "blue" }}>How did you got to know about us?</FormLabel>
-                  <RadioGroup aria-label="narcotic" name="narcotic" value={howknow}
-                              onChange={(e) => setHowknow(e.target.value)}>
+                  <RadioGroup
+                    aria-label="narcotic"
+                    name="narcotic"
+                    value={howknow}
+                    onChange={(e) => setHowknow(e.target.value)}
+                  >
                     <FormControlLabel value="Online" control={<Radio />} label="Online" />
-                    <FormControlLabel value="Friends & Family" control={<Radio />}
-                                      label="Friends & Family" />
+                    <FormControlLabel
+                      value="Friends & Family"
+                      control={<Radio />}
+                      label="Friends & Family"
+                    />
                     <FormControlLabel value="Flyers" control={<Radio />} label="Flyers" />
                     <FormControlLabel value="Newspaper" control={<Radio />} label="Newspaper" />
                     <FormControlLabel value="Other" control={<Radio />} label="Other" />
@@ -1123,7 +1096,6 @@ const RequestDemographic = () => {
                 </Typography>
               </Grid>
 
-
               <Grid item xs={12} sm={12} md={12}>
                 <MKButton
                   variant="contained"
@@ -1131,7 +1103,18 @@ const RequestDemographic = () => {
                   fullWidth
                   onClick={requestDemographic}
                   disabled={
-                    !agreementChecked || !isEmailValid || !firstName || !lastName || !selectedSex || !validDOB || !validPhone || !isEmailValid || !address || !validpostal || !city || !province ||
+                    !agreementChecked ||
+                    !isEmailValid ||
+                    !firstName ||
+                    !lastName ||
+                    !selectedSex ||
+                    !validDOB ||
+                    !validPhone ||
+                    !isEmailValid ||
+                    !address ||
+                    !validpostal ||
+                    !city ||
+                    !province ||
                     (!checkPrivatePatient && (!validhin || !validversionCode))
                   }
                 >
@@ -1141,7 +1124,6 @@ const RequestDemographic = () => {
             </Grid>
             {/* </Paper> */}
           </Grid>
-
         </Grid>
       </Container>
 
@@ -1158,10 +1140,8 @@ const RequestDemographic = () => {
           <div dangerouslySetInnerHTML={{ __html: errorMessage }} />
         </DialogContent>
       </Dialog>
-
     </Layout>
   );
-
 };
 
 export default RequestDemographic;

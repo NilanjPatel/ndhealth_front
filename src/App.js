@@ -1,18 +1,3 @@
-/**
- =========================================================
- * Material Kit 2 PRO React - v2.1.0
- =========================================================
-
- * Product Page: https://www.creative-tim.com/product/material-kit-pro-react
- * Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
- Coded by www.creative-tim.com
-
- =========================================================
-
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- */
-
 import { useEffect } from "react";
 
 // react-router components
@@ -40,27 +25,35 @@ import LinkedEformToPatient from "nd_health/components/clinic_to_patient/LinkedE
 import DynamicForm from "nd_health/components/eforms/eformV2";
 import RequestDemographic from "nd_health/components/RequestDemographic";
 import UpdateProfileOauth from "nd_health/components/clinic_to_patient/UpdateProfileOauth";
+// clinic dashboard
+import ClinicDashboard from "nd_health/components/clinic/ClinicDashboard";
+import { PasswordResetConfirm } from "nd_health/components/landing_contents/ResetPassword";
+import PasswordReset from "nd_health/components/resources/ResetPassword";
+import DemoRequestForm from "nd_health/components/landing_contents/DemoRequestForm";
+import TerminalPage from "nd_health/components/TerminalPage";
+import RecordOauth from "nd_health/components/clinic_to_patient/record";
+
+//policy
+import DisplayPolicy from "nd_health/components/Policy/DisplayPolicy";
+import ClinicPolicy from "nd_health/components/ClinicPolicy";
+
 export default function App() {
   const { pathname } = useLocation();
-
   // Setting page scroll to 0 when changing the route
   useEffect(() => {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
   }, [pathname]);
-
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {
       if (route.collapse) {
         return getRoutes(route.collapse);
       }
-
       if (route.route) {
         return <Route exact path={route.route} element={route.component} key={route.key} />;
       }
       return null;
     });
-
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -69,6 +62,8 @@ export default function App() {
         <Route path="/" element={<Presentation />} />
         <Route path="/login" element={<SignInBasic />} />
         <Route path="/join" element={<SignUpCover />} />
+        <Route path="resetpassword/:uidb64/:token" element={<PasswordResetConfirm />} />
+        <Route path="/clinic/:clinicSlug/resetPassword" element={<PasswordReset />} />
         <Route path="*" element={<Navigate to="/presentation" />} />
         {/*//Clinic routs*/}
         <Route path="/clinic/:clinicSlug/" element={<ClinicLanding />} />
@@ -77,24 +72,23 @@ export default function App() {
         <Route path="/walkin-appointment/:clinicSlug" element={<WalkinAppointmentPage />} />
         <Route path="/clinic/:clinicSlug/manageappointment" element={<ManageAppointment />} />
         <Route path="/EformOauth/:clinicSlug/" element={<EformOauth />} />
+        <Route path="/RecordOauth/:clinicSlug/" element={<RecordOauth />} />
         <Route path="/clinic-forms/:clinicSlug/" element={<LinkedEformToPatient />} />
         <Route path="/patient/:clinicSlug/eform" element={<DynamicForm />} />
         <Route path="/patient/:clinicSlug/requestpatientprofile" element={<RequestDemographic />} />
         <Route path="/clinic/:clinicSlug/UpdateProfileOauth" element={<UpdateProfileOauth />} />
+        <Route path="/demo" element={<DemoRequestForm />} />
+        {/* clinic policy*/}
+        <Route path="/clinic/:clinicSlug/policy" element={<ClinicPolicy />} />
 
+        {/*clinic dashboard*/}
+        <Route path="/clinic/:clinicSlug/home/" element={<ClinicDashboard />} />
 
-        {/*<Route path="/clinic/:clinicSlug/policy" element={<ClinicPolicy />} />*/}
-        {/*<Route path="/" element={<Home />} />*/}
-        {/*<Route path="/:clinicSlug/terminal/:clinicUid/:clinic" element={<TerminalPage />} />*/}
-        {/*<Route path="/clinic/:clinicSlug/home/" element={<ClinicDashboard />} />*/}
-        {/*/!* patient related *!/*/}
-        {/*<Route path="/demo" element={<DemoRequestForm />} />*/}
-        {/*<Route path="/RecordOauth/:clinicSlug/" element={<RecordOauth />} />*/}
-        {/*<Route path="/clinic/:clinicSlug/createEform" element={<DynamicFormBuilder />} />*/}
-        {/*<Route path="/clinic/:clinicSlug/resetPassword" element={<PasswordReset />} />*/}
-        {/*<Route path="OurPolicy" element={<DisplayPolicy />} />*/}
-        {/*/!*<Route path='signup' element={<SignupForm/>}/>*!/*/}
-        {/*<Route path="resetpassword/:uidb64/:token" element={<PasswordResetConfirm />} />*/}
+        {/*  clinic terminal */}
+        <Route path="/:clinicSlug/terminal/:clinicUid/:clinic" element={<TerminalPage />} />
+
+        {/*  nd-health's policy*/}
+        <Route path="OurPolicy" element={<DisplayPolicy />} />
 
 
       </Routes>

@@ -57,7 +57,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "GENERATE_SOURCEMAP=false react-scripts build",
+    "build": "react-scripts build --no-source-map",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "clean": "rimraf node_modules"

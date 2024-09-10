@@ -33,6 +33,7 @@ import HelmetComponent from "./SEO/HelmetComponent";
 // login
 import axios from "axios";
 import PropTypes from "prop-types";
+
 const lightTheme = createTheme({
   palette: {
     mode: "light", // Ensure the theme is in light mode
@@ -77,6 +78,7 @@ const Layout = ({ clinicInfo, children }) => {
     // Handle login logic or navigate to login page
     // You can use React Router's history.push('/login') to navigate to the login page
     setLoginModalOpen(true);
+    navigate(`/login/`);
   };
   const handleLoginModalClose = () => {
     setLoginModalOpen(false);
@@ -204,75 +206,75 @@ const Layout = ({ clinicInfo, children }) => {
 
               <CssBaseline />
               <ThemeProvider theme={lightTheme}>
-              <AppBar position="fixed">
-                <Toolbar>
-                  {/* <img src={ndHealthLogo} alt="ND Health Logo" style={{ height: '40px' }} /> */}
+                <AppBar position="fixed">
+                  <Toolbar>
+                    {/* <img src={ndHealthLogo} alt="ND Health Logo" style={{ height: '40px' }} /> */}
 
-                  {/* <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                    {/* <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                       <Link href={home} variant='title' color="inherit" underline="none" style={{ paddingLeft: '0.81rem', fontFamily: 'sans-serif' }} > ND Health</Link>
                     </Typography> */}
 
-                  {clinicInfo.logo && (
-                    <img
-                      alt={`Book family and walk in appointment at ${clinicInfo.name} near ${clinicInfo.user__city}, ${clinicInfo.user__province}`}
-                      src={clinicInfo.logo}
-                      height="50"
-                      style={{
-                        marginRight: "10px",
-                        boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", // Adjust the shadow to create a lifting effect
+                    {clinicInfo.logo && (
+                      <img
+                        alt={`Book family and walk in appointment at ${clinicInfo.name} near ${clinicInfo.user__city}, ${clinicInfo.user__province}`}
+                        src={clinicInfo.logo}
+                        height="50"
+                        style={{
+                          marginRight: "10px",
+                          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", // Adjust the shadow to create a lifting effect
 
-                        transform: "translateY(-2px)", // Slightly lift the logo
-                        transition: "transform 0.3s ease, box-shadow 0.3s ease", // Smooth transition
-                        borderRadius: "50%", // Ensure the shadow follows the shape of the logo
-                      }}
-                    />
-                  )}
+                          transform: "translateY(-2px)", // Slightly lift the logo
+                          transition: "transform 0.3s ease, box-shadow 0.3s ease", // Smooth transition
+                          borderRadius: "50%", // Ensure the shadow follows the shape of the logo
+                        }}
+                      />
+                    )}
 
-                  <Link
-                    href={clinicWebsite}
-                    color="inherit"
-                    underline="none"
-                    style={{ flexGrow: 1 }}
-                  >
-                    {clinicInfo.name}
-                  </Link>
+                    <Link
+                      href={clinicWebsite}
+                      color="inherit"
+                      underline="none"
+                      style={{ flexGrow: 1 }}
+                    >
+                      {clinicInfo.name}
+                    </Link>
 
-                  {/* Use an IconButton for the login dropdown */}
-                  <IconButton color="inherit" onClick={handleMenuOpen}>
-                    <AccountCircleIcon />
-                  </IconButton>
+                    {/* Use an IconButton for the login dropdown */}
+                    <IconButton color="inherit" onClick={handleMenuOpen}>
+                      <AccountCircleIcon />
+                    </IconButton>
 
-                  {/* Login Dropdown */}
-                  <Menu
-                    id="login-menu"
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleMenuClose}
-                  >
-                    {(() => {
-                      if (loggedIn) {
-                        return [
-                          <MenuItem key="welcome" onClick={gotoHome}>{`${username}`}</MenuItem>,
-                          <MenuItem key="settings" onClick={gotoHome}>
-                            Settings
-                          </MenuItem>,
-                          <MenuItem key="logout" onClick={handleLogout}>
-                            Logout
-                          </MenuItem>,
-                          // Add more menu items for authenticated users if needed
-                        ];
-                      } else {
-                        return (
-                          <MenuItem key="login" onClick={handleLoginClick}>
-                            Clinic Login
-                          </MenuItem>
-                          // Add more menu items for other authentication options if needed
-                        );
-                      }
-                    })()}
-                  </Menu>
-                </Toolbar>
-              </AppBar>
+                    {/* Login Dropdown */}
+                    <Menu
+                      id="login-menu"
+                      anchorEl={anchorEl}
+                      open={Boolean(anchorEl)}
+                      onClose={handleMenuClose}
+                    >
+                      {(() => {
+                        if (loggedIn) {
+                          return [
+                            <MenuItem key="welcome" onClick={gotoHome}>{`${username}`}</MenuItem>,
+                            <MenuItem key="settings" onClick={gotoHome}>
+                              Settings
+                            </MenuItem>,
+                            <MenuItem key="logout" onClick={handleLogout}>
+                              Logout
+                            </MenuItem>,
+                            // Add more menu items for authenticated users if needed
+                          ];
+                        } else {
+                          return (
+                            <MenuItem key="login" onClick={handleLoginClick}>
+                              Clinic Login
+                            </MenuItem>
+                            // Add more menu items for other authentication options if needed
+                          );
+                        }
+                      })()}
+                    </Menu>
+                  </Toolbar>
+                </AppBar>
               </ThemeProvider>
 
               {/* Login Modal */}
@@ -411,24 +413,24 @@ const Layout = ({ clinicInfo, children }) => {
             <>
               <CssBaseline />
               <ThemeProvider theme={lightTheme}>
-              <AppBar position="fixed">
-                <Toolbar>
-                  <img src={ndHealthLogo} alt="ND Health Logo" style={{ height: "90px" }} />
+                <AppBar position="fixed">
+                  <Toolbar>
+                    <img src={ndHealthLogo} alt="ND Health Logo" style={{ height: "90px" }} />
 
-                  <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                    <Link
-                      href={home}
-                      variant="title"
-                      color="inherit"
-                      underline="none"
-                      style={{ paddingLeft: "0.81rem", fontFamily: "sans-serif" }}
-                    >
-                      {" "}
-                      ND Health
-                    </Link>
-                  </Typography>
-                </Toolbar>
-              </AppBar>
+                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                      <Link
+                        href={home}
+                        variant="title"
+                        color="inherit"
+                        underline="none"
+                        style={{ paddingLeft: "0.81rem", fontFamily: "sans-serif" }}
+                      >
+                        {" "}
+                        ND Health
+                      </Link>
+                    </Typography>
+                  </Toolbar>
+                </AppBar>
               </ThemeProvider>
               <Container
                 component="main"
