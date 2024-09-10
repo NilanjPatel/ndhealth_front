@@ -42,21 +42,21 @@ function Information() {
                 icon="touch_app"
                 title={
                   <>
-                    Feel the
+                    Use the
                     <br />
-                    Material Kit
+                    Free HCV service
                   </>
                 }
-                description="All the MUI components that you need in a development have been re-design with the new look."
+                description="Any clinic or doctor can use our free health card validation without any cost."
               />
               <RotatingCardBack
                 image={bgBack}
-                title="Discover More"
-                description="You will save a lot of time going from prototyping to full-functional code because all elements are implemented."
+                title="Signup"
+                description="Signup with us and we will guide you through the process."
                 action={{
                   type: "internal",
-                  route: "/sections/page-sections/page-headers",
-                  label: "start with header",
+                  route: "/join",
+                  label: "start here",
                 }}
               />
             </RotatingCard>
@@ -67,14 +67,14 @@ function Information() {
                 <DefaultInfoCard
                   icon="notification_add_icon"
                   title="Easy notifications"
-                  description="Patient get timly notifications of each update, e.g. Appointment confirmations, doctor's email. and many more"
+                  description="Patient get timly notifications of each update, e.g. Appointment confirmations, doctor's email. and many more."
                 />
               </Grid>
               <Grid item xs={12} md={6}>
                 <DefaultInfoCard
-                  icon="flip_to_front"
-                  title="MUI Ready"
-                  description="The world's most popular react components library for building user interfaces."
+                  icon="security"
+                  title="Secure Communication"
+                  description="Ensure seamless and confidential exchange of patient records with a simple, secure, and single-click process."
                 />
               </Grid>
             </Grid>
@@ -83,14 +83,14 @@ function Information() {
                 <DefaultInfoCard
                   icon="price_change"
                   title="Save Time & Money"
-                  description="Creating your design from scratch with dedicated designers can be very expensive. Start with our Design System."
+                  description="Save workforce time"
                 />
               </Grid>
               <Grid item xs={12} md={6}>
                 <DefaultInfoCard
-                  icon="devices"
-                  title="Fully Responsive"
-                  description="Regardless of the screen size, the website content will naturally fit the given resolution."
+                  icon="camera_rear"
+                  title="Patient Kiosk"
+                  description="Patient can check-in, fill forms, update their information. This can help clinic staff so that they can be available for other important taks."
                 />
               </Grid>
             </Grid>

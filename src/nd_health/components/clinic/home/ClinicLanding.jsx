@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 // import { useTheme } from "@mui/material/styles";
 import {
@@ -24,8 +24,13 @@ import { alpha } from "@mui/material/styles";
 
 // Material Kit 2 PRO React components
 import MKTypography from "components/MKTypography";
+import bgImage from "../../../assets/images/maple_clinic.jpg";
+import Container from "@mui/material/Container";
+import MKBox from "../../../../components/MKBox";
 
 const ClinicLanding = () => {
+  const headerRef = useRef(null);
+  const typedJSRef = useRef(null);
   const { clinicSlug } = useParams();
   const [clinicInfo, setClinicInfo] = useState(null);
   // const [locationsData, setLocations] = useState(null);
@@ -126,7 +131,64 @@ const ClinicLanding = () => {
         {clinicInfo ? (
           <>
             <h3>Welcome to {clinicInfo.name}</h3>
-            <Card variant={"outlined"}>
+
+            <MKBox
+              ref={headerRef}
+              minHeight="75vh"
+              width="100%"
+              sx={{
+                backgroundImage: ({
+                                    functions: { linearGradient, rgba },
+                                    palette: { gradients },
+                                  }) => `${linearGradient(rgba(gradients.dark.main, 0.4), rgba(gradients.dark.state, 0.9))}, url(${bgImage})`,
+                backgroundSize: "inherit",
+                backgroundPosition: "center",
+                display: "grid",
+                placeItems: "center",
+
+              }}
+            >
+              <Container>
+                <Grid
+                  container
+                  item
+                  xs={12}
+                  lg={8}
+                  justifyContent="center"
+                  alignItems="center"
+                  flexDirection="column"
+                  sx={{ mx: "auto", textAlign: "center" }}
+                >
+                  <MKTypography
+                    variant="h1"
+                    color="white"
+                    sx={({ breakpoints, typography: { size } }) => ({
+                      [breakpoints.down("md")]: {
+                        fontSize: size["3xl"],
+                      },
+                    })}
+                  >
+                    <span ref={typedJSRef} /> Welcome to {clinicInfo.name}
+                  </MKTypography>
+                  <MKTypography variant="body1" color="white" opacity={0.8} mt={1} mb={3}>
+                    Empowering people to be healthy
+                  </MKTypography>
+                  {/*<MKButton color="default" sx={{ color: ({ palette: { dark } }) => dark.main }}>*/}
+                  {/*  create account*/}
+                  {/*</MKButton>*/}
+                </Grid>
+              </Container>
+            </MKBox>
+
+            <Card sx={{
+              p: 2,
+              mx: { xs: 2, lg: 3 },
+              mt: -8,
+              mb: 4,
+              backgroundColor: ({ palette: { white }, functions: { rgba } }) => rgba(white.main, 0.8),
+              backdropFilter: "saturate(200%) blur(30px)",
+              boxShadow: ({ boxShadows: { xxl } }) => xxl,
+            }}>
               {notice && (
                 <Grid item xs={12} md={12}>
                   <MKTypography

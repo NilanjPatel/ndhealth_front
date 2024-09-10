@@ -39,7 +39,7 @@ import routes from "routes";
 import footerRoutes from "footer.routes";
 
 // Images
-import bgImage from "assets/images/bg-presentation.jpg";
+import bgImage from "nd_health/assets/images/a_clinic_powered_by_ND_Health.jpeg"
 
 // import MKButton from "../../components/MKButton";
 
@@ -90,11 +90,12 @@ function Presentation() {
           backgroundImage: ({
                               functions: { linearGradient, rgba },
                               palette: { gradients },
-                            }) => `${linearGradient(rgba(gradients.dark.main, 0.6), rgba(gradients.dark.state, 0.6))}, url(${bgImage})`,
-          backgroundSize: "cover",
+                            }) => `${linearGradient(rgba(gradients.dark.main, 0.2), rgba(gradients.dark.state, 0.6))}, url(${bgImage})`,
+          backgroundSize: "inherit",
           backgroundPosition: "center",
           display: "grid",
           placeItems: "center",
+
         }}
       >
         <Container>

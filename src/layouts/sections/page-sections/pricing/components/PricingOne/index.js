@@ -91,13 +91,12 @@ function PricingOne() {
               <Grid item xs={12} lg={4}>
                 <DefaultPricingCard
                   badge={{ color: "light", label: "starter" }}
-                  price={{ currency: "$", value: tabType === "annual" ? 119 : 59, type: "mo" }}
+                  price={{ currency: "$", value: tabType === "annual" ? 0 : 0, type: "mo" }}
                   specifications={[
-                    { label: "1 Admin", includes: true },
-                    { label: "20GB Cloud storage", includes: true },
-                    { label: "Integration help", includes: false },
-                    { label: "Sketch Files", includes: false },
-                    { label: "API Access", includes: false },
+                    { label: "Health card validation", includes: true },
+                    { label: "Online Appointment", includes: false },
+                    { label: "Conformation and reminder Emails", includes: false },
+                    { label: "Secure emails", includes: false },
                     { label: "Complete documentation", includes: false },
                   ]}
                   action={{
@@ -112,7 +111,7 @@ function PricingOne() {
                 <DefaultPricingCard
                   color="dark"
                   badge={{ color: "info", label: "premium" }}
-                  price={{ currency: "$", value: tabType === "annual" ? 159 : 89, type: "mo" }}
+                  price={{ currency: "$", value: tabType === "annual" ? 159 : 59, type: "mo per doctor" }}
                   specifications={[
                     { label: "10 team members", includes: true },
                     { label: "40GB Cloud storage", includes: true },
