@@ -9,13 +9,13 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 import CenteredFooter from "examples/Footers/CenteredFooter";
 
 function FooterThress() {
-  const company = { href: "https://www.creative-tim.com/", name: "Creative Tim" };
+  const company = { href: "#", name: "Creative Tim" };
   const links = [
-    { href: "https://www.creative-tim.com/", name: "Company" },
-    { href: "https://www.creative-tim.com/presentation", name: "About Us" },
-    { href: "https://www.creative-tim.com/presentation", name: "Team" },
-    { href: "https://www.creative-tim.com/templates/react", name: "Products" },
-    { href: "https://www.creative-tim.com/blog", name: "Blog" },
+    { href: "#", name: "Company" },
+    { href: "#", name: "About Us" },
+    { href: "#", name: "Team" },
+    { href: "#", name: "Products" },
+    { href: "#", name: "Blog" },
     { href: "https://www.creative-tim.com/license", name: "License" },
   ];
   const socials = [

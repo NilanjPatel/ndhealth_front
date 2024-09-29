@@ -7,7 +7,8 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import MKTypography from "components/MKTypography";
 
 // Images
-import logoCT from "assets/images/logo-ct-dark.png";
+// import logoCT from "nd_health/assets/images/nd-health-logo.png";
+import logoCT from "nd_health/assets/images/ND(1).png";
 
 const date = new Date().getFullYear();
 
@@ -41,17 +42,17 @@ export default {
       name: "services",
       items: [
         { name: "Appointment Booking", href: "https://iradesign.io/" },
-        { name: "Secure communication", href: "https://www.creative-tim.com/bits" },
-        { name: "Admin tasks", href: "https://www.creative-tim.com/affiliates/new" },
+        { name: "Secure communication", href: "#" },
+        { name: "Admin tasks", href: "#" },
       ],
     },
     {
       name: "help & support",
       items: [
-        { name: "contact us", href: "https://www.creative-tim.com/contact-us" },
-        // { name: "knowledge center", href: "https://www.creative-tim.com/knowledge-center" },
-        // { name: "custom development", href: "https://services.creative-tim.com/" },
-        // { name: "sponsorships", href: "https://www.creative-tim.com/sponsorships" },
+        { name: "contact us", href: "#" },
+        // { name: "knowledge center", href: "#" },
+        // { name: "custom development", href: "#" },
+        // { name: "sponsorships", href: "#" },
       ],
     },
     {
@@ -59,7 +60,7 @@ export default {
       items: [
         { name: "terms & conditions", href: "https://www.nd-health.ca/terms" },
         { name: "privacy policy", href: "https://www.nd-health.ca/privacy" },
-        // { name: "licenses (EULA)", href: "https://www.creative-tim.com/license" },
+        // { name: "licenses (EULA)", href: "#" },
       ],
     },
   ],

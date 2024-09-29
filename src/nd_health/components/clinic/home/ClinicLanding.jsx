@@ -12,7 +12,7 @@ import {
   CircularProgress,
   Button,
 } from "@mui/material";
-import { blue, deepPurple, green, teal } from "@mui/material/colors";
+import { blue, deepPurple, green, lime, teal } from "@mui/material/colors";
 import Layout from "../../Layout";
 import HelmetComponent from "../../SEO/HelmetComponent";
 import API_BASE_PATH from "apiConfig";
@@ -25,8 +25,10 @@ import { alpha } from "@mui/material/styles";
 // Material Kit 2 PRO React components
 import MKTypography from "components/MKTypography";
 import bgImage from "../../../assets/images/maple_clinic.jpg";
+import book_appointment from "../../../assets/images/clinic_landing_page/appointment_book.png";
 import Container from "@mui/material/Container";
 import MKBox from "../../../../components/MKBox";
+import colors from "assets/theme/base/colors";
 
 const ClinicLanding = () => {
   const headerRef = useRef(null);
@@ -91,27 +93,9 @@ const ClinicLanding = () => {
       description: "Schedule / Cancel",
       icon: <MdOutlineDateRange sx={{ height: 38, width: 38 }} />,
       onClick: () => navigate(`/clinic/${clinicSlug}/appointment`),
-      backgroundcolor: green[400],
+      backgroundcolor: colors.gradients.secondary.main,
       title_font_color: "black",
-      description_color: invertColor(alpha(green[400], 1)),
-    },
-    {
-      name: "Fill Form",
-      description: "Find forms assigned to you.",
-      icon: <FaWpforms sx={{ height: 38, width: 38 }} />,
-      onClick: () => navigate(`/EformOauth/${clinicSlug}/`),
-      backgroundcolor: blue[400],
-      title_font_color: "black",
-      description_color: invertColor(alpha(blue[400], 1)),
-    },
-    {
-      name: "Patient Registration",
-      description: "If you are new patient to our clinic, register first.",
-      icon: <ImProfile sx={{ height: 38, width: 38 }} />,
-      onClick: () => navigate(`/patient/${clinicSlug}/requestpatientprofile`),
-      backgroundcolor: deepPurple[400],
-      title_font_color: "black",
-      description_color: invertColor(alpha(deepPurple[400], 1)),
+      description_color: "white",
     },
     {
       name: "Update Profile",
@@ -120,7 +104,25 @@ const ClinicLanding = () => {
       onClick: () => navigate(`/clinic/${clinicSlug}/UpdateProfileOauth`),
       backgroundcolor: teal[400],
       title_font_color: "black",
-      description_color: invertColor(alpha(teal[400], 1)),
+      description_color: "white",
+    },
+    {
+      name: "Fill Form",
+      description: "Find forms assigned to you.",
+      icon: <FaWpforms sx={{ height: 38, width: 38 }} />,
+      onClick: () => navigate(`/EformOauth/${clinicSlug}/`),
+      backgroundcolor: blue[400],
+      title_font_color: "black",
+      description_color: "white",
+    },
+    {
+      name: "Patient Registration",
+      description: "If you are new patient to our clinic, register first.",
+      icon: <ImProfile sx={{ height: 38, width: 38 }} />,
+      onClick: () => navigate(`/patient/${clinicSlug}/requestpatientprofile`),
+      backgroundcolor: deepPurple[400],
+      title_font_color: "black",
+      description_color: "white",
     },
   ];
 
@@ -130,7 +132,7 @@ const ClinicLanding = () => {
         <HelmetComponent />
         {clinicInfo ? (
           <>
-            <h3>Welcome to {clinicInfo.name}</h3>
+            {/*<h3>Welcome to {clinicInfo.name}</h3>*/}
 
             <MKBox
               ref={headerRef}
@@ -145,6 +147,8 @@ const ClinicLanding = () => {
                 backgroundPosition: "center",
                 display: "grid",
                 placeItems: "center",
+                borderRadius: "1rem",
+
 
               }}
             >
@@ -171,7 +175,7 @@ const ClinicLanding = () => {
                     <span ref={typedJSRef} /> Welcome to {clinicInfo.name}
                   </MKTypography>
                   <MKTypography variant="body1" color="white" opacity={0.8} mt={1} mb={3}>
-                    Empowering people to be healthy
+                    {clinicInfo.slogan}
                   </MKTypography>
                   {/*<MKButton color="default" sx={{ color: ({ palette: { dark } }) => dark.main }}>*/}
                   {/*  create account*/}
@@ -204,6 +208,7 @@ const ClinicLanding = () => {
                 </Grid>
               )}
               <Grid container spacing={2} paddingLeft={2} paddingRight={2}>
+
                 {cardData.map((card, index) => (
                   <Grid item xs={12} sm={6} md={3} key={index}>
                     <Card
@@ -214,7 +219,9 @@ const ClinicLanding = () => {
                         backgroundColor: card.backgroundcolor,
                         "&:hover .icon-button": {
                           transform: "scale(1.4)",
+                          color: "#008080",
                         },
+
                       }}
                     >
                       <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
@@ -250,7 +257,7 @@ const ClinicLanding = () => {
                             className="icon-button"
                             style={{
                               fontSize: "3rem",
-                              color: "white",
+                              color: "black",
                               fontWeight: "bolder",
                               transition: "transform 0.3s",
                             }}

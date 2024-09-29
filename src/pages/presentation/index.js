@@ -39,9 +39,10 @@ import routes from "routes";
 import footerRoutes from "footer.routes";
 
 // Images
-import bgImage from "nd_health/assets/images/a_clinic_powered_by_ND_Health.jpeg"
+import bgImage from "nd_health/assets/images/medical_clinic_2.jpeg";
 
 // import MKButton from "../../components/MKButton";
+import logoCT from "nd_health/assets/images/nd-health-logo.png";
 
 import { FaChrome } from "react-icons/fa";
 import { FaFirefox } from "react-icons/fa";
@@ -63,7 +64,7 @@ function Presentation() {
   // Setting up typedJS
   useEffect(() => {
     const typedJS = new Typed(typedJSRef.current, {
-      strings: ["Welcome to", "improve efficiency using", "save time using"],
+      strings: ["Welcome to ND Health", "Enhance patient care", "Streamline daily tasks", "Secure and reliable technology"],
       typeSpeed: 90,
       backSpeed: 90,
       backDelay: 200,
@@ -75,200 +76,206 @@ function Presentation() {
   }, []);
 
   return (<>
-      <DefaultNavbar
-        routes={routes}
-        action={{
-          type: "external", route: "/join", label: "Join now", color: "info",
-        }}
-        sticky
-      />
-      <MKBox
-        ref={headerRef}
-        minHeight="75vh"
-        width="100%"
-        sx={{
-          backgroundImage: ({
-                              functions: { linearGradient, rgba },
-                              palette: { gradients },
-                            }) => `${linearGradient(rgba(gradients.dark.main, 0.2), rgba(gradients.dark.state, 0.6))}, url(${bgImage})`,
-          backgroundSize: "inherit",
-          backgroundPosition: "center",
-          display: "grid",
-          placeItems: "center",
+    <DefaultNavbar
+      routes={routes}
+      action={{
+        type: "external", route: "/join", label: "Start Improving Your Practice Today", color: "info",
 
-        }}
-      >
-        <Container>
-          <Grid
-            container
-            item
-            xs={12}
-            lg={8}
-            justifyContent="center"
-            alignItems="center"
-            flexDirection="column"
-            sx={{ mx: "auto", textAlign: "center" }}
+      }}
+      sticky
+      fontWeight={"bold"}
+      icon={logoCT}
+    />
+    <MKBox
+      ref={headerRef}
+      minHeight="75vh"
+      width="100%"
+      sx={{
+        backgroundImage: ({
+                            functions: { linearGradient, rgba },
+                            palette: { gradients },
+                          }) => `${linearGradient(rgba(gradients.dark.main, 0.2), rgba(gradients.dark.state, 0.6))}, url(${bgImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        display: "grid",
+        placeItems: "center",
+
+      }}
+    >
+      <Container>
+        <Grid
+          container
+          item
+          xs={12}
+          lg={8}
+          justifyContent="center"
+          alignItems="center"
+          flexDirection="column"
+          sx={{ mx: "auto", textAlign: "center" }}
+        >
+          <MKTypography
+            variant="h1"
+            color="white"
+            sx={({ breakpoints, typography: { size } }) => ({
+              [breakpoints.down("md")]: {
+                fontSize: size["3xl"],
+              },
+            })}
           >
-            <MKTypography
-              variant="h1"
-              color="white"
-              sx={({ breakpoints, typography: { size } }) => ({
-                [breakpoints.down("md")]: {
-                  fontSize: size["3xl"],
-                },
-              })}
-            >
-              <span ref={typedJSRef} /> ND Health
-            </MKTypography>
-            <MKTypography variant="body1" color="white" opacity={0.8} mt={1} mb={3}>
-              Improve your clinic&apos;s workflow with us.
-            </MKTypography>
-            {/*<MKButton color="default" sx={{ color: ({ palette: { dark } }) => dark.main }}>*/}
-            {/*  create account*/}
-            {/*</MKButton>*/}
+            <span ref={typedJSRef} />
+          </MKTypography>
+          <MKTypography variant="body1" color="white" opacity={0.8} mt={1} mb={3}>
+            Improve your clinic&apos;s workflow with us.
+          </MKTypography>
+          {/*<MKButton color="default" sx={{ color: ({ palette: { dark } }) => dark.main }}>*/}
+          {/*  create account*/}
+          {/*</MKButton>*/}
+        </Grid>
+      </Container>
+    </MKBox>
+    <Card
+      sx={{
+        p: 2,
+        mx: { xs: 2, lg: 3 },
+        mt: -8,
+        mb: 4,
+        backgroundColor: ({ palette: { white }, functions: { rgba } }) => rgba(white.main, 0.8),
+        backdropFilter: "saturate(200%) blur(30px)",
+        boxShadow: ({ boxShadows: { xxl } }) => xxl,
+      }}
+    >
+      <Counters />
+      <Information />
+      {/*<DesignBlocks />*/}
+      {/*<AuthPages />*/}
+      {/*<Pages />*/}
+      {/*<Container sx={{ mt: 6 }}>*/}
+      {/*  <BuiltByDevelopers />*/}
+      {/*</Container>*/}
+      <Container>
+        <Grid container spacing={3}>
+          <Grid item xs={12} lg={4}>
+            <FilledInfoCard
+              variant="gradient"
+              color="info"
+              icon="flag"
+              title="Getting Started"
+              description="Learn how to maximize the benefits of our healthcare solutions with easy-to-follow guides."
+              action={{
+                type: "external",
+                route: "#gettingstarted",
+                label: "Explore Demo Now",
+              }}
+            />
           </Grid>
-        </Container>
-      </MKBox>
-      <Card
-        sx={{
-          p: 2,
-          mx: { xs: 2, lg: 3 },
-          mt: -8,
-          mb: 4,
-          backgroundColor: ({ palette: { white }, functions: { rgba } }) => rgba(white.main, 0.8),
-          backdropFilter: "saturate(200%) blur(30px)",
-          boxShadow: ({ boxShadows: { xxl } }) => xxl,
-        }}
-      >
-        <Counters />
-        <Information />
-        {/*<DesignBlocks />*/}
-        {/*<AuthPages />*/}
-        {/*<Pages />*/}
-        {/*<Container sx={{ mt: 6 }}>*/}
-        {/*  <BuiltByDevelopers />*/}
-        {/*</Container>*/}
+          <Grid item xs={12} lg={4}>
+            <FilledInfoCard
+              color="info"
+              icon="precision_manufacturing"
+              title="Enhanced Plugins"
+              description="Explore plugins designed to streamline healthcare processes and enhance patient care."
+              action={{
+                type: "external",
+                route: "#",
+                label: "Discover More",
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} lg={4}>
+            <FilledInfoCard
+              color="info"
+              icon="update"
+              title="Free Update"
+              description="All the future updates will be free with premium membership"
+              action={{
+                type: "external",
+                route: "#",
+                label: "Explore updates",
+              }}
+            />
+          </Grid>
+        </Grid>
+        <Grid container spacing={3}>
+          <Grid item xs={12} lg={4}></Grid>
+          <Grid item xs={12} lg={4}>
+            <FilledInfoCard
+              color="info"
+              icon={<FaChrome />}
+              title="Chrome Extension"
+              description="Install our Chrome extension for quick access to our features directly from your browser."
+              action={{
+                type: "external",
+                route: "https://chromewebstore.google.com/detail/nd-health/ppbjmfcjpgddhnhokiaobgklfllnplem?hl=en-US&utm_source=ext_sidebar",
+                label: "Install Now",
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} lg={4}>
+            <FilledInfoCard
+              color="info"
+              icon={<FaFirefox />}
+              title="Firefox Add-on"
+              description="Get our Firefox add-on to enhance your workflow with seamless integration."
+              action={{
+                type: "external",
+                route: "https://addons.mozilla.org/en-US/firefox/addon/nd-health/",
+                label: "Install Now",
+              }}
+            />
+          </Grid>
+        </Grid>
+      </Container>
+
+      <Testimonials />
+      <PricingOne />
+      <MKBox pt={18} pb={6}>
         <Container>
           <Grid container spacing={3}>
-            <Grid item xs={12} lg={4}>
-              <FilledInfoCard
-                variant="gradient"
-                color="info"
-                icon="flag"
-                title="Getting Started"
-                description="Check the possible ways of working with our products."
-                action={{
-                  type: "external",
-                  route: "https://www.creative-tim.com/learning-lab/react/overview/material-kit/",
-                  label: "Start with Demo",
-                }}
-              />
+            <Grid item xs={12} lg={5} ml="auto" sx={{ textAlign: { xs: "center", lg: "left" } }}>
+              <MKTypography variant="h4" fontWeight="bold" mb={0.5}>
+                Thank you for your support!
+              </MKTypography>
+              <MKTypography variant="body1" color="text">
+                We care for doctors.
+              </MKTypography>
             </Grid>
-            <Grid item xs={12} lg={4}>
-              <FilledInfoCard
-                color="info"
-                icon="precision_manufacturing"
-                title="Plugins"
-                description="Get inspiration and have an overview about the plugin that we have developed, which can improve your practice."
-                action={{
-                  type: "external",
-                  route: "https://www.creative-tim.com/learning-lab/react/datepicker/material-kit/",
-                  label: "Read more",
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} lg={4}>
-              <FilledInfoCard
-                color="info"
-                icon="apps"
-                title="Components"
-                description="ND Health is giving you a lot of pre-made components, that will help you to work faster."
-                action={{
-                  type: "external",
-                  route: "https://www.creative-tim.com/learning-lab/react/alerts/material-kit/",
-                  label: "Read more",
-                }}
-              />
-            </Grid>
-          </Grid>
-          <Grid container spacing={3}>
-            <Grid item xs={12} lg={4}></Grid>
-            <Grid item xs={12} lg={4}>
-              <FilledInfoCard
-                color="info"
-                icon=<FaChrome />
-              title="Chrome Plugin"
-              action={{
-              type: "external",
-              route: "https://chromewebstore.google.com/detail/nd-health/ppbjmfcjpgddhnhokiaobgklfllnplem?hl=en-US&utm_source=ext_sidebar",
-              label: "install",
-            }}
-              />
-            </Grid>
-            <Grid item xs={12} lg={4}>
-              <FilledInfoCard
-                color="info"
-                icon=<FaFirefox />
-              title="FireFox Plugin"
-              action={{
-              type: "external",
-              route: "https://chromewebstore.google.com/detail/nd-health/ppbjmfcjpgddhnhokiaobgklfllnplem?hl=en-US&utm_source=ext_sidebar",
-              label: "install",
-            }}
-              />
+            <Grid
+              item
+              xs={12}
+              lg={5}
+              my={{ xs: 5, lg: "auto" }}
+              mr={{ xs: 0, lg: "auto" }}
+              sx={{ textAlign: { xs: "center", lg: "right" } }}
+            >
+              <MKSocialButton
+                component="a"
+                href="https://www.instagram.com/nd.health.ca/"
+                target="_blank"
+                color="instagram"
+                sx={{ mr: 1 }}
+              >
+                <i className="fab fa-instagram" />
+                &nbsp; Instagram
+              </MKSocialButton>
+              <MKSocialButton
+                component="a"
+                href="https://www.facebook.com/profile.php?id=61555491107393"
+                target="_blank"
+                color="facebook"
+                sx={{ mr: 1 }}
+              >
+                <i className="fab fa-facebook" />
+                &nbsp; Facebook
+              </MKSocialButton>
             </Grid>
           </Grid>
         </Container>
-        <Testimonials />
-        <PricingOne />
-        <MKBox pt={18} pb={6}>
-          <Container>
-            <Grid container spacing={3}>
-              <Grid item xs={12} lg={5} ml="auto" sx={{ textAlign: { xs: "center", lg: "left" } }}>
-                <MKTypography variant="h4" fontWeight="bold" mb={0.5}>
-                  Thank you for your support!
-                </MKTypography>
-                <MKTypography variant="body1" color="text">
-                  We care for doctors.
-                </MKTypography>
-              </Grid>
-              <Grid
-                item
-                xs={12}
-                lg={5}
-                my={{ xs: 5, lg: "auto" }}
-                mr={{ xs: 0, lg: "auto" }}
-                sx={{ textAlign: { xs: "center", lg: "right" } }}
-              >
-                <MKSocialButton
-                  component="a"
-                  href="https://www.instagram.com/nd.health.ca/"
-                  target="_blank"
-                  color="instagram"
-                  sx={{ mr: 1 }}
-                >
-                  <i className="fab fa-instagram" />
-                  &nbsp; Instagram
-                </MKSocialButton>
-                <MKSocialButton
-                  component="a"
-                  href="https://www.facebook.com/profile.php?id=61555491107393"
-                  target="_blank"
-                  color="facebook"
-                  sx={{ mr: 1 }}
-                >
-                  <i className="fab fa-facebook" />
-                  &nbsp; Facebook
-                </MKSocialButton>
-              </Grid>
-            </Grid>
-          </Container>
-        </MKBox>
-      </Card>
-      <MKBox pt={6} px={1} mt={6}>
-        <DefaultFooter content={footerRoutes} />
       </MKBox>
-    </>);
+    </Card>
+    <MKBox pt={6} px={1} mt={6}>
+      <DefaultFooter content={footerRoutes} />
+    </MKBox>
+  </>);
 }
 
 export default Presentation;

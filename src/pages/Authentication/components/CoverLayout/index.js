@@ -38,7 +38,7 @@ function CoverLayout({ coverHeight, image, children }) {
           routes={routes}
           action={{
             type: "external",
-            route: "https://www.creative-tim.com/product/material-kit-pro-react",
+            route: "#",
             label: "buy now",
           }}
           transparent

@@ -110,6 +110,15 @@ const FamilyAppointmentPage = () => {
 
       setAppointmentlist(appointmentlist);
     }
+
+    // console.log(`length of location:${locations.length}, ${Object.keys(responseData.location)}`);
+    // select default doctor if only one doctor is available
+    if (locations.length < 2) {
+      // console.log(`Location:${responseData.location}`);
+      setSelectedLocation(Object.keys(responseData.location));
+      setProgress(progress+14.32);
+    }
+
   }, [responseData]);
 
   const redirectHome = () => {
@@ -127,7 +136,7 @@ const FamilyAppointmentPage = () => {
     const data = await response.json();
     if (data.status === "failed") {
       setAppointmentBookContent(
-        "You already book an appointment! this session is expired. If you have provided valid email, You will receive a confirmation email shortly. if you still want to book an appointment please close the window and try again."
+        "You already book an appointment! this session is expired. If you have provided valid email, You will receive a confirmation email shortly. if you still want to book an appointment please close the window and try again.",
       );
       setButtonRedirect("Home");
       setOpenApp(true);
@@ -143,7 +152,7 @@ const FamilyAppointmentPage = () => {
     setSelectedProvider(""); // Set the only available provider as default if there is only one
     setSelectedDate("");
     setSelectedTime(""); // Reset selectedTime when the date changes'
-    setProgress(14.32);
+    setProgress(progress + 14.32);
     setIsAppointmentAvailable(false);
     fetchAppointmentStatus(); //TODO in walkin
     //  try to get appointment status using checkAppStatus
@@ -174,7 +183,7 @@ const FamilyAppointmentPage = () => {
     }
     setSelectedTime(""); // Reset selectedTime when the date changes'
     setSelectedDate("");
-    setProgress(28.6);
+    setProgress(progress + 14.32);
     setAgreementChecked(false);
     setSelectedAppointmentMode("");
   };
@@ -183,7 +192,7 @@ const FamilyAppointmentPage = () => {
   const handleDateChange = (event) => {
     setSelectedDate(event.target.value);
     setSelectedTime(""); // Reset selectedTime when the date changes
-    setProgress(42.88);
+    setProgress(progress+14.32);
     setAgreementChecked(false);
     setSame_date_app(true);
 
@@ -200,7 +209,7 @@ const FamilyAppointmentPage = () => {
   // Handle time change
   const handleTimeChange = (event) => {
     setSelectedTime(event.target.value);
-    setProgress(57.16);
+    setProgress(progress + 14.32);
     setAgreementChecked(false);
   };
 
@@ -216,7 +225,7 @@ const FamilyAppointmentPage = () => {
       setSelectedOption("clinic");
     }
 
-    setProgress(71.44);
+    setProgress(progress+14.32);
 
     setAgreementChecked(false);
   };
@@ -276,7 +285,7 @@ const FamilyAppointmentPage = () => {
   // Handle reason change
   const handleReasonChange = (event) => {
     setReason(event.target.value);
-    setProgress(85.72);
+    setProgress(progress+14.32);
   };
 
   const formatTime = (timeString) => {
@@ -291,9 +300,9 @@ const FamilyAppointmentPage = () => {
   const handleAgreementChange = () => {
     setAgreementChecked(!agreementChecked);
     if (agreementChecked === false) {
-      setProgress(100);
+      setProgress(progress + 14.32);
     } else if (agreementChecked === true) {
-      setProgress(85.72);
+      setProgress(progress - 14.32);
     }
   };
 
@@ -411,7 +420,7 @@ const FamilyAppointmentPage = () => {
 
             <Grid item xs={12} md={12}>
               <FormControl>
-                <Placeholder>Doctor:</Placeholder>
+                <Placeholder>Select Doctor:</Placeholder>
                 <RadioGroup value={selectedLocation} onChange={handleLocationChange}>
                   {locations.map((location) => (
                     <FormControlLabel
@@ -442,7 +451,7 @@ const FamilyAppointmentPage = () => {
                           const provider =
                             responseData.location[selectedLocation].provider_number[providerNumber];
                           const location = clinicLocation.find(
-                            (loc) => loc.name === provider?.name
+                            (loc) => loc.name === provider?.name,
                           );
 
                           return (
@@ -451,7 +460,7 @@ const FamilyAppointmentPage = () => {
                               {/*{provider?.name}, */}
                             </MenuItem>
                           );
-                        }
+                        },
                       )}
                   </Select>
                 </MKBox>
@@ -487,14 +496,14 @@ const FamilyAppointmentPage = () => {
                       responseData.location[selectedLocation]?.provider_number[selectedProvider]
                         ?.letestappointmentslots
                         ? Object.keys(
-                            responseData.location[selectedLocation]?.provider_number[
-                              selectedProvider
-                            ]?.letestappointmentslots
-                          ).map((date, index) => (
-                            <MenuItem key={`${date}_${index}`} value={date}>
-                              {date}
-                            </MenuItem>
-                          ))
+                          responseData.location[selectedLocation]?.provider_number[
+                            selectedProvider
+                            ]?.letestappointmentslots,
+                        ).map((date, index) => (
+                          <MenuItem key={`${date}_${index}`} value={date}>
+                            {date}
+                          </MenuItem>
+                        ))
                         : null // or replace with appropriate fallback logic
                     }
                   </Select>
@@ -512,11 +521,11 @@ const FamilyAppointmentPage = () => {
                     onChange={handleTimeChange}
                     style={{ minWidth: "15rem", minHeight: "2rem" }}
                     disabled={!isAppointmentAvailable}
-                  >
+                   variant={"outlined"}>
                     {selectedDate &&
                       responseData.location[selectedLocation]?.provider_number[
                         selectedProvider
-                      ]?.letestappointmentslots[selectedDate].map((time, index) => (
+                        ]?.letestappointmentslots[selectedDate].map((time, index) => (
                         <MenuItem
                           key={`${time.date}_${index}`}
                           value={time.time + "," + time.duration}
@@ -543,10 +552,11 @@ const FamilyAppointmentPage = () => {
                           value={mode}
                           control={
                             <Radio
+
                               disabled={
                                 responseData.location[selectedLocation]?.provider_number[
                                   selectedProvider
-                                ]?.AppointmentMode[mode] === 0
+                                  ]?.AppointmentMode[mode] === 0
                               }
                             />
                           }

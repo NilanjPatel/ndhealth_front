@@ -340,7 +340,7 @@ const ClinicInfo = () => {
                       disabled={!buttonpressed}
                       onClick={handleRequest}
                       fullWidth
-                      style={{ maxWidth: "100%", height: "100%", fontSize: "1rem" }}
+                      style={{ maxWidth: "100%", height: "100%", fontSize: "1rem", fontWeight: "bold" }}
                     >
                       Book
                     </MKButton>
@@ -353,7 +353,7 @@ const ClinicInfo = () => {
                       disabled={!buttonpressed}
                       onClick={manageApp}
                       fullWidth
-                      style={{ maxWidth: "100%", height: "100%", fontSize: "1rem" }}
+                      style={{ maxWidth: "100%", height: "100%", fontSize: "1rem", fontWeight: "bold" }}
                     >
                       Cancel Appointment
                     </MKButton>
@@ -368,7 +368,7 @@ const ClinicInfo = () => {
                         target="_blank"
                         color={"info"}
                         variant="contained"
-                        style={{ fontSize: "0.81rem", fontWeight: "bold" }}
+                        style={{  fontWeight: "bold", color:"black" }}
                       >
                         Learn how to book an appointment, click here.
                       </MKButton>

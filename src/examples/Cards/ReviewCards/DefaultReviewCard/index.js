@@ -106,6 +106,7 @@ function DefaultReviewCard({ color, image, name, date, review, rating }) {
       borderRadius="xl"
       shadow={color === "transparent" ? "none" : "md"}
       p={3}
+      sx={{height:"25rem", width: "25rem"}} //Changed: with and height is same
     >
       {image && (
         <MKAvatar

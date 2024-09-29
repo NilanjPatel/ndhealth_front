@@ -1,17 +1,5 @@
 /**
- =========================================================
- * Material Kit 2 PRO React - v2.1.0
- =========================================================
 
- * Product Page: https://www.creative-tim.com/product/material-kit-pro-react
- * Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
- Coded by www.creative-tim.com
-
- =========================================================
-
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- */
 
 /**
  All of the routes for the Material Kit 2 PRO React React are added here,
@@ -38,6 +26,7 @@
 
 // @mui material components
 import Icon from "@mui/material/Icon";
+import logoCT from "./nd_health/assets/images/nd-health-logo.png";
 
 // // Pages
 // import CoworkingPage from "layouts/pages/landing-pages/coworking";
@@ -468,6 +457,13 @@ const routes = [
   //   ],
   // },
   {
+    brand: {
+      name: "ND Health",
+      image: logoCT,
+      route: "/",
+    },
+  },
+  {
     name: "Login",
     icon: <Icon>login</Icon>,
     href: "/login",
@@ -490,10 +486,11 @@ const routes = [
     // {
     //   name: "plugins",
     //   description: "Check how you can integrate our plugins",
-    //   href: "https://www.creative-tim.com/learning-lab/react/datepicker/material-kit/",
+    //   href: "",
     // },
     // ],
   },
+
 ];
 
 export default routes;

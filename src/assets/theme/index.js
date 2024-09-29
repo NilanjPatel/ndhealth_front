@@ -1,17 +1,17 @@
 /**
-=========================================================
-* Material Kit 2 PRO React - v2.1.0
-=========================================================
+ =========================================================
+ * Material Kit 2 PRO React - v2.1.0
+ =========================================================
 
-* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard-pro-material-ui
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
+ * Product Page: https://www.creative-tim.com/product/soft-ui-dashboard-pro-material-ui
+ * Copyright 2023 Creative Tim (https://www.creative-tim.com)
 
-Coded by www.creative-tim.com
+ Coded by www.creative-tim.com
 
  =========================================================
 
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ */
 
 // @mui material components
 import { createTheme } from "@mui/material/styles";
@@ -87,7 +87,30 @@ import swiper from "assets/theme/components/swiper";
 
 export default createTheme({
   breakpoints: { ...breakpoints },
-  palette: { ...colors },
+  palette: {
+    ...colors,
+    primary: {
+      main: "#003366", // Example: Using a shade of blue for primary
+      // ... other primary color shades
+    },
+    secondary: {
+      main: "#008080", // Example: Using teal as a secondary color
+      // ... other secondary color shades
+    },
+    background: {
+      default: "#FFFFFF", // Example: Light neutral background
+      paper: "#F5F5F5", // Soft Gray for cards and sections
+      // ... other background colors
+    },
+    text: {
+      primary: "#000000", // Black for primary text
+      secondary: "#555555", // Dark Gray for secondary text
+    },
+    action: {
+      active: "#4CAF50", // Vibrant Green for call-to-action
+      hover: "#FF9800", // Light Orange for hover effects
+    },
+  },
   typography: { ...typography },
   boxShadows: { ...boxShadows },
   borders: { ...borders },
@@ -114,7 +137,15 @@ export default createTheme({
     MuiCard: { ...card },
     MuiCardMedia: { ...cardMedia },
     MuiCardContent: { ...cardContent },
-    MuiButton: { ...button },
+    MuiButton: {
+      ...button,
+      styleOverrides: {
+        root: {
+          borderRadius: "10px", // Example: Rounded button corners
+          textTransform: "none", // Example: No uppercase text transform
+        },
+      },
+    },
     MuiIconButton: { ...iconButton },
     MuiInput: { ...input },
     MuiInputLabel: { ...inputLabel },
