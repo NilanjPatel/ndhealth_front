@@ -24,7 +24,7 @@ function Information() {
       role: "Family Physician",
       clinic: "Family Physician at Maple Clinic",
       avatar:
-        "https://static.wixstatic.com/media/9f27bf_4c6cb50b3a8941a5b837fa677bb5e5a1~mv2.jpg/v1/fill/w_210,h_160,al_c,lg_1,q_80,enc_auto/Bcdhawan.jpg",
+        "https://static.wixstatic.com/media/9f27bf_4c6cb50b3a8941a5b837fa677bb5e5a1~mv2.jpg/v1/fill/w_160,h_160,al_c,lg_1,q_80,enc_auto/Bcdhawan.jpg",
       testimonial:
         "ND Health transformed our clinic. With 9 physicians, daily administrative tasks and patient calls were overwhelming. The platform streamlined our workflow, reducing workload and enhancing patient satisfaction. Highly recommend it to other clinics!",
       backgroundColor: "info",
@@ -56,10 +56,10 @@ function Information() {
           sx={{ mx: "auto", textAlign: "center" }}
         >
           <MKTypography variant="h2">Trusted by Healthcare Professionals</MKTypography>
-          <MKTypography variant="h2" color="info" textGradient mb={2}>
+          <MKTypography variant="h2" color="info" textGradient mb={1.5}>
             Across Canada
           </MKTypography>
-          <MKTypography variant="body1" color="text" mb={2}>
+          <MKTypography variant="body1" color="text" mb={1}>
             Join the growing number of clinics that have improved their services with our platform.
           </MKTypography>
         </Grid>

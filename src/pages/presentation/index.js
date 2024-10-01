@@ -17,7 +17,6 @@ import MKTypography from "components/MKTypography";
 import MKSocialButton from "components/MKSocialButton";
 
 // Material Kit 2 PRO React examples
-import DefaultNavbar from "examples/Navbars/DefaultNavbar";
 import DefaultFooter from "examples/Footers/DefaultFooter";
 import FilledInfoCard from "examples/Cards/InfoCards/FilledInfoCard";
 
@@ -35,14 +34,15 @@ import PricingOne from "layouts/sections/page-sections/pricing/components/Pricin
 // import BuiltByDevelopers from "pages/presentation/components/BuiltByDevelopers";
 
 // Routes
-import routes from "routes";
 import footerRoutes from "footer.routes";
 
 // Images
 import bgImage from "nd_health/assets/images/medical_clinic_2.jpeg";
 
 // import MKButton from "../../components/MKButton";
-import logoCT from "nd_health/assets/images/nd-health-logo.png";
+import logoCT from "nd_health/assets/images/ND(1).png";
+
+import Header from "pages/Components/header";
 
 import { FaChrome } from "react-icons/fa";
 import { FaFirefox } from "react-icons/fa";
@@ -76,16 +76,7 @@ function Presentation() {
   }, []);
 
   return (<>
-    <DefaultNavbar
-      routes={routes}
-      action={{
-        type: "external", route: "/join", label: "Start Improving Your Practice Today", color: "info",
-
-      }}
-      sticky
-      fontWeight={"bold"}
-      icon={logoCT}
-    />
+    <Header />
     <MKBox
       ref={headerRef}
       minHeight="75vh"

@@ -37,6 +37,9 @@ import RecordOauth from "nd_health/components/clinic_to_patient/record";
 import DisplayPolicy from "nd_health/components/Policy/DisplayPolicy";
 import ClinicPolicy from "nd_health/components/ClinicPolicy";
 
+//error
+import Error from "layouts/pages/error";
+
 export default function App() {
   const { pathname } = useLocation();
   // Setting page scroll to 0 when changing the route
@@ -64,8 +67,8 @@ export default function App() {
         <Route path="/join" element={<SignUpCover />} />
         <Route path="resetpassword/:uidb64/:token" element={<PasswordResetConfirm />} />
         <Route path="/clinic/:clinicSlug/resetPassword" element={<PasswordReset />} />
-        <Route path="*" element={<Navigate to="/presentation" />} />
-        {/*//Clinic routs*/}
+        <Route path="*" element={<Error />} />
+        {/*//Clinic routes*/}
         <Route path="/clinic/:clinicSlug/" element={<ClinicLanding />} />
         <Route path="/clinic/:clinicSlug/appointment" element={<ClinicInfo />} />
         <Route path="/family-appointment/:clinicSlug" element={<FamilyAppointmentPage />} />

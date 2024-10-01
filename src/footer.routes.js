@@ -66,7 +66,7 @@ export default {
   ],
   copyright: (
     <MKTypography variant="button" fontWeight="regular">
-      All rights reserved. Copyright &copy; {date} ND Health
+      Copyright &copy; {date} ND Health. All rights reserved.
       <MKTypography
         component="a"
         href="https://www.nd-health.ca"

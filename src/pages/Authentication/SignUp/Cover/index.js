@@ -31,6 +31,7 @@ import {
   validatePassword,
 } from "../../../../nd_health/components/resources/utils";
 import API_BASE_PATH from "../../../../apiConfig";
+import { margin, padding } from "@mui/system";
 
 // import { red } from "@mui/material/colors";
 
@@ -455,27 +456,9 @@ function Cover() {
                 ></MKInput>
               </MKBox>
             </Grid>
-            <Grid item xs={12} md={6}>
-              <MKBox>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={agreementChecked}
-                      onChange={handleAgreementChange}
-                      name="agreement"
-                      color="primary"
-                    />
-                  }
-                  label="I agree to the terms and conditions."
-                />
-              </MKBox>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <MKBox>
-                <MKTypography onClick={handleAgreementClick} style={{ cursor: "pointer" }}>
-                  View Terms and Conditions
-                </MKTypography>
-              </MKBox>
+            <Grid item xs={12}>  
+              <input id="checkbox" type="checkbox" checked={agreementChecked} onChange={handleAgreementChange} />
+              <label for="checkbox" style={{fontSize: "11.5pt"}}> I agree to the <a style={{color: "rgb(89, 145, 255)"}} onClick={handleAgreementClick}>Terms and Conditions</a>.</label>
             </Grid>
             <Grid item xs={12} md={6}>
               <MKBox>
@@ -497,6 +480,7 @@ function Cover() {
                     !isOhipValid ||
                     !agreementChecked
                   }
+                  style={{}}
                 >
                   Sign Up
                 </MKButton>
