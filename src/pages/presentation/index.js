@@ -42,7 +42,7 @@ import footerRoutes from "footer.routes";
 import bgImage from "nd_health/assets/images/medical_clinic_2.jpeg";
 
 // import MKButton from "../../components/MKButton";
-import logoCT from "nd_health/assets/images/nd-health-logo.png";
+import logoCT from "nd_health/assets/images/clinic_landing_page/Basic Animations (1).svg";
 
 import { FaChrome } from "react-icons/fa";
 import { FaFirefox } from "react-icons/fa";

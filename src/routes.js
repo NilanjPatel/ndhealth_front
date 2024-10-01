@@ -27,6 +27,7 @@
 // @mui material components
 import Icon from "@mui/material/Icon";
 import logoCT from "./nd_health/assets/images/nd-health-logo.png";
+import logosvg from "./nd_health/assets/images/clinic_landing_page/Basic Animations (1).svg"
 
 // // Pages
 // import CoworkingPage from "layouts/pages/landing-pages/coworking";
@@ -459,7 +460,7 @@ const routes = [
   {
     brand: {
       name: "ND Health",
-      image: logoCT,
+      image: logosvg,
       route: "/",
     },
   },
