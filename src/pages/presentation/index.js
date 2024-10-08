@@ -43,6 +43,7 @@ import bgImage from "nd_health/assets/images/medical_clinic_2.jpeg";
 import logoCT from "nd_health/assets/images/ND(1).png";
 
 import Header from "pages/Components/header";
+import "pages/Components/header.css";
 
 import { FaChrome } from "react-icons/fa";
 import { FaFirefox } from "react-icons/fa";
@@ -78,6 +79,7 @@ function Presentation() {
   return (<>
     <Header />
     <MKBox
+      className="image-main"
       ref={headerRef}
       minHeight="75vh"
       width="100%"
@@ -90,7 +92,6 @@ function Presentation() {
         backgroundPosition: "center",
         display: "grid",
         placeItems: "center",
-
       }}
     >
       <Container>
@@ -131,7 +132,7 @@ function Presentation() {
         mt: -8,
         mb: 4,
         backgroundColor: ({ palette: { white }, functions: { rgba } }) => rgba(white.main, 0.8),
-        backdropFilter: "saturate(200%) blur(30px)",
+        backdropFilter: "saturate(200%) blur(40px)",
         boxShadow: ({ boxShadows: { xxl } }) => xxl,
       }}
     >

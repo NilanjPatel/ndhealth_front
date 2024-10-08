@@ -35,6 +35,8 @@ import MKBox from "../../components/MKBox";
 import MKButton from "../../components/MKButton";
 import NotificationDialog from "./resources/Notification";
 
+import "./clinic/home/ClinicLanding.css";
+
 const WalkinAppointmentPage = () => {
   const { clinicSlug } = useParams();
   // const [clinicInfo, setClinicInfo] = useState(null);
@@ -369,11 +371,11 @@ const WalkinAppointmentPage = () => {
         <Paper
           style={{
             position: "sticky",
-            top: "1rem",
+            top: "3.2rem",
             zIndex: 1000,
             padding: "1rem",
             marginBottom: "0.3rem",
-            boxShadow: `0 0 10px 2px ${titlePaperColor}`,
+            boxShadow: `0 0 10px 1px ${titlePaperColor}`,
           }}
         >
           <MKTypography
@@ -590,7 +592,7 @@ const WalkinAppointmentPage = () => {
 
                 {selectedOption === "email" && (
                   <Typography style={{ cursor: "pointer" }}>
-                    If you have provided valid email, You will receive a email with link of the
+                    If you have provided a valid email, You will receive an email containing the link of the
                     video meeting.
                   </Typography>
                 )}
@@ -608,20 +610,14 @@ const WalkinAppointmentPage = () => {
               </Grid>
 
               <Grid item xs={12}>
-                <FormControlLabel
-                  control={
-                    <Switch
+                <Switch
+                      id="switch"
                       checked={agreementChecked}
                       onChange={handleAgreementChange}
                       name="agreement"
                       color="primary"
                     />
-                  }
-                  label="I agree to the terms and conditions."
-                />
-                <Typography onClick={handleAgreementClick} style={{ cursor: "pointer" }}>
-                  View Terms and Conditions
-                </Typography>
+                <label for="switch" style={{fontSize: "11.5pt"}}> I agree to the <a className="terms-and-conditions" onClick={handleAgreementClick}>Terms and Conditions</a>.</label>
               </Grid>
               {/* if same_date_app is true false */}
               {!same_date_app && (

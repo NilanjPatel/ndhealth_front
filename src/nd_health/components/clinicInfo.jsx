@@ -376,14 +376,6 @@ const ClinicInfo = () => {
                   </Grid>
                 </CardActionArea>
               </Card>
-              <div style={{ top: "0", right: "0", padding: "8px" }}>
-                <Link
-                  to={`/clinic/${clinicSlug}/policy`}
-                  style={{ color: "black", fontWeight: "bold" }}
-                >
-                  Clinic Policy
-                </Link>
-              </div>
               <h3>{clinic_locations_multiple}</h3>
               <Grid container spacing={2}>
                 {locationsData &&

@@ -1,5 +1,4 @@
 // Layout.js
-
 import React, { useState, useEffect } from "react";
 import {
   AppBar,
@@ -159,6 +158,10 @@ const Layout = ({ clinicInfo, children }) => {
     navigate(`/clinic/${clinicSlug}/home/`);
   };
 
+  const gotoPolicy = () => {
+    navigate(`/clinic/${clinicSlug}/policy`);
+  }
+
   useEffect(() => {
     const fetchClinicInfo = async () => {
       setHome(`https://nd-health.ca`);
@@ -214,34 +217,38 @@ const Layout = ({ clinicInfo, children }) => {
                       <Link href={home} variant='title' color="inherit" underline="none" style={{ paddingLeft: '0.81rem', fontFamily: 'sans-serif' }} > ND Health</Link>
                     </Typography> */}
 
-                    {clinicInfo.logo && (
-                      <img
-                        alt={`Book family and walk in appointment at ${clinicInfo.name} near ${clinicInfo.user__city}, ${clinicInfo.user__province}`}
-                        src={clinicInfo.logo}
-                        height="50"
-                        style={{
-                          marginRight: "10px",
-                          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", // Adjust the shadow to create a lifting effect
-
-                          transform: "translateY(-2px)", // Slightly lift the logo
-                          transition: "transform 0.3s ease, box-shadow 0.3s ease", // Smooth transition
-                          borderRadius: "50%", // Ensure the shadow follows the shape of the logo
-                        }}
-                      />
-                    )}
-
-                    <Link
-                      href={clinicWebsite}
-                      color="inherit"
-                      underline="none"
+                    <b
                       style={{ flexGrow: 1 }}
                     >
-                      {clinicInfo.name}
-                    </Link>
+                      <a
+                        href={clinicWebsite}
+                        color="inherit"
+                        underline="none"
+                        style={{ width: "50px" }}
+                      >
+                        {clinicInfo.logo && (
+                          <img
+                            alt={`Book family and walk in appointment at ${clinicInfo.name} near ${clinicInfo.user__city}, ${clinicInfo.user__province}`}
+                            src={clinicInfo.logo}
+                            height="50"
+                            style={{
+                              marginLeft: "10px",
+                              transform: "translateY(-2px)", // Slightly lift the logo
+                              transition: "transform 0.3s ease, box-shadow 0.3s ease", // Smooth transition
+                            }}
+                          />
+                        )}
+                      </a>
+                    </b>
+
+                    <MenuItem key="policy" style={{borderRadius: "10px", fontWeight: "bold"}} onClick={gotoPolicy}>
+                        Clinic Policy
+                    </MenuItem>
+                    
 
                     {/* Use an IconButton for the login dropdown */}
                     <IconButton color="inherit" onClick={handleMenuOpen}>
-                      <AccountCircleIcon />
+                      <AccountCircleIcon style={{fontSize: "32px"}} />
                     </IconButton>
 
                     {/* Login Dropdown */}
@@ -388,6 +395,7 @@ const Layout = ({ clinicInfo, children }) => {
                   paddingTop: "1rem",
                   backgroundColor: "#ffffff",
                   zIndex: 1000,
+                  opacity: "0.98"
                 }}
               >
                 <Typography variant="h6">
@@ -401,7 +409,7 @@ const Layout = ({ clinicInfo, children }) => {
                     <img
                       src={powered_by_logo}
                       alt={`Book family and walk in appointment at ${clinicInfo.name} near ${clinicInfo.user__city}, ${clinicInfo.user__province}`}
-                      style={{ height: "2.5rem" }}
+                      style={{ height: "2.5rem", marginTop: "-10px" }}
                     />
                   </Link>
                 </Typography>
