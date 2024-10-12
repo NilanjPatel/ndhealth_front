@@ -5,6 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
+    "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@heroicons/react": "^2.1.1",
@@ -43,6 +44,7 @@
     "react-pdf": "^9.0.0",
     "react-router-dom": "^6.21.1",
     "react-scripts": "^5.0.1",
+    "react-sf-building-blocks": "^1.0.87",
     "react-slick": "^0.29.0",
     "react-syntax-highlighter": "^15.5.0",
     "recharts": "^2.12.7",

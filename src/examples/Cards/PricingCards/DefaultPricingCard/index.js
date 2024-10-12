@@ -1,17 +1,17 @@
 /**
-=========================================================
-* Material Kit 2 PRO React - v2.1.0
-=========================================================
+ =========================================================
+ * Material Kit 2 PRO React - v2.1.0
+ =========================================================
 
-* Product Page: https://www.creative-tim.com/product/material-kit-pro-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
+ * Product Page: https://www.creative-tim.com/product/material-kit-pro-react
+ * Copyright 2023 Creative Tim (https://www.creative-tim.com)
 
-Coded by www.creative-tim.com
+ Coded by www.creative-tim.com
 
  =========================================================
 
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ */
 
 // react-router-dom components
 import { Link } from "react-router-dom";
@@ -99,8 +99,9 @@ function DefaultPricingCard({ color, badge, price, specifications, action, shado
               </MKTypography>
               {price.value}
               <MKTypography display="inline" component="small" variant="h5" color="inherit">
-                /{price.type}
+                {price.value ? `/${price.type}` : price.type}
               </MKTypography>
+
             </MKTypography>
           </MKBox>
         </MKBox>

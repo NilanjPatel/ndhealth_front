@@ -24,7 +24,7 @@ function Information() {
       role: "Family Physician",
       clinic: "Family Physician at Maple Clinic",
       avatar:
-        "https://static.wixstatic.com/media/9f27bf_4c6cb50b3a8941a5b837fa677bb5e5a1~mv2.jpg/v1/fill/w_210,h_160,al_c,lg_1,q_80,enc_auto/Bcdhawan.jpg",
+        "https://static.wixstatic.com/media/9f27bf_4c6cb50b3a8941a5b837fa677bb5e5a1~mv2.jpg",
       testimonial:
         "ND Health transformed our clinic. With 9 physicians, daily administrative tasks and patient calls were overwhelming. The platform streamlined our workflow, reducing workload and enhancing patient satisfaction. Highly recommend it to other clinics!",
       backgroundColor: "info",
@@ -46,71 +46,75 @@ function Information() {
 
   return (
     <MKBox component="section" py={12}>
-      <Container>
-        <Grid
-          container
-          item
-          xs={12}
-          lg={6}
-          justifyContent="center"
-          sx={{ mx: "auto", textAlign: "center" }}
-        >
-          <MKTypography variant="h2">Trusted by Healthcare Professionals</MKTypography>
-          <MKTypography variant="h2" color="info" textGradient mb={2}>
-            Across Canada
-          </MKTypography>
-          <MKTypography variant="body1" color="text" mb={2}>
-            Join the growing number of clinics that have improved their services with our platform.
-          </MKTypography>
-        </Grid>
-        <Grid
-          container
-          spacing={3}
-          sx={{ mt: 8 }}
-          alignItems="center"
-          justifyContent="center" // Center items horizontally
-        >
-          {testimonialData.map((testimonial, index) => (
-            <Grid item xs={12} md={6} lg={4}
-              // sx={{ display: "flex", justifyContent: "center" }}
-                  key={index}
-            >
-              <DefaultReviewCard
-                name={testimonial.name}
-                date={testimonial.clinic}
-                review={testimonial.testimonial}
-                rating={testimonial.rating}
-                image={testimonial.avatar}
-                color={testimonial.backgroundColor}
-              />
-            </Grid>
-          ))}
-        </Grid>
-        <Divider sx={{ my: 6 }} />
-        {/*<Grid container spacing={3} justifyContent="center">*/}
-        {/*  <Grid item xs={6} md={4} lg={2}>*/}
-        {/*    <MKBox component="img" src={appleLogo} alt="Apple" width="100%" opacity={0.6} />*/}
-        {/*  </Grid>*/}
-        {/*  <Grid item xs={6} md={4} lg={2}>*/}
-        {/*    <MKBox component="img" src={facebookLogo} alt="Facebook" width="100%" opacity={0.6} />*/}
-        {/*  </Grid>*/}
-        {/*  <Grid item xs={6} md={4} lg={2}>*/}
-        {/*    <MKBox component="img" src={nasaLogo} alt="Nasa" width="100%" opacity={0.6} />*/}
-        {/*  </Grid>*/}
-        {/*  <Grid item xs={6} md={4} lg={2}>*/}
-        {/*    <MKBox component="img" src={vodafoneLogo} alt="Vodafone" width="100%" opacity={0.6} />*/}
-        {/*  </Grid>*/}
-        {/*  <Grid item xs={6} md={4} lg={2}>*/}
-        {/*    <MKBox*/}
-        {/*      component="img"*/}
-        {/*      src={digitalOceanLogo}*/}
-        {/*      alt="DigitalOcean"*/}
-        {/*      width="100%"*/}
-        {/*      opacity={0.6}*/}
-        {/*    />*/}
-        {/*  </Grid>*/}
-        {/*</Grid>*/}
-      </Container>
+      {/*<Container>*/}
+      <Grid
+        container
+        item
+        xs={12}
+        lg={6}
+        justifyContent="center"
+        sx={{ mx: "auto", textAlign: "center" }}
+      >
+        <MKTypography variant="h2" color="info" textGradient mb={2}>Ask them,&nbsp;</MKTypography>
+        <MKTypography variant="h2">
+          Who are using our services
+        </MKTypography>
+        <MKTypography variant="body1" color="text" mb={2}>
+          Join the growing number of clinics that have improved their services with our platform.
+        </MKTypography>
+      </Grid>
+      <Grid
+        container
+        spacing={1}
+        sx={{ mt: 3 }}
+        alignItems="center"
+        justifyContent="center" // Center items horizontally
+      >
+        {testimonialData.map((testimonial, index) => (
+          <Grid item xs={12} md={6} lg={4}
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  mt: "1rem",
+                }}
+                key={index}
+          >
+            <DefaultReviewCard
+              name={testimonial.name}
+              date={testimonial.clinic}
+              review={testimonial.testimonial}
+              rating={testimonial.rating}
+              image={testimonial.avatar}
+              color={testimonial.backgroundColor}
+            />
+          </Grid>
+        ))}
+      </Grid>
+      <Divider sx={{ my: 6 }} />
+      {/*<Grid container spacing={3} justifyContent="center">*/}
+      {/*  <Grid item xs={6} md={4} lg={2}>*/}
+      {/*    <MKBox component="img" src={appleLogo} alt="Apple" width="100%" opacity={0.6} />*/}
+      {/*  </Grid>*/}
+      {/*  <Grid item xs={6} md={4} lg={2}>*/}
+      {/*    <MKBox component="img" src={facebookLogo} alt="Facebook" width="100%" opacity={0.6} />*/}
+      {/*  </Grid>*/}
+      {/*  <Grid item xs={6} md={4} lg={2}>*/}
+      {/*    <MKBox component="img" src={nasaLogo} alt="Nasa" width="100%" opacity={0.6} />*/}
+      {/*  </Grid>*/}
+      {/*  <Grid item xs={6} md={4} lg={2}>*/}
+      {/*    <MKBox component="img" src={vodafoneLogo} alt="Vodafone" width="100%" opacity={0.6} />*/}
+      {/*  </Grid>*/}
+      {/*  <Grid item xs={6} md={4} lg={2}>*/}
+      {/*    <MKBox*/}
+      {/*      component="img"*/}
+      {/*      src={digitalOceanLogo}*/}
+      {/*      alt="DigitalOcean"*/}
+      {/*      width="100%"*/}
+      {/*      opacity={0.6}*/}
+      {/*    />*/}
+      {/*  </Grid>*/}
+      {/*</Grid>*/}
+      {/*</Container>*/}
     </MKBox>
   );
 }

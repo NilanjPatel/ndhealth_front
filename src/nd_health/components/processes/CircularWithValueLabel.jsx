@@ -8,7 +8,7 @@ import Box from "@mui/material/Box";
 function CircularProgressWithLabel({ value }) {
   return (
     <Box sx={{ position: "relative", display: "inline-flex" }}>
-      <CircularProgress variant="determinate" value={value} />
+      `<CircularProgress variant="determinate" value={value} />`
       <Box
         sx={{
           top: 0,

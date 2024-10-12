@@ -19,12 +19,12 @@ function BasicLayout({ image, children }) {
     <>
       <DefaultNavbar
         routes={routes}
-        action={{
-          type: "external",
-          route: "/join",
-          label: "join Now",
-          color: "info",
-        }}
+        // action={{
+        //   type: "external",
+        //   route: "/join",
+        //   label: "join Now",
+        //   color: "info",
+        // }}
         transparent
         light
       />
@@ -40,7 +40,7 @@ function BasicLayout({ image, children }) {
             image &&
             `${linearGradient(
               rgba(gradients.dark.main, 0.6),
-              rgba(gradients.dark.state, 0.6)
+              rgba(gradients.dark.state, 0.6),
             )}, url(${image})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -49,7 +49,7 @@ function BasicLayout({ image, children }) {
       />
       <MKBox px={1} width="100%" height="100vh" mx="auto" position="relative" zIndex={2}>
         <Grid container spacing={1} justifyContent="center" alignItems="center" height="100%">
-          <Grid item xs={11} sm={9} md={5} lg={4} xl={3}>
+          <Grid item xs={11} sm={9} md={5} lg={4} xl={3} sx={{ mt: { xs: 15, md: 0 }, mb: { xs: 15 } }}>
             {children}
           </Grid>
         </Grid>

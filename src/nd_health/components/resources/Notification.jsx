@@ -37,10 +37,10 @@ function NotificationDialog({ open, onClose, content, isError }) {
       className={isError ? "error" : "success"}
       PaperProps={{ style: { boxShadow: `28px 13px 143px 19px ${color}` } }}
     >
-      <DialogTitle sx={{ color: "black" }}>Notification</DialogTitle>
-      <DialogContent sx={{ color: "black" }}>{content}</DialogContent>
+      <DialogTitle sx={{ color: "black", fontWeight: "bold" }}>Notification</DialogTitle>
+      <DialogContent sx={{ color: "#000000" }}>{content}</DialogContent>
       <DialogActions>
-        <Button sx={{ color: "black" }} onClick={handleCloseModal}>
+        <Button sx={{ fontSize: "1rem", fontWeight: "bold" }} onClick={handleCloseModal} variant="contained" color="info">
           Close
         </Button>
       </DialogActions>

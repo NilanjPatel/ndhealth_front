@@ -12,7 +12,7 @@ function Information() {
   return (
     <MKBox component="section" py={6} my={6}>
       <Container>
-        <Grid container item xs={11} spacing={3} alignItems="center" sx={{ mx: "auto" }}>
+        <Grid container item xs={12} spacing={1} alignItems="center" sx={{ mx: "auto" }}>
           <Grid item xs={12} lg={4} sx={{ mx: "auto" }}>
             <RotatingCard>
               <RotatingCardFront
@@ -34,7 +34,7 @@ function Information() {
             </RotatingCard>
           </Grid>
           <Grid item xs={12} lg={7} sx={{ ml: "auto" }}>
-            <Grid container spacing={3}>
+            <Grid container spacing={3} sx={{ mt: { xs: 3, md: 0 } }}>
               <Grid item xs={12} md={6}>
                 <DefaultInfoCard
                   icon="notifications"
@@ -54,7 +54,7 @@ function Information() {
               <Grid item xs={12} md={6}>
                 <DefaultInfoCard
                   icon="savings"
-                  title="Efficiency Savings"
+                  title="Savings"
                   description="Reduce operational costs and save time."
                 />
               </Grid>
@@ -62,7 +62,7 @@ function Information() {
                 <DefaultInfoCard
                   icon="desktop_windows"
                   title="Patient Kiosk"
-                  description="Self-service check-in and information updates to free up staff."
+                  description="Self-service check-in and information updates."
                 />
               </Grid>
             </Grid>

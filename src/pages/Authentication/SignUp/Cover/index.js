@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogTitle, FormControlLabel, Switch, Grid } fr
 import NotificationDialog from "../../../../nd_health/components/resources/Notification";
 
 // @mui/joi
-import CircularProgress from "@mui/joy/CircularProgress";
+import NdLoader from "nd_health/components/resources/Ndloader";
 
 // Material Kit 2 PRO React components
 import MKBox from "components/MKBox";
@@ -106,7 +106,7 @@ function Cover() {
         }),
       });
       const data = await response.json();
-
+      console.log(`Response:${JSON.stringify(response)}`);
       if (data.status === "success") {
         setSubmitbutton(true);
         handleSuccess(data.message);
@@ -123,11 +123,13 @@ function Cover() {
           password: "",
           password1: "",
         });
-      } else {
+      }
+      else {
         setSubmitbutton(true);
         handleFailure(data.message);
         // console.error('Error creating staff:', error);
       }
+
     } catch (error) {
       setSubmitbutton(true);
 
@@ -207,7 +209,11 @@ function Cover() {
     } else if (field === "username") {
       // handleUsernameChange(value);
     } else if (field === "ohip") {
-      if (value.length >= 6) {
+      //remove non digit characters
+      formattedValue = value.replace(/\D/g, ""); // \D matches any non-digit character
+
+      if (formattedValue.length >= 6) {
+
         setIsOhipValid(true);
       } else {
         setIsOhipValid(false);
@@ -478,14 +484,14 @@ function Cover() {
               </MKBox>
             </Grid>
             <Grid item xs={12} md={6}>
-              <MKBox>
+              <MKBox sx={{ display: "flex", gap: 2 }}>
                 <MKButton m={2} onClick={handleClose} color="primary">
                   Cancel
                 </MKButton>
                 <MKButton
                   m={2}
                   onClick={handleSignup}
-                  color="primary"
+                  color="info"
                   variant={"contained"}
                   disabled={
                     !isEmailValid ||
@@ -527,7 +533,7 @@ function Cover() {
             zIndex: 900000,
           }}
         >
-          <CircularProgress size="lg" variant="solid" value={70} color="primary" />
+          <NdLoader size="lg" variant="solid" value={70} color="primary" />
         </div>
       )}
     </BasicLayout>

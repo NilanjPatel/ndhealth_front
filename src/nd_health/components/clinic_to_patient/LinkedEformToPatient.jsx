@@ -25,6 +25,7 @@ import { redirectHomeM } from "../resources/utils";
 // import MKTypography from "../../../components/MKTypography";
 // import MKBox from "../../../components/MKBox";
 import MKButton from "../../../components/MKButton";
+import GoHome from "../resources/GoHome";
 //
 // const useStyles = makeStyles((theme) => ({
 //   tableContainer: {
@@ -184,13 +185,7 @@ const LinkedEformToPatient = () => {
               </CardContent>
               <CardActionArea style={{ margin: "10px" }}>
                 {/*<Avatar>*/}
-                <MKButton
-                  onClick={() => redirectHomeM(clinicSlug)}
-                  color="primary"
-                  variant={"contained"}
-                >
-                  Back
-                </MKButton>
+                <GoHome clinicSlug={clinicSlug}/>
                 {/*</Avatar>*/}
               </CardActionArea>
             </Card>

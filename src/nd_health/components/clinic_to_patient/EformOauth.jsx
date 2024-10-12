@@ -25,6 +25,7 @@ import NotificationDialog from "../resources/Notification";
 // import MKTypography from "../../../components/MKTypography";
 // import MKBox from "../../../components/MKBox";
 import MKButton from "../../../components/MKButton";
+import GoHome from "../resources/GoHome";
 
 const EformOauth = () => {
   // const location = useLocation();
@@ -130,18 +131,8 @@ const EformOauth = () => {
             {/* <h3>Book appointment at {clinicInfo.name}</h3> */}
             <h3>Find forms assigned to you</h3>
             <Card>
-              <Grid item xs={12} md={12}>
-                <Typography style={{ color: "red", fontSize: "1rem", padding: "0.8rem" }}>
-                  <MKButton
-                    style={{ padding: "0.8rem" }}
-                    onClick={() => redirectHomeM(clinicSlug)}
-                    color="primary"
-                    variant={"contained"}
-                  >
-                    Home
-                  </MKButton>
-                </Typography>
-              </Grid>
+
+              <GoHome clinicSlug={clinicSlug}/>
               <CardHeader
                 title="Verify Your Identity"
                 titleTypographyProps={{ style: { fontSize: "1rem", fontWeight: "bold" } }}
@@ -191,11 +182,7 @@ const EformOauth = () => {
 
             {/* <Grid container spacing={2} > */}
 
-            <div style={{ top: "0", right: "0", padding: "8px" }}>
-              <Link to={`/clinic/${clinicSlug}/policy`} style={{ color: "black" }}>
-                Clinic Policy
-              </Link>
-            </div>
+
 
             {/* </Grid> */}
           </>
