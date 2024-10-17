@@ -25,7 +25,7 @@ const DisplayPolicy = () => {
       >
         <Toolbar />
       </div>
-      <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.6.172/build/pdf.worker.min.js`}>
+      <Worker workerUrl={`https://unpkg.com/pdfjs-dist@4.7.76/build/pdf.mjs`}>
         <Viewer fileUrl={NDHealthIncPolicy} plugins={[toolbarPluginInstance]} />
       </Worker>
     </div>

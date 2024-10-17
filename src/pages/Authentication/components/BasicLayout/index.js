@@ -10,11 +10,15 @@ import MKBox from "components/MKBox";
 // Material Kit 2 PRO React example components
 import DefaultNavbar from "examples/Navbars/DefaultNavbar";
 import SimpleFooter from "examples/Footers/SimpleFooter";
+import { useTheme } from "@mui/material/styles";
 
 // Material kit 2 PRO React page layout routes
 import routes from "routes";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 function BasicLayout({ image, children }) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // Adjust the breakpoint as needed
   return (
     <>
       <DefaultNavbar
@@ -43,13 +47,14 @@ function BasicLayout({ image, children }) {
               rgba(gradients.dark.state, 0.6),
             )}, url(${image})`,
           backgroundSize: "cover",
-          backgroundPosition: "center",
+          backgroundPosition: "center center",
           backgroundRepeat: "no-repeat",
         }}
       />
       <MKBox px={1} width="100%" height="100vh" mx="auto" position="relative" zIndex={2}>
-        <Grid container spacing={1} justifyContent="center" alignItems="center" height="100%">
-          <Grid item xs={11} sm={9} md={5} lg={4} xl={3} sx={{ mt: { xs: 15, md: 0 }, mb: { xs: 15 } }}>
+        <Grid container spacing={1} justifyContent={isMobile ? "center" : "flex-end"} // 'flex-end' aligns to the right
+              alignItems="center" height="100%">
+          <Grid item xs={11} sm={9} md={5} lg={4} xl={3} sx={{ mt: { xs: 15, md: 10 }, mb: { xs: 15 }, mr: { md: 30 } }}>
             {children}
           </Grid>
         </Grid>

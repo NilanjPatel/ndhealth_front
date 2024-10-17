@@ -26,8 +26,8 @@
 
 // @mui material components
 import Icon from "@mui/material/Icon";
-import logoCT from "./nd_health/assets/images/nd-health-logo.png";
-import logosvg from "./nd_health/assets/images/clinic_landing_page/Basic Animations (1).svg"
+// import logoCT from "./nd_health/assets/images/nd-health-logo.png";
+import logosvg from "./nd_health/assets/images/logo.png"
 
 // // Pages
 // import CoworkingPage from "layouts/pages/landing-pages/coworking";
@@ -50,7 +50,6 @@ import logosvg from "./nd_health/assets/images/clinic_landing_page/Basic Animati
 // import SignInSimplePage from "layouts/authentication/sign-in/simple";
 // import SignUpCoverPage from "layouts/authentication/sign-up/cover";
 // import ResetPasswordPage from "layouts/authentication/reset-password/cover";
-
 // // Sections
 // import PageHeaders from "layouts/sections/page-sections/page-headers";
 // import Features from "layouts/sections/page-sections/featuers";
@@ -460,7 +459,7 @@ const routes = [
     {
         brand: {
             name: "ND Health",
-            image: logosvg,
+            icon: logosvg,
             route: "/",
         },
     },

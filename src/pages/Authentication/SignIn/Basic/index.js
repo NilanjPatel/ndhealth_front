@@ -24,7 +24,7 @@ import MKButton from "components/MKButton";
 import BasicLayout from "pages/Authentication/components/BasicLayout";
 
 // Images
-import bgImage from "assets/images/bg-sign-in-basic.jpeg";
+import bgImage from "assets/images/toronto_cn_tower_side.jpg";
 import axios from "axios";
 import API_BASE_PATH from "../../../../apiConfig";
 
@@ -84,6 +84,7 @@ function SignInBasic() {
           p={2}
           mb={1}
           textAlign="center"
+
         >
           <MKTypography variant="h2" fontWeight="medium" color="white" mt={1}>
             Sign in

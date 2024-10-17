@@ -1,11 +1,6 @@
 // src/components/clinicInfo.js
-import API_BASE_PATH from "apiConfig";
-
-// Adjust the path based on your project structure
-
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
-
+import { useLocation, useParams } from "react-router-dom";
 import {
   Button,
   Dialog,
@@ -13,44 +8,40 @@ import {
   DialogContent,
   DialogActions,
   CardActions,
+  Grid,
+  Card,
+  CardContent,
+  CardHeader,
+  Typography,
+  IconButton,
+  Avatar,
 } from "@mui/material";
-import { useParams } from "react-router-dom";
-
-import { Grid, Card, CardContent, CardHeader } from "@mui/material";
+import { AccessTime, Event, Cancel, Home } from "@mui/icons-material";
 import Layout from "nd_health/components/Layout";
 import "nd_health/components/css/Marquee.css";
-// import MKTypography from "components/MKTypography";
-// import MKBox from "../../components/MKBox";
 import MKButton from "../../components/MKButton";
+import NotificationDialog from "./resources/Notification";
+import API_BASE_PATH from "apiConfig";
 
 const ManageAppointment = () => {
   const location = useLocation();
-  // const navigate = useNavigate();
-  // const [clinicInfo, setClinicInfo] = useState(null);
   const { clinicSlug } = useParams();
   const { appointmentData, clinicInfo } = location.state || {};
-  // const { clinicInfo } = location.state || {};
-  // const pathSegments = location.pathname.split("/");
-  // const { cancelAppointment, setCancelAppointment } = useState(false);
   const [homeButton, setHomeButton] = useState(true);
-  const [buttonpressed, setButtonPressed] = useState(true);
-  const [openModal, setOpenModal] = useState(false);
-  const [modalContent, setModalContent] = useState("");
-  // const [openApp, setOpenApp] = useState(false);
+  const [disabledAppointments, setDisabledAppointments] = useState({});
   const [notice, setNotice] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [modalContent, setModalContent] = useState("");
 
-  // // new changes #TODO
-  // const [buttonState, setButtonState] = useState({
-  //   homeButton: true,
-  //   buttonPressed: true,
-  // });
-  // // end changes
+  useEffect(() => {
+    console.log(`data:${JSON.stringify(appointmentData)}`);
+  }, [appointmentData]);
 
   useEffect(() => {
     const fetchClinicAppointmentPolicy = async () => {
       try {
         const response = await fetch(`${API_BASE_PATH}/clinic/${clinicSlug}/`);
-
         const data = await response.json();
 
         if (data.notices) {
@@ -71,29 +62,18 @@ const ManageAppointment = () => {
       const data = await response.json();
 
       if (!data.status) {
-        setOpenModal(true);
-        setModalContent("Something went wrong. Please try again later.");
-        setHomeButton(true);
-        setButtonPressed(true);
+        handleFailure("Something went wrong. Please try again later.");
       }
 
       if (data.status === "success") {
-        setModalContent(data.message);
-        setOpenModal(true);
-        setHomeButton(true);
-        setButtonPressed(false);
+        handleSuccess(data.message);
+        setDisabledAppointments((prev) => ({ ...prev, [appid]: true }));
       } else if (data.status === "failed") {
-        setModalContent(data.message);
-        setOpenModal(true);
-        setHomeButton(true);
-        setButtonPressed(true);
+        handleFailure(data.message);
       }
     } catch (error) {
       console.error("Error updating appointment:", error);
-      setOpenModal(true);
-      setModalContent("Appointment cancelation failed. Please try again later.");
-      setHomeButton(true);
-      setButtonPressed(true);
+      handleFailure("Appointment cancellation failed. Please try again later.");
     }
   };
 
@@ -111,8 +91,19 @@ const ManageAppointment = () => {
   };
 
   const redirectHome = () => {
-    // setOpenApp(false);
     window.location.href = `/clinic/${clinicSlug}/`;
+  };
+
+  const handleFailure = (message) => {
+    setModalContent(message);
+    setIsError(true);
+    setOpenModal(true);
+  };
+
+  const handleSuccess = (message) => {
+    setModalContent(message);
+    setIsError(false);
+    setOpenModal(true);
   };
 
   return (
@@ -130,24 +121,36 @@ const ManageAppointment = () => {
             <Card>
               <CardHeader title={`Information of your appointment at ${clinicInfo.name}`} />
               {appointmentData.appointment.map((app) => (
-                <Card key={app.id} padding={2}>
+                <Card key={app.id} sx={{ margin: 2, boxShadow: 3 }}>
                   <CardContent>
-                    <Grid item>
-                      <label htmlFor="name">Date : {app.appointmentDate}</label>
-                    </Grid>
-                    <Grid item>
-                      <label htmlFor="name">Time : {formatTime(app.startTime)} </label>
-                    </Grid>
-                    <Grid item>
-                      <MKButton
-                        color="primary"
-                        variant="contained"
-                        disabled={!buttonpressed}
-                        onClick={() => handleRequest(app.id)}
-                        // fullWidth
-                      >
-                        Cancel Appointment
-                      </MKButton>
+                    <Grid container spacing={2} alignItems="center">
+                      <Grid item>
+                        <Avatar sx={{ bgcolor: "primary.main" }}>
+                          <Event />
+                        </Avatar>
+                      </Grid>
+                      <Grid item xs>
+                        <Typography variant="h6" component="div">
+                          {app.appointmentType || "Appointment Details"}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          <AccessTime fontSize="small" /> {formatTime(app.startTime)}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Date: {app.appointmentDate}
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <MKButton
+                          color="primary"
+                          variant="contained"
+                          disabled={disabledAppointments[app.id] || false}
+                          onClick={() => handleRequest(app.id)}
+                          startIcon={<Cancel />}
+                        >
+                          Cancel
+                        </MKButton>
+                      </Grid>
                     </Grid>
                   </CardContent>
                 </Card>
@@ -160,6 +163,7 @@ const ManageAppointment = () => {
                     disabled={!homeButton}
                     onClick={redirectHome}
                     fullWidth
+                    startIcon={<Home />}
                   >
                     Go Home
                   </MKButton>
@@ -172,13 +176,12 @@ const ManageAppointment = () => {
         )}
 
         {/* Modal */}
-        <Dialog open={openModal} onClose={handleCloseModal}>
-          <DialogTitle>Notification</DialogTitle>
-          <DialogContent>{modalContent}</DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseModal}>Close</Button>
-          </DialogActions>
-        </Dialog>
+        <NotificationDialog
+          open={openModal}
+          onClose={handleCloseModal}
+          content={modalContent}
+          isError={isError}
+        />
       </div>
     </Layout>
   );

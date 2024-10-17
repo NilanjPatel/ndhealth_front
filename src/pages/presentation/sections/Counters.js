@@ -94,7 +94,7 @@ function Counters() {
               icon={<Icon>apps</Icon>} // Adding an icon
               count={4}
               title="Applications Offered"
-              description="We Diverse applications to meet all your needs"
+              description="Diverse applications to meet all your needs"
             />
           </Grid>
           <Grid item xs={12} md={4} display="flex">

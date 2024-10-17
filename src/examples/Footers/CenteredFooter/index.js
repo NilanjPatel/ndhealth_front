@@ -1,17 +1,17 @@
 /**
-=========================================================
-* Material Kit 2 PRO React - v2.1.0
-=========================================================
+ =========================================================
+ * Material Kit 2 PRO React - v2.1.0
+ =========================================================
 
-* Product Page: https://www.creative-tim.com/product/material-kit-pro-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
+ * Product Page: https://www.creative-tim.com/product/material-kit-pro-react
+ * Copyright 2023 Creative Tim (https://www.creative-tim.com)
 
-Coded by www.creative-tim.com
+ Coded by www.creative-tim.com
 
  =========================================================
 
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ */
 
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
@@ -43,7 +43,7 @@ function CenteredFooter({ company, links, socials, light }) {
       component={Link}
       href={link.href}
       variant="body2"
-      color={light ? "white" : "secondary"}
+      color={light ? "white" : "dark"}
       fontWeight="regular"
     >
       {link.name}
@@ -56,7 +56,7 @@ function CenteredFooter({ company, links, socials, light }) {
       component={Link}
       href={social.link}
       variant="body2"
-      color={light ? "white" : "secondary"}
+      color={light ? "white" : "dark"}
       fontWeight="regular"
     >
       {social.icon}
@@ -73,6 +73,7 @@ function CenteredFooter({ company, links, socials, light }) {
             justifyContent="center"
             spacing={{ xs: 2, lg: 3, xl: 6 }}
             mb={3}
+            color={"dark"}
           >
             {renderLinks}
           </Stack>
@@ -83,19 +84,19 @@ function CenteredFooter({ company, links, socials, light }) {
           </Stack>
         </Grid>
         <Grid item xs={12} lg={8} sx={{ textAlign: "center" }}>
-          <MKTypography variant="body2" color={light ? "white" : "secondary"}>
-            Copyright &copy; {year} Material by{" "}
+          <MKTypography variant="body2" color={light ? "white" : "dark"}>
+            All rights reserved. &copy;{" "}
             <MKTypography
               component={Link}
               href={href}
               target="_blank"
               rel="noreferrer"
               variant="body2"
-              color={light ? "white" : "secondary"}
+              color={light ? "white" : "dark"}
             >
               {name}
             </MKTypography>
-            .
+            {" "} {year}.
           </MKTypography>
         </Grid>
       </Grid>
@@ -105,30 +106,24 @@ function CenteredFooter({ company, links, socials, light }) {
 
 // Setting default values for the props of CenteredFooter
 CenteredFooter.defaultProps = {
-  company: { href: "#", name: "Creative Tim" },
+  company: { href: "#", name: "ND Health" },
   links: [
-    { href: "#", name: "Company" },
-    { href: "#", name: "About Us" },
-    { href: "#", name: "Team" },
-    { href: "#", name: "Products" },
-    { href: "#", name: "Blog" },
-    { href: "https://www.creative-tim.com/license", name: "License" },
+    { href: "#", name: "ND Health" },
+    // { href: "#", name: "About Us" },
+    // { href: "#", name: "Team" },
+    // { href: "#", name: "Products" },
+    // { href: "#", name: "Blog" },
+    { href: "/OurPolicy", name: "Privacy Policy" },
   ],
   socials: [
-    { icon: <FacebookIcon fontSize="small" />, link: "https://www.facebook.com/CreativeTim/" },
     {
-      icon: <TwitterIcon fontSize="small" />,
-      link: "https://twitter.com/creativetim",
+      icon: <FacebookIcon />,
+      link: "https://www.facebook.com/profile.php?id=61555491107393",
     },
     {
-      icon: <InstagramIcon fontSize="small" />,
-      link: "https://www.instagram.com/creativetimofficial/",
+      icon: <InstagramIcon />,
+      link: "https://www.instagram.com/nd.health.ca/",
     },
-    {
-      icon: <PinterestIcon fontSize="small" />,
-      link: "https://ro.pinterest.com/thecreativetim/",
-    },
-    { icon: <GitHubIcon fontSize="small" />, link: "https://github.com/creativetimofficial" },
   ],
   light: false,
 };

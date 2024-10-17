@@ -52,7 +52,7 @@ function GettingStart() {
                   description="Get our Firefox add-on to enhance your workflow with seamless integration."
                   action={{
                     type: "external",
-                    route: "https://addons.mozilla.org/en-CA/firefox/addon/nd-care-by-nd-health/",
+                    route: "https://addons.mozilla.org/en-CA/firefox/addon/nd-health/",
                     label: "Install Now",
                   }}
                 />

@@ -112,7 +112,7 @@ function PricingOne() {
                   price={{ currency: "$", value: tabType === "annual" ? 0 : 0, type: "/mo" }}
                   specifications={[
                     { label: "Health card validation", includes: true },
-                    { label: "Keyboard Shortcuts", includes: true },
+                    { label: "Keyboard Shortcuts", includes: false },
                     { label: "Online Appointment", includes: false },
                     { label: "Conformation and reminder Emails", includes: false },
                     { label: "Secure emails", includes: false },

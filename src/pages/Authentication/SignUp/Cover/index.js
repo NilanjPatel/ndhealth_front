@@ -20,7 +20,7 @@ import MKButton from "components/MKButton";
 import BasicLayout from "pages/Authentication/components/BasicLayout";
 
 // Images
-import bgImage from "assets/images/bg-sign-up-cover.jpeg";
+import bgImage from "assets/images/toronto_cn_tower_side.jpg";
 import {
   checkUsername,
   formatPhone,
@@ -137,10 +137,10 @@ function Cover() {
     }
 
     if (successSignup === true) {
-      navigate("http://localhost:8000");
+      navigate("/");
     }
     if (successSignup === true) {
-      window.location.href = "http://localhost:8000";
+      window.location.href = "/";
     }
   };
   const handleEmailChange = (value) => {
@@ -364,7 +364,7 @@ function Cover() {
             <Grid item xs={12} md={6}>
               <MKBox>
                 <MKInput
-                  autoFocus
+                  // autoFocus
                   label="Phone"
                   type="text"
                   fullWidth
@@ -378,7 +378,7 @@ function Cover() {
             <Grid item xs={12} md={6}>
               <MKBox>
                 <MKInput
-                  autoFocus
+                  // autoFocus
                   label="Address"
                   value={updatedInfo.address}
                   onChange={(e) => handleInputChange("address", e.target.value)}
@@ -392,7 +392,7 @@ function Cover() {
             <Grid item xs={12} md={6}>
               <MKBox>
                 <MKInput
-                  autoFocus
+                  // autoFocus
                   label="City"
                   value={updatedInfo.city}
                   onChange={(e) => handleInputChange("city", e.target.value)}
@@ -406,7 +406,7 @@ function Cover() {
             <Grid item xs={12} md={6}>
               <MKBox>
                 <MKInput
-                  autoFocus
+                  // autoFocus
                   label="Postal - XXX-XXX"
                   value={updatedInfo.postal}
                   onChange={(e) => handleInputChange("postal", e.target.value)}
@@ -422,7 +422,7 @@ function Cover() {
             <Grid item xs={12} md={12}>
               <MKBox>
                 <MKInput
-                  autoFocus
+                  // autoFocus
                   label="Primary Doctor's OHIP Billing number"
                   value={updatedInfo.ohip}
                   onChange={(e) => handleInputChange("ohip", e.target.value)}

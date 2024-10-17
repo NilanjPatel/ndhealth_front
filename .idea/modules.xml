@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../ndfront/.idea/ndfront.iml" filepath="$PROJECT_DIR$/../ndfront/.idea/ndfront.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../extension/firefox-extension/.idea/firefox-extension.iml" filepath="$PROJECT_DIR$/../extension/firefox-extension/.idea/firefox-extension.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/ndhealth_front.iml" filepath="$PROJECT_DIR$/.idea/ndhealth_front.iml" />
       <module fileurl="file://$PROJECT_DIR$/../extension/react-chrome-extension/.idea/react-chrome-extension.iml" filepath="$PROJECT_DIR$/../extension/react-chrome-extension/.idea/react-chrome-extension.iml" />
     </modules>

@@ -18,7 +18,9 @@ import MKSocialButton from "components/MKSocialButton";
 
 // Material Kit 2 PRO React examples
 import DefaultNavbar from "examples/Navbars/DefaultNavbar";
-import DefaultFooter from "examples/Footers/DefaultFooter";
+// import DefaultFooter from "examples/Footers/DefaultFooter";
+import CenteredFooter from "examples/Footers/CenteredFooter";
+
 import FilledInfoCard from "examples/Cards/InfoCards/FilledInfoCard";
 
 // Presentation page sections
@@ -43,6 +45,7 @@ import footerRoutes from "footer.routes";
 
 // Images
 import bgImage from "nd_health/assets/images/medical_clinic_2.jpeg";
+// import bgImage from "nd_health/assets/images/4919727.jpg";
 
 // import MKButton from "../../components/MKButton";
 import logoCT from "nd_health/assets/images/clinic_landing_page/Basic Animations (1).svg";
@@ -133,9 +136,10 @@ function Presentation() {
             >
               <span ref={typedJSRef} />
             </MKTypography>
-            <MKTypography variant="body1" color="white" opacity={0.8} mt={1} mb={3}
+            <MKTypography variant="body1"  opacity={0.8} mt={1} mb={3}
                           sx={({ breakpoints, typography: { size } }) => ({
-                            fontWeight: "500",
+                            fontWeight: "900",
+                            color:"#f6e222",
                             [breakpoints.down("xl")]: {
                               fontSize: size["3xl"],
                             },
@@ -160,7 +164,8 @@ function Presentation() {
           mx: { xs: 0, lg: 3 },
           mt: -8,
           mb: 4,
-          backgroundColor: ({ palette: { white }, functions: { rgba } }) => rgba(white.main, 0.8),
+          backgroundColor: ({ palette: { white }, functions: { rgba } }) => rgba(white.main, 0.6),
+          // background: "linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(0, 0, 0, 0.6))",
           backdropFilter: "saturate(200%) blur(30px)",
           boxShadow: ({ boxShadows: { xxl } }) => xxl,
         }}
@@ -223,7 +228,7 @@ function Presentation() {
         </MKBox>
       </Card>
       <MKBox pt={6} px={1} mt={6}>
-        <DefaultFooter content={footerRoutes} />
+        <CenteredFooter content={footerRoutes} />
       </MKBox>
     </>
   );

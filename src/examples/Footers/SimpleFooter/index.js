@@ -43,28 +43,28 @@ function SimpleFooter({ company, links, light }) {
         justifyContent="space-between"
         alignItems="center"
       >
-        <MKBox
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          flexWrap="wrap"
-          color={light ? "white" : "text"}
-          fontSize={size.sm}
-        >
-          &copy; {new Date().getFullYear()}, made with
-          <MKBox fontSize={size.md} color={light ? "white" : "text"} mb={-0.5} mx={0.25}>
-            <Icon color="inherit" fontSize="inherit">
-              favorite
-            </Icon>
-          </MKBox>
-          by
-          <Link href={href} target="_blank">
-            <MKTypography variant="button" fontWeight="medium" color={light ? "white" : "dark"}>
-              &nbsp;{name}&nbsp;
-            </MKTypography>
-          </Link>
-          for a better caring.
-        </MKBox>
+        {/*<MKBox*/}
+        {/*  display="flex"*/}
+        {/*  justifyContent="center"*/}
+        {/*  alignItems="center"*/}
+        {/*  flexWrap="wrap"*/}
+        {/*  color={light ? "white" : "text"}*/}
+        {/*  fontSize={size.sm}*/}
+        {/*>*/}
+        {/*  &copy; {new Date().getFullYear()}, made with*/}
+        {/*  <MKBox fontSize={size.md} color={light ? "white" : "text"} mb={-0.5} mx={0.25}>*/}
+        {/*    <Icon color="inherit" fontSize="inherit">*/}
+        {/*      favorite*/}
+        {/*    </Icon>*/}
+        {/*  </MKBox>*/}
+        {/*  by*/}
+        {/*  <Link href={href} target="_blank">*/}
+        {/*    <MKTypography variant="button" fontWeight="medium" color={light ? "white" : "dark"}>*/}
+        {/*      &nbsp;{name}&nbsp;*/}
+        {/*    </MKTypography>*/}
+        {/*  </Link>*/}
+        {/*  for a better caring.*/}
+        {/*</MKBox>*/}
         <MKBox
           component="ul"
           sx={({ breakpoints }) => ({
@@ -93,10 +93,10 @@ function SimpleFooter({ company, links, light }) {
 SimpleFooter.defaultProps = {
   company: { href: "https://www.nd-health.ca/", name: "ND Health" },
   links: [
-    { href: "https://www.nd-health.ca/", name: "ND Health" },
-    { href: "https://www.nd-health.ca/aboutus", name: "About Us" },
-    { href: "https://www.nd-health.ca/blog", name: "Blog" },
-    { href: "https://www.nd-health.ca/policy", name: "Privacy Policy" },
+    // { href: "https://www.nd-health.ca/", name: "ND Health" },
+    // { href: "https://www.nd-health.ca/aboutus", name: "About Us" },
+    // { href: "https://www.nd-health.ca/blog", name: "Blog" },
+    // { href: "/OurPolicy", name: "Privacy Policy" },
   ],
   light: false,
 };
