@@ -44,7 +44,8 @@ import routes from "routes";
 import footerRoutes from "footer.routes";
 
 // Images
-import bgImage from "nd_health/assets/images/medical_clinic_2.jpeg";
+// import bgImage from "nd_health/assets/images/medical_clinic_2.jpeg";
+import bgImage from "nd_health/assets/images/4919727.jpg";
 // import bgImage from "nd_health/assets/images/4919727.jpg";
 
 // import MKButton from "../../components/MKButton";
@@ -94,7 +95,7 @@ function Presentation() {
       />
       <MKBox
         ref={headerRef}
-        minHeight="75vh"
+        minHeight="100vh"
         width="100%"
         sx={{
           backgroundImage: ({
@@ -102,9 +103,10 @@ function Presentation() {
                               palette: { gradients },
                             }) => `${linearGradient(rgba(gradients.dark.main, 0.2), rgba(gradients.dark.state, 0.6))}, url(${bgImage})`,
           backgroundSize: "cover",
-          backgroundPosition: "center",
+          // backgroundPosition: "center",
           display: "grid",
           placeItems: "center",
+          paddingTop:'1rem'
 
         }}
       >
@@ -123,11 +125,12 @@ function Presentation() {
               variant="h1"
               color="white"
               sx={({ breakpoints, typography: { size } }) => ({
-                [breakpoints.down("xl")]: {
-                  fontSize: size["4xl"],
-                },
-                [breakpoints.down("lg")]: { fontSize: size["3xl"] },
-                [breakpoints.down("md")]: { fontSize: size["2xl"] },
+                fontSize: "4rem",
+                // [breakpoints.down("xl")]: {
+                //   fontSize: size["4rem"],
+                // },
+                // [breakpoints.down("lg")]: { fontSize: size["4rem"] },
+                // [breakpoints.down("md")]: { fontSize: size["4rem"] },
                 [breakpoints.down("sm")]: { fontSize: size["xl"] },
                 [breakpoints.down("xs")]: { fontSize: size["md"] },
 
@@ -136,17 +139,17 @@ function Presentation() {
             >
               <span ref={typedJSRef} />
             </MKTypography>
-            <MKTypography variant="body1"  opacity={0.8} mt={1} mb={3}
+            <MKTypography variant="h1" opacity={0.8} mt={1} mb={3}
+                          color="white"
                           sx={({ breakpoints, typography: { size } }) => ({
-                            fontWeight: "900",
-                            color:"#f6e222",
-                            [breakpoints.down("xl")]: {
-                              fontSize: size["3xl"],
-                            },
-                            [breakpoints.down("lg")]: { fontSize: size["2xl"] },
-                            [breakpoints.down("md")]: { fontSize: size["xl"] },
-                            [breakpoints.down("sm")]: { fontSize: size["0.81rem"] },
-                            [breakpoints.down("xs")]: { fontSize: size["0.81rem"] },
+                            fontSize: "2rem",
+                            // [breakpoints.down("xl")]: {
+                            //   fontSize: size["4rem"],
+                            // },
+                            // [breakpoints.down("lg")]: { fontSize: size["4rem"] },
+                            // [breakpoints.down("md")]: { fontSize: size["4rem"] },
+                            [breakpoints.down("sm")]: { fontSize: size["2rem"] },
+                            [breakpoints.down("xs")]: { fontSize: size["2rem"] },
                           })}
 
             >

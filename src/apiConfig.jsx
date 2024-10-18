@@ -3,7 +3,7 @@
 // const API_BASE_URL = 'https://1e69-2607-fea8-33a0-e000-d7bb-d969-c269-fe6a.ngrok-free.app'; // Replace with your Django server URL
 const API_BASE_URL = "https://api.nd-health.ca";
 // const API_BASE_URL = "http://192.168.1.55:9000"; // Replace with your Django server URL
-// const API_BASE_URL = "http://192.168.88.14:9000"; // Replace with your Django server URL
+// const API_BASE_URL = "http://192.168.88.109:9000"; // Replace with your Django server URL
 // const API_BASE_URL = "http://10.0.0.130:9000"; // Replace with your Django server URL
 const API_BASE_PATH = `${API_BASE_URL}/api`;
 

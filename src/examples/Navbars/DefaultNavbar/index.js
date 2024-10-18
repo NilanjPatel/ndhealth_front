@@ -55,7 +55,39 @@ function DefaultNavbar({ brand, routes, transparent, light, action, sticky, rela
   const [arrowRef, setArrowRef] = useState(null);
   const [mobileNavbar, setMobileNavbar] = useState(false);
   const [mobileView, setMobileView] = useState(false);
+  //change with size
+  const [logoHeight, setLogoHeight] = useState("40px");
+  const [logoMarginLeft, setLogoMarginLeft] = useState("-8px");
+  const [logoMarginRight, setLogoMarginRight] = useState("8px");
 
+  useEffect(() => {
+    const updateLogoSize = () => {
+      const width = window.innerWidth;
+
+      if (width <= 480) {
+        setLogoHeight("25px");
+        setLogoMarginLeft("-3px");
+        setLogoMarginRight("3px");
+      } else if (width <= 768) {
+        setLogoHeight("30px");
+        setLogoMarginLeft("-3px");
+        setLogoMarginRight("3px");
+      } else if (width <= 1200) {
+        setLogoHeight("35px");
+      } else {
+        setLogoHeight("40px");
+      }
+    };
+
+    window.addEventListener("resize", updateLogoSize);
+
+    // Set initial height on component mount
+    updateLogoSize();
+
+    return () => {
+      window.removeEventListener("resize", updateLogoSize);
+    };
+  }, []);
   const openMobileNavbar = () => setMobileNavbar(!mobileNavbar);
 
   useEffect(() => {
@@ -480,7 +512,8 @@ function DefaultNavbar({ brand, routes, transparent, light, action, sticky, rela
             display="flex"
             alignItems="center"
           >
-            <img src={logosvg} alt="Logo" style={{ height: "40px", marginRight: "8px" }} />
+            <img src={logosvg} alt="Logo"
+                 style={{ height: logoHeight, marginRight: logoMarginRight, marginLeft: logoMarginLeft }} />
             <MKTypography variant="button" fontWeight="bold" color={light ? "white" : "dark"}>
               {brand}
             </MKTypography>

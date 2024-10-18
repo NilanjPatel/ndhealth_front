@@ -1,33 +1,44 @@
-// FileDisplay.jsx
-import React from "react";
-import NDHealthIncPolicy from "nd_health/assets/pdfs/NDHealthIncPolicy.pdf"; // Import the PDF file
-import { useState } from "react";
-// src/PdfViewer.js
-import { Worker, Viewer } from "@react-pdf-viewer/core";
-import { toolbarPlugin } from "@react-pdf-viewer/toolbar";
-import "@react-pdf-viewer/core/lib/styles/index.css";
-import "@react-pdf-viewer/toolbar/lib/styles/index.css";
+import React, { useEffect, useState } from "react";
 
-// import samplePDF from './sample.pdf'; // Ensure your PDF file is in the src directory
+import API_BASE_PATH from "../../../apiConfig";
+
+// Import the main component
+import { Viewer } from "@react-pdf-viewer/core";
+
+// Import the styles
+import "@react-pdf-viewer/core/lib/styles/index.css";
+
+import { Worker } from "@react-pdf-viewer/core";
 
 const DisplayPolicy = () => {
-  const toolbarPluginInstance = toolbarPlugin();
-  const { Toolbar } = toolbarPluginInstance;
+  const [documents, setDocuments] = useState([]);
+
+
+  useEffect(() => {
+    const fetchClinicInfo = async () => {
+      try {
+        const response = await fetch(`${API_BASE_PATH}/assets/policy/`);
+        const data = await response.json();
+        setDocuments(data);
+        console.log(`Data:${JSON.stringify(data)}`);
+      } catch (error) {
+        console.error("Error fetching clinic information:", error);
+      }
+    };
+    fetchClinicInfo().then(r => {
+    });
+  }, []);
 
   return (
     <div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          marginBottom: "16px",
-        }}
-      >
-        <Toolbar />
-      </div>
-      <Worker workerUrl={`https://unpkg.com/pdfjs-dist@4.7.76/build/pdf.mjs`}>
-        <Viewer fileUrl={NDHealthIncPolicy} plugins={[toolbarPluginInstance]} />
+
+      {/*<h3>{documents.title}</h3>*/}
+      <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+        <Viewer
+          fileUrl={document.file} />
+
       </Worker>
+
     </div>
   );
 };
