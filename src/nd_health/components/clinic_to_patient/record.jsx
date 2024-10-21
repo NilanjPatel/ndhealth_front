@@ -1,9 +1,5 @@
-// src/components/clinicInfo.js
-import API_BASE_PATH from "../../../apiConfig";
-
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-
 import {
   Button,
   Dialog,
@@ -11,50 +7,36 @@ import {
   DialogContent,
   DialogActions,
   TextField,
-  CardActionArea,
+  Grid,
+  Card,
+  Typography,
+  CardHeader,
 } from "@mui/material";
-import { useParams, useNavigate } from "react-router-dom";
-
-import { Grid, Card, CardContent, Typography, CardHeader } from "@mui/material";
-
+import { useParams } from "react-router-dom";
 import Layout from "../Layout";
 import "./../css/Marquee.css";
-import { formatDob, formatHin, getTimezone, redirectHomeM } from "../resources/utils";
+import { formatDob, formatHin } from "../resources/utils";
 import HelmetComponent from "./../SEO/HelmetComponent";
 import { red } from "@mui/material/colors";
 import MKButton from "../../../components/MKButton";
 import Breadcrumbs from "../../../examples/Breadcrumbs";
 import Icon from "@mui/material/Icon";
+import API_BASE_PATH from "../../../apiConfig";
 
 const RecordOauth = () => {
-  // const location = useLocation();
   const { clinicSlug } = useParams();
   const [clinicInfo, setClinicInfo] = useState(null);
   const [buttonpressed, setButtonPressed] = useState(true);
-  const navigate = useNavigate();
-
-  // const pathSegments = location.pathname.split('/');
-  // const clinicSlugcurrent = clinicSlug || pathSegments[pathSegments.indexOf('clinic') + 1]
   const [hin, setHin] = useState("");
   const [dob, setDob] = useState("");
-
   const [openModal, setOpenModal] = useState(false);
   const [modalContent, setModalContent] = useState("");
-  // const [appointmentData, setAppointmentData] = useState(null);
   const [clinicInfoFetched, setClinicInfoFetched] = useState(false);
-
   const [doctorsMsgDisplay, setDoctorsMsg] = useState("none");
   const [authformdisplay, setAuthformdisplay] = useState("block");
-
-  const [secureFileData, setSecureFileData] = useState(null);
-  const [msgTitle, setMsgTitle] = useState("");
-  const [msgbody, setMsgBody] = useState("");
-  const [msgMessage, setMsgMessage] = useState("");
-  const [msgfirstName, setFirstName] = useState("");
-  const [msgExpiration_date, seteExpiration_date] = useState("");
-  const [msgUrls, setUrls] = useState([]);
-
+  const [secureFileData, setSecureFileData] = useState([]);
   const dobRef = useRef(null);
+
   useEffect(() => {
     const fetchClinicInfo = async () => {
       try {
@@ -71,21 +53,22 @@ const RecordOauth = () => {
       setClinicInfoFetched(true);
     }
   }, [clinicSlug, hin, clinicInfoFetched]);
+
   const handleHinChange = (e) => {
     const formattedHin = formatHin(e.target.value);
     setHin(formattedHin);
 
-    // Check if the formatted HIN is 12 characters and move focus to the DOB field
     if (formatHin(hin).length === 12 && dobRef.current) {
       dobRef.current.focus();
     }
   };
+
   const handleCloseModal = () => {
     setOpenModal(false);
   };
+
   const handleRequest = async () => {
     try {
-      // Make a request with clinicSlug, hin, and dob
       if (hin === "" || dob === "") {
         setModalContent("Please enter your health-card number and date of birth.");
         setOpenModal(true);
@@ -103,18 +86,12 @@ const RecordOauth = () => {
         },
         body: JSON.stringify({ healthcard: hin, birthday: dob, clinic_id: clinicInfo.id }),
       });
-      // Handle the response as needed
 
       const data = await response.json();
       if (data.status === "success") {
-        // navigate(`/clinic-forms/${clinicSlug}`, {state: {demo: data.demo, clinicInfo: clinicInfo,}}); // TODO change the demo
         setDoctorsMsg("block");
-        setSecureFileData(data);
-        setMsgTitle("Please Note :" + " " + data.title);
-        setMsgBody(data.body);
-        seteExpiration_date(data.expiration_date);
-        setFirstName(data.firstName);
-        setUrls(data.urls);
+        const sortedData = data.data.sort((a, b) => b.id - a.id);
+        setSecureFileData(sortedData);
         setAuthformdisplay("none");
       } else if (data.status === "failed") {
         setModalContent(data.message);
@@ -126,6 +103,7 @@ const RecordOauth = () => {
       setButtonPressed(true);
     }
   };
+
   const handledownload = (e, url1) => {
     e.preventDefault();
     const userChoice = window.confirm(
@@ -150,7 +128,6 @@ const RecordOauth = () => {
 
         {clinicInfo ? (
           <>
-            {/* <h3>Book appointment at {clinicInfo.name}</h3> */}
             <Typography variant="h6" sx={{ fontWeight: "bold" }}>
               Secure access for your message and report from {clinicInfo.name}
             </Typography>
@@ -190,7 +167,7 @@ const RecordOauth = () => {
                     placeholder="YYYY-MM-DD"
                     fullWidth
                     type="tel"
-                    inputRef={dobRef} // Assigning the ref to the Date of Birth field
+                    inputRef={dobRef}
                   />
                 </Grid>
 
@@ -208,21 +185,16 @@ const RecordOauth = () => {
               </Grid>
             </Card>
 
-            {/* <Grid container spacing={2} > */}
-
             <div style={{ top: "0", right: "0", padding: "8px" }}>
               <Link to={`/clinic/${clinicSlug}/policy`} style={{ color: "black" }}>
                 Clinic Policy
               </Link>
             </div>
-
-            {/* </Grid> */}
           </>
         ) : (
           <p>Loading...</p>
         )}
 
-        {/* Modal */}
         <Dialog open={openModal} onClose={handleCloseModal}>
           <DialogTitle>Notification</DialogTitle>
           <DialogContent>{modalContent}</DialogContent>
@@ -232,95 +204,84 @@ const RecordOauth = () => {
         </Dialog>
       </div>
 
-      {secureFileData ? (
+      {secureFileData.length > 0 && (
+        <Card sx={{ padding: "1.5rem", boxShadow: 3, marginBottom: "20px" }}>
+          <Grid container spacing={2} paddingX={2}>
+            <Grid item xs={12} md={12}>
+              <Breadcrumbs
+                routes={[
+                  { label: "Home", route: `/clinic/${clinicSlug}/`, icon: <Icon>home</Icon> },
+                  { label: "Doctor's message", icon: <Icon>message</Icon> },
+                ]}
+              />
+            </Grid>
+          </Grid>
+        </Card>
+      )}
 
+      {secureFileData.length > 0 && (
         <div style={{ display: doctorsMsgDisplay }}>
           <HelmetComponent />
-          {secureFileData.deleted ? (
-            <Typography variant="body1" sx={{ fontWeight: "bold", color: red[900] }} paragraph>
-              {secureFileData.message}
-            </Typography>
-          ) : (
-            <Typography variant="h4" gutterBottom>
-              Message from {secureFileData.sender} for You
-            </Typography>
-          )}
-          <Card sx={{ padding: "1.5rem", boxShadow: 3 }}>
-            <Grid container spacing={2} paddingX={2}>
-              <Grid item xs={12} md={12}>
-                <Breadcrumbs
-                  routes={[
-                    { label: "Home", route: `/clinic/${clinicSlug}/`, icon: <Icon>home</Icon> },
-                    { label: "Doctor's message", icon: <Icon>message</Icon> },
-                  ]}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                {secureFileData.deleted ? (
-                  <></>
-                ) : (
-                  <Typography variant="body1" paragraph>
-                    Message :
-                  </Typography>
-                )}
-                <Typography variant="body1" paragraph>
-                  {msgbody}
-                </Typography>
-              </Grid>
+          {secureFileData.map((message, index) => {
+            // Parse the created_at date and format it
+            const date = new Date(message.created_at);
+            const formattedDate = date.toISOString().split("T")[0]; // Extracts the date part
 
-              {msgUrls.length > 0 && (
-                <Grid item xs={12}>
-                  {/*{msgUrls.map((url1, index) => (*/}
-                  {/*    <div key={index} style={{marginTop: '10px'}}>*/}
-                  {/*        <a*/}
-                  {/*            href={url1}*/}
-                  {/*            onClick={(e) => handledownload(e, url1)}*/}
-                  {/*            style={{textDecoration: 'none', color: '#3f51b5', fontWeight: 'bold'}}*/}
-                  {/*        >*/}
-                  {/*            {msgUrls.length > 1 ? `Download File ${index + 1}` : `Download File`}*/}
-                  {/*        </a>*/}
-                  {/*    </div>*/}
-                  {/*))}*/}
-                  {msgUrls.map((url1, index) => (
-                    <div key={index} style={{ marginTop: "10px" }}>
-                      <a
-                        href={url1}
-                        download
-                        rel="noopener noreferrer"
-                        style={{ textDecoration: "none", color: "#3f51b5", fontWeight: "bold" }}
-                        target="_blank"
-                      >
-                        {msgUrls.length > 1 ? `Download File ${index + 1}` : `Download File`}
-                      </a>
-                    </div>
-                  ))}
+            return (
+              <Card key={index} sx={{ padding: "1.5rem", boxShadow: 3, marginBottom: "20px" }}>
+                <Grid container spacing={2} paddingX={2}>
+
+                  <Grid item xs={12}>
+                    {message.deleted ? (
+                      <Typography variant="body1" sx={{ fontWeight: "bold", color: red[900] }} paragraph>
+                        {message.message}, this message was sent on {formattedDate}
+                      </Typography>
+                    ) : (
+                      <Typography variant="h4" gutterBottom>
+                        Message from {message.sender} for You, message was sent on {formattedDate}
+                      </Typography>
+                    )}
+                    <Typography variant="body1" paragraph>
+                      {message.body}
+                    </Typography>
+                  </Grid>
+
+                  {message.urls && message.urls.length > 0 && (
+                    <Grid item xs={12}>
+                      {message.urls.map((url1, index) => (
+                        <div key={index} style={{ marginTop: "10px" }}>
+                          <a
+                            href={url1}
+                            download
+                            rel="noopener noreferrer"
+                            style={{ textDecoration: "none", color: "#3f51b5", fontWeight: "bold" }}
+                            target="_blank"
+                          >
+                            {message.urls.length > 1 ? `Download File ${index + 1}` : `Download File`}
+                          </a>
+                        </div>
+                      ))}
+                    </Grid>
+                  )}
+                  <Grid item xs={12}>
+                    <Typography color="textSecondary">
+                      If you want to book follow-up Appointment with doctor please click here{" "}
+                      <Link to={`/clinic/${clinicSlug}/`} style={{ color: "black" }}>
+                        Book Appointment.
+                      </Link>
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography variant="body2" paragraph color="error">
+                      {message.title}
+                    </Typography>
+                  </Grid>
                 </Grid>
-              )}
-              <Grid item xs={12}>
-                <Typography color="textSecondary">
-                  If you want to book follow-up Appointment with doctor please click here{" "}
-                  <Link to={`/clinic/${clinicSlug}/`} style={{ color: "black" }}>
-                    Book Appointment.
-                  </Link>
-                </Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <Typography variant="body2" paragraph color="error">
-                  {msgTitle}
-                </Typography>
-              </Grid>
-            </Grid>
-          </Card>
-          {/* <Grid container spacing={2} > */}
-          <div style={{ top: "0", right: "0", padding: "8px" }}>
-            <Link to={`/clinic/${clinicSlug}/policy`} style={{ color: "black" }}>
-              Clinic Policy
-            </Link>
-          </div>
-          {/* </Grid> */}
+              </Card>
+            );
+          })}
+
         </div>
-      ) : (
-        <div></div>
       )}
     </Layout>
   );

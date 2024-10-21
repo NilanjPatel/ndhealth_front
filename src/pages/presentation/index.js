@@ -193,7 +193,7 @@ function Presentation() {
                 <MKTypography variant="h4" fontWeight="bold" mb={0.5}>
                   Thank you for your support!
                 </MKTypography>
-                <MKTypography variant="body1" color="text">
+                <MKTypography variant="body1" color="white">
                   We care for doctors.
                 </MKTypography>
               </Grid>
