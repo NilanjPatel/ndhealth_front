@@ -185,7 +185,7 @@ const Dashboard = ({ clinicSlug }) => {
       //set_total_count_online_appointment(data.online_count);
       //set_total_count_offline_appointment(data.ofline_count);
     } catch (err) {
-      console.log("error:", err);
+      console.log("Error:", err);
     }
   };
 
@@ -241,7 +241,7 @@ const Dashboard = ({ clinicSlug }) => {
         initializeVisibleLines(transformedData);
       } catch (e) {}
     } catch (err) {
-      console.log("error:", err);
+      console.log("Error:", err);
     }
   };
 
@@ -294,7 +294,7 @@ const Dashboard = ({ clinicSlug }) => {
       //   }),
       // })
       // .then(() => console.log('Data saved successfully'))
-      // .catch((error) => console.error('Error saving data:', error));
+      // .catch((Error) => console.Error('Error saving data:', Error));
     });
   };
 
@@ -515,7 +515,7 @@ const Dashboard = ({ clinicSlug }) => {
                             />
                           ))}
                         </Box>
-                        <ResponsiveContainer width="100%" height={400}>
+                        <ResponsiveContainer width="fit-content" height={400}>
                           <LineChart
                             width={500}
                             height={300}

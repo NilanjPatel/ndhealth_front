@@ -120,8 +120,9 @@ const Layout = ({clinicInfo, children}) => {
         // Implement logout logic here
         setLoggedIn(false);
         localStorage.removeItem("loggedIn");
-        localStorage.removeItem("username");
         localStorage.removeItem("accessToken");
+
+
     };
 
     const fetchUserInfo = async () => {
@@ -141,7 +142,6 @@ const Layout = ({clinicInfo, children}) => {
                     setUsername("");
                     setLoggedIn(false);
                     localStorage.removeItem("loggedIn");
-                    localStorage.removeItem("username");
                     localStorage.removeItem("accessToken");
                 }
             }
@@ -150,7 +150,6 @@ const Layout = ({clinicInfo, children}) => {
             setUsername("");
             setLoggedIn(false);
             localStorage.removeItem("loggedIn");
-            localStorage.removeItem("username");
             localStorage.removeItem("accessToken");
         }
     };

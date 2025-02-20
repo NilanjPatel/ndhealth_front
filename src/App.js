@@ -32,10 +32,15 @@ import PasswordReset from "nd_health/components/resources/ResetPassword";
 import DemoRequestForm from "nd_health/components/landing_contents/DemoRequestForm";
 import TerminalPage from "nd_health/components/TerminalPage";
 import RecordOauth from "nd_health/components/clinic_to_patient/record";
+import Error from "layouts/pages/error";
 
 //policy
 import DisplayPolicy from "nd_health/components/Policy/DisplayPolicy";
 import ClinicPolicy from "nd_health/components/ClinicPolicy";
+
+//eform
+import DynamicFormBuilder from "nd_health/components/eforms/GenerateEform";
+
 
 export default function App() {
   const { pathname } = useLocation();
@@ -64,7 +69,7 @@ export default function App() {
         <Route path="/join" element={<SignUpCover />} />
         <Route path="resetpassword/:uidb64/:token" element={<PasswordResetConfirm />} />
         <Route path="/clinic/:clinicSlug/resetPassword" element={<PasswordReset />} />
-        <Route path="*" element={<Navigate to="/presentation" />} />
+        <Route path="*" element={<Error />} />
         {/*//Clinic routs*/}
         <Route path="/clinic/:clinicSlug/" element={<ClinicLanding />} />
         <Route path="/clinic/:clinicSlug/appointment" element={<ClinicInfo />} />
@@ -89,6 +94,8 @@ export default function App() {
 
         {/*  nd-health's policy*/}
         <Route path="OurPolicy" element={<DisplayPolicy />} />
+        {/* eform */}
+        <Route path="/clinic/:clinicSlug/createEform" element={<DynamicFormBuilder />} />
 
 
       </Routes>

@@ -125,7 +125,7 @@ const SignupForm = () => {
       } else {
         setSubmitbutton(true);
         handleFailure(data.message);
-        // console.error('Error creating staff:', error);
+        // console.Error('Error creating staff:', Error);
       }
     } catch (error) {
       setSubmitbutton(true);

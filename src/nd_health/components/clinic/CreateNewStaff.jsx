@@ -199,7 +199,7 @@ const CreateNewStaff = ({ clinicSlug, clinicId }) => {
         // navigate('/dashboard'); // Adjust the path as needed
       } else {
         handleFailure("Please try again, something went wrong!");
-        // console.error('Error creating staff:', error);
+        // console.Error('Error creating staff:', Error);
       }
     } catch (error) {
       handleFailure("Please try again, something went wrong!");
@@ -224,7 +224,7 @@ const CreateNewStaff = ({ clinicSlug, clinicId }) => {
       }
     } catch (error) {
       handleFailure(error);
-      // console.error('Error creating staff:', error);
+      // console.Error('Error creating staff:', Error);
     }
   };
 

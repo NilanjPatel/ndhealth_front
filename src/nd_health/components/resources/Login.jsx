@@ -166,7 +166,7 @@ const Login = () => {
       }
     } catch (error) {
       handleFailure(error);
-      // console.error('Error creating staff:', error);
+      // console.Error('Error creating staff:', Error);
     }
   };
 

@@ -46,7 +46,7 @@ function NotificationDialog({ open, onClose, content, isError, closeButtonLabel 
     <Dialog
       open={open}
       onClose={handleCloseModal}
-      className={isError ? "error" : "success"}
+      className={isError ? "Error" : "success"}
       PaperProps={{ style: { boxShadow: `28px 13px 143px 19px ${color}` } }}
     >
       <Box

@@ -19,8 +19,8 @@
 //             const data = await response.json();
 //             setClinicSettings(data);
 //             setFormData(data); // Set form data to pre-fill input fields
-//         } catch (error) {
-//             console.error('Error fetching clinic settings:', error);
+//         } catch (Error) {
+//             console.Error('Error fetching clinic settings:', Error);
 //         }
 //     };
 
@@ -41,8 +41,8 @@
 //             });
 //             const data = await response.json();
 //             setClinicSettings(data);
-//         } catch (error) {
-//             console.error('Error updating clinic settings:', error);
+//         } catch (Error) {
+//             console.Error('Error updating clinic settings:', Error);
 //         }
 //     };
 

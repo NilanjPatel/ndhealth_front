@@ -197,7 +197,7 @@ const ClinicPolicy = () => {
           setModalContent(data.message);
         }
       } else {
-        // Email is not valid, handle accordingly (show an error message, etc.)
+        // Email is not valid, handle accordingly (show an Error message, etc.)
         setModalContent("Email is not valid, kindly write valid email address.");
         setOpenModal(true);
       }

@@ -185,7 +185,7 @@ const UpdateProfileOauth = () => {
                 setUpdatePressed(true);
             }
         } else {
-            // Email is not valid, handle accordingly (show an error message, etc.)
+            // Email is not valid, handle accordingly (show an Error message, etc.)
             handleFailure("Email is not valid, kindly write valid email address.");
             setUpdatePressed(true);
         }

@@ -8844,7 +8844,7 @@ class MessageHandler {
         delete self.streamSinks[streamId];
       },
       error(reason) {
-        assert(reason instanceof Error, "error must have a valid reason");
+        assert(reason instanceof Error, "Error must have a valid reason");
         if (this.isCancelled) {
           return;
         }
@@ -8961,7 +8961,7 @@ class MessageHandler {
         this.#deleteStreamController(streamController, streamId);
         break;
       case StreamKind.ERROR:
-        assert(streamController, "error should have stream controller");
+        assert(streamController, "Error should have stream controller");
         streamController.controller.error(wrapReason(data.reason));
         this.#deleteStreamController(streamController, streamId);
         break;

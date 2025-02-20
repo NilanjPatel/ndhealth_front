@@ -109,7 +109,7 @@ const PasswordReset = () => {
         );
         handleClose();
       } else {
-        // Handle error response
+        // Handle Error response
 
         handleFailure("Something went wrong, Please try again later");
         console.error("Failed to upload files", response);

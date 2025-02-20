@@ -76,6 +76,7 @@ const ClinicLanding = () => {
             try {
                 const response = await fetch(`${API_BASE_PATH}/clinic/${clinicSlug}/`);
                 const data = await response.json();
+                console.log(data);
                 setClinicInfo(data.clinic);
                 setLocations(data.locations);
                 if (data.notices) {

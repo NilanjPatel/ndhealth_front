@@ -21,7 +21,7 @@ import DefaultNavbar from "examples/Navbars/DefaultNavbar";
 // import DefaultFooter from "examples/Footers/DefaultFooter";
 import CenteredFooter from "examples/Footers/CenteredFooter";
 
-import FilledInfoCard from "examples/Cards/InfoCards/FilledInfoCard";
+// import FilledInfoCard from "examples/Cards/InfoCards/FilledInfoCard";
 
 // Presentation page sections
 import Counters from "pages/presentation/sections/Counters";
@@ -33,7 +33,7 @@ import GettingStart from "pages/presentation/sections/GettingStart";
 import Testimonials from "pages/presentation/sections/Testimonials";
 // import Pricing from "pages/presentation/sections/Pricing";
 import PricingOne from "layouts/sections/page-sections/pricing/components/PricingOne/index";
-import Features from "pages/presentation/components/Features";
+// import Features from "pages/presentation/components/Features";
 
 
 // Presentation page components
@@ -51,8 +51,8 @@ import bgImage from "nd_health/assets/images/4919727.jpg";
 // import MKButton from "../../components/MKButton";
 import logoCT from "nd_health/assets/images/clinic_landing_page/Basic Animations (1).svg";
 
-import { FaChrome } from "react-icons/fa";
-import { FaFirefox } from "react-icons/fa";
+// import { FaChrome } from "react-icons/fa";
+// import { FaFirefox } from "react-icons/fa";
 
 function Presentation() {
   const headerRef = useRef(null);

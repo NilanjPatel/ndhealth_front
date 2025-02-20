@@ -67,7 +67,7 @@ const PasswordResetConfirm = () => {
 
       handleSuccess("Password has been reset");
     } catch (error) {
-      // console.error('Error resetting password', error);
+      // console.Error('Error resetting password', Error);
       handleFailure("Something Went Wrong!, please try again");
     }
   };

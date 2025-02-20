@@ -62,7 +62,6 @@ const LoginMenu = ({ username }) => {
     // Implement logout logic here
     setLoggedIn(false);
     localStorage.removeItem("loggedIn");
-    localStorage.removeItem("username");
     localStorage.removeItem("accessToken");
     navigate(`/clinic/${clinicSlug}`);
   };

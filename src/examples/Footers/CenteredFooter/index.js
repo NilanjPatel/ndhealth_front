@@ -23,10 +23,10 @@ import Stack from "@mui/material/Stack";
 
 // @mui icons
 import FacebookIcon from "@mui/icons-material/Facebook";
-import TwitterIcon from "@mui/icons-material/Twitter";
+// import TwitterIcon from "@mui/icons-material/Twitter";
 import InstagramIcon from "@mui/icons-material/Instagram";
-import PinterestIcon from "@mui/icons-material/Pinterest";
-import GitHubIcon from "@mui/icons-material/GitHub";
+// import PinterestIcon from "@mui/icons-material/Pinterest";
+// import GitHubIcon from "@mui/icons-material/GitHub";
 
 // Material Kit 2 PRO React components
 import MKBox from "components/MKBox";

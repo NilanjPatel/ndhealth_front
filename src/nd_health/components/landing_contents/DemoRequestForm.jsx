@@ -99,7 +99,7 @@ const DemoRequestForm = () => {
         setEmailError("");
         //  also clear contents of other all the form fields
       } else {
-        // Handle error response from the server
+        // Handle Error response from the server
         setOpenModal(true);
         setModalContent("Please correct the information you entered and try again.");
         console.error("Error submitting form:", response.statusText);
@@ -188,7 +188,7 @@ const DemoRequestForm = () => {
                                         required
                                         value={formData.email}
                                         onChange={(e) => handleInputChange('email', e.target.value)}
-                                        error={Boolean(emailError)}
+                                        Error={Boolean(emailError)}
                                         helperText={emailError}
                                     />
                                 </Grid>

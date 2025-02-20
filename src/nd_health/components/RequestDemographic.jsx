@@ -33,7 +33,7 @@ import {
     formatPostalCode,
     isValidEmail,
     formatPhone,
-    redirectHomeM,
+    redirectHomeM, ValidateHCV,
 } from "nd_health/components/resources/utils";
 // import MKTypography from "../../components/MKTypography";
 import MKBox from "../../components/MKBox";
@@ -168,7 +168,7 @@ const RequestDemographic = () => {
             setpatinetcheck(true);
             setErrorMessage(data.message);
         } else {
-            // Show an error message
+            // Show an Error message
             // setErrorMessage(data.message);
         }
     };
@@ -290,6 +290,8 @@ const RequestDemographic = () => {
         if (formatHin(hin).length === 11 && dobRef.current) {
             dobRef.current.focus();
             setValidhin(true);
+
+
         } else {
             setValidhin(false);
         }
@@ -319,6 +321,7 @@ const RequestDemographic = () => {
         }
     };
 
+
     const handleVersionCodeChange = (e) => {
         // Assuming the version code should be exactly 2 capital letters
         const formattedVersionCode = e.target.value.toUpperCase().slice(0, 2);
@@ -327,6 +330,10 @@ const RequestDemographic = () => {
 
         // Check if the version code is complete (2 capital letters) and move focus to Phone Number field
         if (formattedVersionCode.length === 2 && phoneRef.current) {
+            // check if patient is already registered or not //TODO
+            // check if patient's health card is valid or not
+            const status =ValidateHCV(clinicSlug, hin, versionCode, dob);
+
             phoneRef.current.focus();
             setValidversionCode(true);
         } else {
@@ -634,7 +641,7 @@ const RequestDemographic = () => {
                                 <>
                                     <Grid item xs={12} sm={12} md={12}>
                                         <TextField
-                                            label="Health Card Number (leave blank if private patient)"
+                                            label="Health Card Number"
                                             value={formatHin(hin)}
                                             onChange={handleHinChange}
                                             inputMode="numeric"

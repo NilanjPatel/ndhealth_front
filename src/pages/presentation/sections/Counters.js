@@ -1,7 +1,7 @@
 // @mui material components
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
-import Divider from "@mui/material/Divider";
+// import Divider from "@mui/material/Divider";
 import Icon from "@mui/material/Icon"; // Importing Icon component
 
 // Material Kit 2 PRO React components
@@ -19,7 +19,7 @@ function Counters() {
   const [emailCount, setEmailCount] = useState(0);
 
   useEffect(() => {
-    const fetchappointmentCount = async () => {
+    const fetchAppointmentCount = async () => {
       try {
         const response = await fetch(`${API_BASE_PATH}/liveappointmentCount/`);
         //
@@ -36,7 +36,7 @@ function Counters() {
         console.error("Error fetching clinic information:", error);
       }
     };
-    fetchappointmentCount().then(r => {
+    fetchAppointmentCount().then(r => {
     });
   }, []);
   return (

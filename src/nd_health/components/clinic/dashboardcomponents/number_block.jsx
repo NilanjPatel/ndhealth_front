@@ -69,7 +69,7 @@ export const NumberBlock = (props) => {
               </SvgIcon>
 
               <Typography
-                color={positive ? "success" : "error.main"}
+                color={positive ? "success" : "Error.main"}
                 // variant="body2"
               >
                 {roundDifference}

@@ -35,6 +35,7 @@ const RecordOauth = () => {
   const [doctorsMsgDisplay, setDoctorsMsg] = useState("none");
   const [authformdisplay, setAuthformdisplay] = useState("block");
   const [secureFileData, setSecureFileData] = useState([]);
+  const [expandedMessageId, setExpandedMessageId] = useState(null); // Track expanded message
   const dobRef = useRef(null);
 
   useEffect(() => {
@@ -121,6 +122,10 @@ const RecordOauth = () => {
     }
   };
 
+  const toggleMessage = (id) => {
+    setExpandedMessageId(expandedMessageId === id ? null : id);
+  };
+
   return (
     <Layout clinicInfo={clinicInfo}>
       <div style={{ display: authformdisplay }}>
@@ -185,11 +190,6 @@ const RecordOauth = () => {
               </Grid>
             </Card>
 
-            <div style={{ top: "0", right: "0", padding: "8px" }}>
-              <Link to={`/clinic/${clinicSlug}/policy`} style={{ color: "black" }}>
-                Clinic Policy
-              </Link>
-            </div>
           </>
         ) : (
           <p>Loading...</p>
@@ -203,7 +203,6 @@ const RecordOauth = () => {
           </DialogActions>
         </Dialog>
       </div>
-
       {secureFileData.length > 0 && (
         <Card sx={{ padding: "1.5rem", boxShadow: 3, marginBottom: "20px" }}>
           <Grid container spacing={2} paddingX={2}>
@@ -218,69 +217,78 @@ const RecordOauth = () => {
           </Grid>
         </Card>
       )}
-
       {secureFileData.length > 0 && (
         <div style={{ display: doctorsMsgDisplay }}>
           <HelmetComponent />
           {secureFileData.map((message, index) => {
-            // Parse the created_at date and format it
             const date = new Date(message.created_at);
             const formattedDate = date.toISOString().split("T")[0]; // Extracts the date part
 
             return (
               <Card key={index} sx={{ padding: "1.5rem", boxShadow: 3, marginBottom: "20px" }}>
                 <Grid container spacing={2} paddingX={2}>
-
                   <Grid item xs={12}>
-                    {message.deleted ? (
-                      <Typography variant="body1" sx={{ fontWeight: "bold", color: red[900] }} paragraph>
-                        {message.message}, this message was sent on {formattedDate}
-                      </Typography>
-                    ) : (
-                      <Typography variant="h4" gutterBottom>
-                        Message from {message.sender} for You, message was sent on {formattedDate}
-                      </Typography>
+                    <Typography
+                      variant="h6"
+                      onClick={() => toggleMessage(message.id)}
+                      sx={{ cursor: "pointer", fontWeight: "bold" }}
+                    >
+                      {formattedDate} - {message.deleted ? "Expired" : "Active"}
+                    </Typography>
+                    {expandedMessageId === message.id && (
+                      <>
+                        <Typography variant="body1" paragraph>
+                          {message.deleted ? (
+                            <span style={{ color: red[900] }}>{message.message}</span>
+                          ) : (
+                            <>
+                              <Typography variant="h4" gutterBottom>
+                                Message from {message.sender} for You
+                              </Typography>
+                              <Typography variant="body1" paragraph>
+                                {message.body}
+                              </Typography>
+                            </>
+                          )}
+                        </Typography>
+
+                        {message.urls && message.urls.length > 0 && (
+                          <Grid item xs={12}>
+                            {message.urls.map((url1, index) => (
+                              <div key={index} style={{ marginTop: "10px" }}>
+                                <a
+                                  href={url1}
+                                  download
+                                  rel="noopener noreferrer"
+                                  style={{ textDecoration: "none", color: "#3f51b5", fontWeight: "bold" }}
+                                  target="_blank"
+                                >
+                                  {message.urls.length > 1 ? `Download File ${index + 1}` : `Download File`}
+                                </a>
+                              </div>
+                            ))}
+                          </Grid>
+                        )}
+                        <Grid item xs={12}>
+                          <Typography color="textSecondary">
+                            If you want to book follow-up Appointment with doctor please click here{" "}
+                            <Link to={`/clinic/${clinicSlug}/`} style={{ color: "black" }}>
+                              Book Appointment.
+                            </Link>
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Typography variant="body2" paragraph color="error">
+                            {message.title}
+                          </Typography>
+                        </Grid>
+                      </>
                     )}
-                    <Typography variant="body1" paragraph>
-                      {message.body}
-                    </Typography>
-                  </Grid>
-
-                  {message.urls && message.urls.length > 0 && (
-                    <Grid item xs={12}>
-                      {message.urls.map((url1, index) => (
-                        <div key={index} style={{ marginTop: "10px" }}>
-                          <a
-                            href={url1}
-                            download
-                            rel="noopener noreferrer"
-                            style={{ textDecoration: "none", color: "#3f51b5", fontWeight: "bold" }}
-                            target="_blank"
-                          >
-                            {message.urls.length > 1 ? `Download File ${index + 1}` : `Download File`}
-                          </a>
-                        </div>
-                      ))}
-                    </Grid>
-                  )}
-                  <Grid item xs={12}>
-                    <Typography color="textSecondary">
-                      If you want to book follow-up Appointment with doctor please click here{" "}
-                      <Link to={`/clinic/${clinicSlug}/`} style={{ color: "black" }}>
-                        Book Appointment.
-                      </Link>
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Typography variant="body2" paragraph color="error">
-                      {message.title}
-                    </Typography>
                   </Grid>
                 </Grid>
               </Card>
             );
           })}
-
         </div>
       )}
     </Layout>
