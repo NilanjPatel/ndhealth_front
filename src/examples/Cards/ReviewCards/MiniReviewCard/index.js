@@ -63,7 +63,7 @@ function MiniReviewCard({ color, review, author }) {
 
 // Setting default values for the props of MiniReviewCard
 MiniReviewCard.defaultProps = {
-  color: "transparent",
+  color : "transparent",
 };
 
 // Typechecking props for the MiniReviewCard

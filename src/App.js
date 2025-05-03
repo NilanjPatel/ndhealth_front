@@ -16,7 +16,7 @@ import SignUpCover from "layouts/authentication/sign-up/cover/index";
 import routes from "routes";
 //clinic elements
 import ClinicLanding from "nd_health/components/clinic/home/ClinicLanding";
-import ClinicInfo from "nd_health/components/clinicInfo";
+import ClinicInfo from "./nd_health/components/clinicInfo";
 import FamilyAppointmentPage from "nd_health/components/FamilyAppointmentPage";
 import WalkinAppointmentPage from "nd_health/components/WalkinAppointmentPage";
 import ManageAppointment from "nd_health/components/ManageAppointment";
@@ -40,7 +40,7 @@ import ClinicPolicy from "nd_health/components/ClinicPolicy";
 
 //eform
 import DynamicFormBuilder from "nd_health/components/eforms/GenerateEform";
-
+import FileUploadForm from "./nd_health/components/clinic/outsideuse/Upload_file";
 
 export default function App() {
   const { pathname } = useLocation();
@@ -96,6 +96,7 @@ export default function App() {
         <Route path="OurPolicy" element={<DisplayPolicy />} />
         {/* eform */}
         <Route path="/clinic/:clinicSlug/createEform" element={<DynamicFormBuilder />} />
+        <Route path="/clinic/:clinicSlug/outsideuse/" element={<FileUploadForm />} />
 
 
       </Routes>

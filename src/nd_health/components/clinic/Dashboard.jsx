@@ -14,21 +14,21 @@ import {
   TableCell,
   TableBody,
   Button,
-  useTheme /*  */,
+  // useTheme /*  */,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useNavigate } from "react-router-dom";
-import CurrencyDollarIcon from "@heroicons/react/24/solid/CurrencyDollarIcon";
+// import CurrencyDollarIcon from "@heroicons/react/24/solid/CurrencyDollarIcon";
 import UserPlusIcon from "@heroicons/react/24/solid/UserPlusIcon";
-import { FcApprove } from "react-icons/fc";
+// import { FcApprove } from "react-icons/fc";
 import { FaPersonCircleCheck } from "react-icons/fa6";
-import { BiSolidClinic, BiClinic } from "react-icons/bi";
+import { BiSolidClinic } from "react-icons/bi";
 import { FaUserCheck } from "react-icons/fa";
-import { TbListDetails } from "react-icons/tb";
-import { FcViewDetails } from "react-icons/fc";
+// import { TbListDetails } from "react-icons/tb";
+// import { FcViewDetails } from "react-icons/fc";
 import { GiTimeBomb } from "react-icons/gi";
-import { RiCalendar2Line } from "react-icons/ri";
-import { RiChat4Line } from "react-icons/ri";
+// import { RiCalendar2Line } from "react-icons/ri";
+// import { RiChat4Line } from "react-icons/ri";
 import { RiMessage2Fill } from "react-icons/ri";
 import { RiCalendarFill } from "react-icons/ri";
 import { FormControlLabel, Checkbox, Box } from "@mui/material";
@@ -36,10 +36,10 @@ import { FormControlLabel, Checkbox, Box } from "@mui/material";
 import { NumberBlock } from "./dashboardcomponents/number_block";
 import HelmetComponent from "../SEO/HelmetComponent";
 import DateRangeSelector from "./dashboardcomponents/DateRangeSelector";
-import dayjs from "dayjs";
+// import dayjs from "dayjs";
 import {
-  BarChart,
-  Bar,
+  // BarChart,
+  // Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -49,23 +49,23 @@ import {
 } from "recharts";
 import {
   blueGrey,
-  red,
+  // red,
   cyan,
-  lime,
+  // lime,
   lightGreen,
-  amber,
-  brown,
+  // amber,
+  // brown,
   indigo,
   deepPurple,
-  purple,
+  // purple,
   orange,
-  pink,
-  green,
-  blue,
+  // pink,
+  // green,
+  // blue,
   teal,
   lightBlue,
 } from "@mui/material/colors";
-import { fontWeight } from "@mui/system";
+// import { fontWeight } from "@mui/system";
 import { LineChart, Line } from "recharts";
 import { format } from "date-fns";
 
@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Dashboard = ({ clinicSlug }) => {
   const [isDataLoaded, setIsDataLoaded] = React.useState(false);
-  const theme = useTheme();
+  // const theme = useTheme();
 
   const navigate = useNavigate();
   // const [profile_approved_count, set_profile_approved_count] = useState(0);
@@ -92,7 +92,7 @@ const Dashboard = ({ clinicSlug }) => {
   // const [demographic_positive_status, set_demographic_positive_status] = useState(true);
   // const [profile_previoud_month_count, set_profile_previoud_month_count] = useState(0);
 
-  const [total_count_appointment, set_total_count_appointment] = useState(0);
+  // const [total_count_appointment, set_total_count_appointment] = useState(0);
   const [total_count_online_appointment, set_total_count_online_appointment] = useState(0);
   const [total_count_offline_appointment, set_total_count_offline_appointment] = useState(0);
   // const [new_demographics_count, set_new_demographics_count] = useState(0);
@@ -131,7 +131,7 @@ const Dashboard = ({ clinicSlug }) => {
     }
     handleDateSelection();
 
-    if (total_count_offline_appointment != 0) {
+    if (total_count_offline_appointment !== 0) {
       handleSaveDoctorData();
     }
   }, [total_count_offline_appointment]);
@@ -169,25 +169,25 @@ const Dashboard = ({ clinicSlug }) => {
     } catch (err) {}
   };
 
-  const appointmentData = async () => {
-    const accessToken = localStorage.getItem("accessToken");
-    try {
-      const response = await fetch(`${API_BASE_PATH}/appointmentdash/`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Token ${accessToken}`,
-        },
-      });
-
-      const data = await response.json();
-      set_total_count_appointment(data.online_count + data.ofline_count);
-      //set_total_count_online_appointment(data.online_count);
-      //set_total_count_offline_appointment(data.ofline_count);
-    } catch (err) {
-      console.log("Error:", err);
-    }
-  };
+  // const appointmentData = async () => {
+  //   const accessToken = localStorage.getItem("accessToken");
+  //   try {
+  //     const response = await fetch(`${API_BASE_PATH}/appointmentdash/`, {
+  //       method: "GET",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Token ${accessToken}`,
+  //       },
+  //     });
+  //
+  //     const data = await response.json();
+  //     // set_total_count_appointment(data.online_count + data.ofline_count);
+  //     //set_total_count_online_appointment(data.online_count);
+  //     //set_total_count_offline_appointment(data.ofline_count);
+  //   } catch (err) {
+  //     console.log("Error:", err);
+  //   }
+  // };
 
   const allappointmentData = async () => {
     const accessToken = localStorage.getItem("accessToken");
@@ -311,7 +311,7 @@ const Dashboard = ({ clinicSlug }) => {
       allappointmentData();
       demographicData();
     }
-    if (total_count_offline_appointment != 0) {
+    if (total_count_offline_appointment !== 0) {
       handleSaveDoctorData();
     }
   };
@@ -373,7 +373,7 @@ const Dashboard = ({ clinicSlug }) => {
       title: "Profile requests",
       icon: <UserPlusIcon color={cyan[100]} />,
       colo: cyan,
-      task_per_minute: "1",
+      task_per_minute: "0.5",
     },
     {
       difference: approved_total_count * 8,
@@ -409,7 +409,7 @@ const Dashboard = ({ clinicSlug }) => {
       title: "Total Checkins",
       icon: <FaUserCheck color={lightGreen[100]} />,
       colo: lightGreen,
-      task_per_minute: "0.3",
+      task_per_minute: "0.17",
     },
     {
       difference: confirmationSent,
@@ -418,7 +418,7 @@ const Dashboard = ({ clinicSlug }) => {
       title: "Confirmation Sent",
       icon: <RiMessage2Fill color={orange[100]} />,
       colo: orange,
-      task_per_minute: "1",
+      task_per_minute: "0.5",
     },
     {
       difference: reminderSent,
@@ -427,18 +427,18 @@ const Dashboard = ({ clinicSlug }) => {
       title: "Reminder Sent",
       icon: <RiCalendarFill color={lightBlue[100]} />,
       colo: lightBlue,
-      task_per_minute: "1",
+      task_per_minute: "0.5",
     },
     {
       difference: 0,
       positive: true,
       value:
-        (reminderSent * 2 +
-          confirmationSent * 2 +
-          checkin_status_counts * 0.3 +
-          total_count_online_appointment * 6 +
+        (reminderSent * 0.5 +
+          confirmationSent * 0.5 +
+          checkin_status_counts * 0.17 +
+          total_count_online_appointment * 5 +
           approved_total_count * 8 +
-          total_count_profile * 2) /
+          total_count_profile * 0.5) /
         60,
       title: "Total Time Saved",
       icon: <GiTimeBomb color={blueGrey[100]} />,
@@ -515,7 +515,7 @@ const Dashboard = ({ clinicSlug }) => {
                             />
                           ))}
                         </Box>
-                        <ResponsiveContainer width="fit-content" height={400}>
+                        <ResponsiveContainer  height={400}>
                           <LineChart
                             width={500}
                             height={300}

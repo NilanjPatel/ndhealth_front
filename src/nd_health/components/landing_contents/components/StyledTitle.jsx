@@ -9,7 +9,7 @@ const StyledTitle = ({ children, center, ...props }) => {
       sx={{
         backgroundImage: "linear-gradient(135deg, #007bff, #CF1512)",
         WebkitBackgroundClip: "text",
-        color: "transparent",
+        color : "transparent",
         display: "inline-block",
         fontWeight: "bold",
         textAlign: center ? "center" : "left", // Check if center prop is true

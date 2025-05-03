@@ -38,6 +38,10 @@ import { Placeholder } from "react-bootstrap";
 import MKBox from "../../components/MKBox";
 import NotificationDialog from "./resources/Notification";
 import GoHome from "./resources/GoHome";
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 
 const FamilyAppointmentPage = () => {
   const { clinicSlug } = useParams();
@@ -573,23 +577,23 @@ const FamilyAppointmentPage = () => {
             <>
               <Grid item xs={12} md={6}>
                 <MKBox width="100%" component="section">
-                  <InputLabel id="date-label">Select date</InputLabel>
-                  {/* <Placeholder>Select date:</Placeholder> */}
-                  <Select
-                    labelId="date-label"
-                    id="date"
-                    label="Select date"
-                    value={selectedDate}
-                    onChange={handleDateChange}
-                    style={{ minWidth: "15rem", minHeight: "2rem" }}
-                    disabled={!isAppointmentAvailable}
-                  >
-                    {availableDates.map((date, index) => (
-                      <MenuItem key={`${date}_${index}`} value={date}>
-                        {date}
-                      </MenuItem>
-                    ))}
-                  </Select>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      label="Select date"
+                      value={selectedDate ? dayjs(selectedDate) : null}
+                      onChange={(newDate) => {
+                        const formattedDate = newDate ? newDate.format('YYYY-MM-DD') : null;
+                        handleDateChange({ target: { value: formattedDate } });
+                      }}
+                      disabled={!isAppointmentAvailable}
+                      shouldDisableDate={(date) => {
+                        const dateString = date.format('YYYY-MM-DD');
+                        return !availableDates.includes(dateString);
+                      }}
+                      slotProps={{ textField: { fullWidth: true } }}
+                      sx={{ width: '100%', minWidth: '15rem' }}
+                    />
+                  </LocalizationProvider>
                 </MKBox>
               </Grid>
               <Grid item xs={12} md={12}>

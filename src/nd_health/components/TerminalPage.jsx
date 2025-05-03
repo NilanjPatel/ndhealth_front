@@ -89,7 +89,7 @@ const ClinicPolicy = () => {
       if (!appointments) {
         try {
           const response = await fetch(
-            `${API_BASE_PATH}/terminal/${clinicSlugcurrent}/${clinic_location}/`
+            `${API_BASE_PATH}/terminal/${clinicSlugcurrent}/${clinic_location}/`,
           );
 
           const data = await response.json();
@@ -116,14 +116,12 @@ const ClinicPolicy = () => {
     setIsUpdatingInfo(false);
     try {
       const response = await fetch(
-        `${API_BASE_PATH}/terminal/${clinicSlugcurrent}/${selectedAppointment.appointmentId}/${dob}/`
+        `${API_BASE_PATH}/terminal/${clinicSlugcurrent}/${selectedAppointment.appointmentId}/${dob}/`,
       );
-
       const data = await response.json();
       if (data.status === "success") {
         setpatientInfo(data.data);
         setIsDialogOpen(true);
-
         setUpdatedInfo({
           address: data.data.address || "",
           city: data.data.city || "",
@@ -183,6 +181,7 @@ const ClinicPolicy = () => {
           }),
         });
         const data = await response.json();
+        console.log(data);
         if (data.status === "success") {
           setIsUpdatingInfo(false);
           setOpenModal(true);
@@ -210,11 +209,15 @@ const ClinicPolicy = () => {
         }),
       });
       const data = await response.json();
+      console.log(data);
       if (data.status === "success") {
         setIsUpdatingInfo(false);
         setOpenModal(true);
         setModalContent(data.message);
       } else if (data.status === "failed") {
+        setIsUpdatingInfo(false);
+        setOpenModal(true);
+        setModalContent(data.message);
       }
     }
   };
@@ -263,7 +266,7 @@ const ClinicPolicy = () => {
     if (!appointments) {
       try {
         const response = await fetch(
-          `${API_BASE_PATH}/terminal/${clinicSlugcurrent}/${clinic_location}/`
+          `${API_BASE_PATH}/terminal/${clinicSlugcurrent}/${clinic_location}/`,
         );
 
         const data = await response.json();
@@ -284,7 +287,7 @@ const ClinicPolicy = () => {
     clinicData(); // fetching appointments data when doctor is selected
     // Fetch appointments for the selected doctor
     const doctorAppointments = appointments.filter(
-      (appointment) => appointment.doctorID__id === doctor.doctor__id
+      (appointment) => appointment.doctorID__id === doctor.doctor__id,
     );
     setSelecteddoctorAppointment(doctorAppointments);
 
@@ -394,6 +397,7 @@ const ClinicPolicy = () => {
             {!showDoctorSelection && !selectedAppointment && (
               // <Card>
               <Grid item xs={12} sx={{ padding: "1rem" }}>
+
                 {selecteddoctorAppointment && selecteddoctorAppointment.length > 0 ? (
                   <>
                     <Grid container spacing={2}>
@@ -411,19 +415,29 @@ const ClinicPolicy = () => {
                             }}
                           >
                             <Typography variant="body1" style={{ fontSize: "1.5rem" }}>
-                              {appointment.patientName}
-                            </Typography>
-                            <Typography variant="body2" style={{ fontSize: "1rem" }}>
+                              {/*{appointment.patientName}*/}
                               {formatTime(appointment.appointmentTime)}
                             </Typography>
+                            {/*<Typography variant="body2" style={{ fontSize: "1rem" }}>*/}
+                            {/*  {formatTime(appointment.appointmentTime)}*/}
+                            {/*</Typography>*/}
                           </Card>
                         </Grid>
                       ))}
+                    </Grid>
+                    <Grid container spacing={2}>
+                      <Grid item  xs={12} md={12} lg={12} mt={3}>
+                        <Typography variant="body1" style={{ fontSize: "1.5rem" }}>
+                          {/*{appointment.patientName}*/}
+                          If you have provided a valid email address, your appointment details have been sent to your inbox.
+                        </Typography>
+                      </Grid>
                     </Grid>
                   </>
                 ) : (
                   <Typography variant="body1">No appointments available</Typography>
                 )}
+
               </Grid>
               // </Card>
             )}
@@ -445,15 +459,16 @@ const ClinicPolicy = () => {
                           gutterBottom
                           style={{ fontSize: "1.3rem", fontWeight: "bold" }}
                         >
-                          Name: {selectedAppointment.patientName}
+                          {/*Name: {selectedAppointment.patieappointmentTimentName}*/}
+                          Time : {formatTime(selectedAppointment.appointmentTime)}
                         </Typography>
-                        <Typography
-                          variant="body1"
-                          gutterBottom
-                          style={{ fontSize: "1.3rem", fontWeight: "bold" }}
-                        >
-                          Time: {formatTime(selectedAppointment.appointmentTime)}
-                        </Typography>
+                        {/*<Typography*/}
+                        {/*  variant="body1"*/}
+                        {/*  gutterBottom*/}
+                        {/*  style={{ fontSize: "1.3rem", fontWeight: "bold" }}*/}
+                        {/*>*/}
+                        {/*  Time: {formatTime(selectedAppointment.appointmentTime)}*/}
+                        {/*</Typography>*/}
                         <Grid item xs={6} paddingTop={2}>
                           <TextField
                             label="Date of Birth - YYYY-MM-DD"

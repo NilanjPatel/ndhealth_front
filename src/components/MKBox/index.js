@@ -34,7 +34,7 @@ const MKBox = forwardRef(
 // Setting default values for the props of MKBox
 MKBox.defaultProps = {
   variant: "contained",
-  bgColor: "transparent",
+  bgcolor : "transparent",
   color: "dark",
   opacity: 1,
   borderRadius: "none",

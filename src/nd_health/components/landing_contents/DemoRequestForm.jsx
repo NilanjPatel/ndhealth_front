@@ -131,7 +131,7 @@ const DemoRequestForm = () => {
                 height: "100%",
                 marginBottom: 2,
                 borderRadius: "1rem",
-                backgroundColor: "transparent",
+                backgroundcolor : "transparent",
               }}
             >
               {/* <CardHeader title="Book Demo for free" fontSize="large"> */}

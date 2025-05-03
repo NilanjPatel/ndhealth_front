@@ -171,7 +171,7 @@ function DefaultReviewCard({ color, image, name, date, review, rating }) {
 
 // Setting default values for the props of DefaultReviewCard
 DefaultReviewCard.defaultProps = {
-  color: "transparent",
+  color : "transparent",
   image: "",
 };
 
