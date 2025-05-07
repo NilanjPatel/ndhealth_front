@@ -540,8 +540,8 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                       {/* Refresh Button */}
                       <Grid item>
                         <Button
-                          variant="outlined"
-                          color="primary"
+                          variant={"contained"}
+                          // color="primary"
                           onClick={async () => {
                             const updatedData = await refreshRosters();
                             // Handle the updated data if needed
@@ -549,15 +549,20 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                           disabled={isRefreshingRosters}
                           startIcon={isRefreshingRosters ? <CircularProgress size={16} /> : <RefreshIcon />}
                           sx={{
-                            color: "black",
+                            textTransform: 'none', // ⬅️ This prevents auto-uppercase
+                            fontWeight: "bold",
+                            fontFamily:"sans-serif",
+                            fontVariantCaps: "normal",
+                            color: "white",
                             borderColor: "rgba(255, 255, 255, 0.3)",
                             '&:hover': {
                               backgroundColor: "rgba(255, 255, 255, 0.1)",
-                              borderColor: "rgba(255, 255, 255, 0.5)"
+                              borderColor: "rgba(255, 255, 255, 0.5)",
+                              color: "black",
                             }
                           }}
                         >
-                          {isRefreshingRosters ? "Updating..." : "Refresh"}
+                          {isRefreshingRosters ? "Updating..." : "Refresh Roster Enrollments"}
                         </Button>
                       </Grid>
                     </Grid>
