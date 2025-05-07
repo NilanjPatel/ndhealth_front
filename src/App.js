@@ -41,6 +41,7 @@ import ClinicPolicy from "nd_health/components/ClinicPolicy";
 //eform
 import DynamicFormBuilder from "nd_health/components/eforms/GenerateEform";
 import FileUploadForm from "./nd_health/components/clinic/outsideuse/Upload_file";
+import { InitallOutsideUse } from "./nd_health/components/clinic/outsideuse/OutsideUse";
 
 export default function App() {
   const { pathname } = useLocation();
@@ -96,7 +97,8 @@ export default function App() {
         <Route path="OurPolicy" element={<DisplayPolicy />} />
         {/* eform */}
         <Route path="/clinic/:clinicSlug/createEform" element={<DynamicFormBuilder />} />
-        <Route path="/clinic/:clinicSlug/outsideuse/" element={<FileUploadForm />} />
+        <Route path="/clinic/:clinicSlug/outsideuse/" element={<InitallOutsideUse />} />
+        <Route path="/clinic/:clinicSlug/outsideuse/upload" element={<FileUploadForm />} />
 
 
       </Routes>

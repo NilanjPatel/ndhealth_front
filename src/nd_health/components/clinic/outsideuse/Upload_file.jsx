@@ -20,7 +20,8 @@ import {
   IconButton,
   CircularProgress,
   Fade,
-  FormHelperText
+  FormHelperText,
+  colors
 } from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -349,8 +350,8 @@ export default function FileUploadForm() {
           >
             <Box
               sx={{
-                bgcolor: 'primary.main',
-                color: 'primary.contrastText',
+                // bgcolor: 'primary.main',
+                color: 'primary.main',
                 p: 2,
                 textAlign: 'center'
               }}

@@ -280,7 +280,7 @@ const EmailStatus = ({ clinicSlug }) => {
     <div>
       {(() => {
         if (isDataLoaded) {
-          let smsSent;
+          // let smsSent;
           return [
             <div>
               <HelmetComponent />

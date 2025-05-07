@@ -70,7 +70,6 @@ const ClinicInfo = () => {
                 // const response = await fetch(`http://192.168.88.164:8000/api/clinic/${clinicSlug}/`);
 
                 const data = await response.json();
-                console.log(`data:${data}`);
                 setClinicInfo(data.clinic);
                 setLocations(data.locations);
                 if (data.notices) {

@@ -25,11 +25,24 @@ export default styled(Avatar)(({ theme, ownerState }) => {
   const { pxToRem, linearGradient } = functions;
   const { size: fontSize, fontWeightRegular } = typography;
 
+  // // backgroundImage value
+  // const backgroundValue =
+  //   bgColor === "transparent"
+  //     ? transparent.main
+  //     : linearGradient(gradients[bgColor].main, gradients[bgColor].state);
+
   // backgroundImage value
-  const backgroundValue =
-    bgColor === "transparent"
-      ? transparent.main
-      : linearGradient(gradients[bgColor].main, gradients[bgColor].state);
+  let backgroundValue;
+
+  if (bgColor === "transparent") {
+    backgroundValue = transparent.main;
+  } else if (gradients[bgColor] && gradients[bgColor].main && gradients[bgColor].state) {
+    // Only use linearGradient if the gradient exists with both main and state properties
+    backgroundValue = linearGradient(gradients[bgColor].main, gradients[bgColor].state);
+  } else {
+    // Fallback to a solid color or transparent if the gradient isn't available
+    backgroundValue = bgColor || "transparent";
+  }
 
   // size value
   let sizeValue;
