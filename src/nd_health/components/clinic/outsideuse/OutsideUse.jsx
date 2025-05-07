@@ -33,6 +33,10 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import Grid from "@mui/material/Grid";
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 // Row component for expandable table
 // Enhanced SummaryRow with roster fetching
@@ -96,7 +100,7 @@ const SummaryRow = ({ row, clinicSlug }) => {
         }
       };
 
-      fetchRosterInfo();
+      // fetchRosterInfo();
     }
   }, [row.hin, row.bDay, clinicSlug]); // Removed rosterEnrolledTo from
 
@@ -117,7 +121,7 @@ const SummaryRow = ({ row, clinicSlug }) => {
       >
         <TableCell component="th" scope="row">{row.hin}</TableCell>
         <TableCell>{`${row.lname}, ${row.fname}`}</TableCell>
-        <TableCell align="right">${(row.capitationTotal.toFixed(2)*3).toFixed(2)}</TableCell>
+        <TableCell align="right">${(row.capitationTotal.toFixed(2) * 3).toFixed(2)}</TableCell>
         <TableCell align="right">${row.outsideUseTotal.toFixed(2)}</TableCell>
         <TableCell align="right">${((row.capitationTotal * 3) - row.outsideUseTotal).toFixed(2)}</TableCell>
         <TableCell align="right">
@@ -170,12 +174,121 @@ const SummaryRow = ({ row, clinicSlug }) => {
   );
 };
 // Update the dialog component to show debug info when there's no data
-const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug }) => {
+const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpdate }) => {
   // const location = useLocation();
   const [clinicInfo, setClinicInfo] = useState(null);
   const [clinicInfoError, setClinicInfoError] = useState(null);
   const [clinicInfoFetched, setClinicInfoFetched] = useState(false);
   const [selectedRoster, setSelectedRoster] = useState("all");
+  const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [isRefreshingRosters, setIsRefreshingRosters] = useState(false);
+  const [rosterUpdateError, setRosterUpdateError] = useState(null);
+
+  // Batch fetch roster information for all patients
+  const refreshRosters = async () => {
+    if (!data?.summary || data.summary.length === 0) return;
+
+    setIsRefreshingRosters(true);
+    setRosterUpdateError(null);
+
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+      const requestData = {
+        data: JSON.stringify({
+          summary: data.summary.map(row => ({
+            hin: row.hin,
+            bDay: row.bDay,
+          })),
+        }),
+      };
+
+      const response = await fetch(`${API_BASE_PATH}/outsideuse/getletestRoster/`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Token ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (result.rosterupdate) {
+        setUpdateSuccess(true); // Show success notification
+        // Update the cache with new roster data
+        const updatedSummary = data.summary.map(row => {
+          const updatedRoster = result.rosterupdate.find(item => item.hin === row.hin);
+          return {
+            ...row,
+            rosterEnrolledTo: updatedRoster?.rosterEnrolledTo || row.rosterEnrolledTo || "Unknown",
+          };
+        });
+
+        // Update the cache
+        const cachedDataStr = localStorage.getItem("outsideUseData");
+        if (cachedDataStr) {
+          const cachedData = JSON.parse(cachedDataStr);
+          localStorage.setItem(
+            "outsideUseData",
+            JSON.stringify({
+              ...cachedData,
+              summary: updatedSummary,
+              lastRosterUpdate: new Date().toISOString(),
+            }),
+          );
+        }
+
+
+        // Create the updated data structure
+        const updatedData = {
+          ...data,
+          summary: updatedSummary
+        };
+
+        // Notify parent component of the update
+        if (onDataUpdate) {
+          onDataUpdate(updatedData);
+        }
+        // Return the updated data structure
+        return updatedData;
+      }
+    } catch (error) {
+      console.error("Error refreshing rosters:", error);
+      setRosterUpdateError(error.message);
+      return data; // Return original data on error
+    } finally {
+      setIsRefreshingRosters(false);
+
+      // Continue loading in the background
+
+    }
+  };
+
+  // Add refresh button to the UI
+  const renderRefreshButton = () => (
+    <Button
+      variant="outlined"
+      color="primary"
+      onClick={async () => {
+        const updatedData = await refreshRosters();
+        if (updatedData) {
+          // Update the data in the parent component
+          // This would require a slight modification to the parent component
+          // to accept a data update callback
+        }
+      }}
+      disabled={isRefreshingRosters}
+      startIcon={isRefreshingRosters ? <CircularProgress size={16} /> : <RefreshIcon />}
+      sx={{ ml: 2 }}
+    >
+      {isRefreshingRosters ? "Updating..." : "Refresh Rosters"}
+    </Button>
+  );
+
 
   useEffect(() => {
 
@@ -350,7 +463,7 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug }) => {
                           Total Capitation
                         </Typography>
                         <Typography variant="h5" sx={{ fontWeight: "bold", color: "#1976d2" }}>
-                          ${(filteredData.totalCapitation.toFixed(2)*3).toFixed(2)}
+                          ${(filteredData.totalCapitation.toFixed(2) * 3).toFixed(2)}
                         </Typography>
                       </Box>
 
@@ -393,29 +506,64 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug }) => {
                       </Box>
                     </Box>
 
-                    {/* Roster filter */}
-                    {rosterOptions.length > 1 && (
-                      <Box sx={{ mb: 3, mt: 2, display: "flex", alignItems: "center" }}>
-                        <FormControl sx={{ minWidth: 200, mr: 2 }} size="small">
-                          <InputLabel id="roster-filter-label">Filter by Roster</InputLabel>
-                          <Select
-                            labelId="roster-filter-label"
-                            id="roster-filter"
-                            value={selectedRoster}
-                            label="Filter by Roster"
-                            onChange={handleRosterChange}
-                          >
-                            <MenuItem value="all">All Rosters ({data.summary.length})</MenuItem>
-                            {rosterOptions.map((roster) => (
-                              <MenuItem key={roster} value={roster}>
-                                {roster} ({data.summary.filter(row => row.rosterEnrolledTo === roster).length})
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                        {activeFilterInfo}
-                      </Box>
-                    )}
+                    <Grid container spacing={2} alignItems="center" sx={{ mb: 3, mt: 2 }}>
+                      {/* Roster Filter */}
+                      {rosterOptions.length > 1 && (
+                        <Grid item>
+                          <FormControl sx={{ minWidth: 200 }} size="small">
+                            <InputLabel id="roster-filter-label">Filter by Roster</InputLabel>
+                            <Select
+                              labelId="roster-filter-label"
+                              id="roster-filter"
+                              value={selectedRoster}
+                              label="Filter by Roster"
+                              onChange={handleRosterChange}
+                            >
+                              <MenuItem value="all">All Rosters ({data.summary.length})</MenuItem>
+                              {rosterOptions.map((roster) => (
+                                <MenuItem key={roster} value={roster}>
+                                  {roster} ({data.summary.filter(row => row.rosterEnrolledTo === roster).length})
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        </Grid>
+                      )}
+
+                      {/* Optional Active Filter Info */}
+                      {rosterOptions.length > 1 && activeFilterInfo && (
+                        <Grid item>
+                          {activeFilterInfo}
+                        </Grid>
+                      )}
+
+                      {/* Refresh Button */}
+                      <Grid item>
+                        <Button
+                          variant="outlined"
+                          color="primary"
+                          onClick={async () => {
+                            const updatedData = await refreshRosters();
+                            // Handle the updated data if needed
+                          }}
+                          disabled={isRefreshingRosters}
+                          startIcon={isRefreshingRosters ? <CircularProgress size={16} /> : <RefreshIcon />}
+                          sx={{
+                            color: "black",
+                            borderColor: "rgba(255, 255, 255, 0.3)",
+                            '&:hover': {
+                              backgroundColor: "rgba(255, 255, 255, 0.1)",
+                              borderColor: "rgba(255, 255, 255, 0.5)"
+                            }
+                          }}
+                        >
+                          {isRefreshingRosters ? "Updating..." : "Refresh"}
+                        </Button>
+                      </Grid>
+                    </Grid>
+
+
+
 
                     <TableContainer
                       component={Paper}
@@ -497,6 +645,17 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug }) => {
             )}
           </CardContent>
         </Card>
+
+        <Snackbar
+          open={updateSuccess}
+          autoHideDuration={3000}
+          onClose={() => setUpdateSuccess(false)}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        >
+          <Alert onClose={() => setUpdateSuccess(false)} severity="success">
+            Rosters updated successfully!
+          </Alert>
+        </Snackbar>
       </div>
     </Layout>
   );
@@ -751,6 +910,10 @@ class OutsideUseManager {
             loading={this.isLoading}
             isCached={!!this.getCachedData() && !this.isLoading}
             clinicSlug={this.clinicSlug}
+            onDataUpdate={(updatedData) => {
+              this.data = updatedData;
+              this.render(); // Re-render with updated data
+            }}
           />
         </BrowserRouter>,
       );

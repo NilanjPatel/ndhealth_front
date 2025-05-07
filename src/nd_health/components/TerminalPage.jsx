@@ -396,11 +396,11 @@ const ClinicPolicy = () => {
 
             {!showDoctorSelection && !selectedAppointment && (
               // <Card>
-              <Grid item xs={12} sx={{ padding: "1rem" }}>
+              <Grid item xs={12} sx={{ paddingTop: "0.1rem" }}>
 
                 {selecteddoctorAppointment && selecteddoctorAppointment.length > 0 ? (
                   <>
-                    <Grid container spacing={2}>
+                    <Grid container spacing={1}>
                       {selecteddoctorAppointment.map((appointment) => (
                         <Grid item key={appointment.appointmentId} xs={12} md={6} lg={6}>
                           <Card
@@ -414,13 +414,27 @@ const ClinicPolicy = () => {
                               width: "100%",
                             }}
                           >
-                            <Typography variant="body1" style={{ fontSize: "1.5rem" }}>
-                              {/*{appointment.patientName}*/}
+                            <Typography variant="body1" style={{ fontSize: "1.4rem" }}>
                               {formatTime(appointment.appointmentTime)}
                             </Typography>
-                            {/*<Typography variant="body2" style={{ fontSize: "1rem" }}>*/}
-                            {/*  {formatTime(appointment.appointmentTime)}*/}
-                            {/*</Typography>*/}
+                            <Typography variant="body2" style={{ fontSize: "1.2rem" }}>
+                              {/*{appointment.patientName}*/}
+                              {(() => {
+
+                                const [first, last] = appointment.patientName.split(",");
+                                if(first !=="" && last ===""){
+                                  return `Name: ${first?.slice(0, 2) || ""}`;
+                                }
+                                if(first !=="" && last !==""){
+                                  return `Name: ${first?.slice(0, 2) || ""}, ${last?.slice(0, 2) || ""}`;
+                                }
+                                if(first ==="" && last !==""){
+                                  return `Name: ${last?.slice(0, 2) || ""}`;
+                                }
+
+                              })()}
+
+                            </Typography>
                           </Card>
                         </Grid>
                       ))}
@@ -429,6 +443,7 @@ const ClinicPolicy = () => {
                       <Grid item  xs={12} md={12} lg={12} mt={3}>
                         <Typography variant="body1" style={{ fontSize: "1.5rem" }}>
                           {/*{appointment.patientName}*/}
+                          If you did not remember your Appointment Time see first 2 characters of your last and first name.
                           If you have provided a valid email address, your appointment details have been sent to your inbox.
                         </Typography>
                       </Grid>
