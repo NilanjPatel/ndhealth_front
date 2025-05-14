@@ -1394,7 +1394,7 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                               fontWeight: "600",
                               fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
                               fontSize: "0.875rem",
-                            }}>Patient ID</TableCell>
+                            }}>Bill</TableCell>
                             <TableCell align="right" sx={{
                               fontWeight: "600",
                               fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
