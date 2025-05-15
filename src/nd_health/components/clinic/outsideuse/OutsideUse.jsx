@@ -35,10 +35,11 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import Grid from "@mui/material/Grid";
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 import TablePagination from "@mui/material/TablePagination";
 import Link from "@mui/material/Link";
+import NotificationDialog from "../../resources/Notification";
 // Row component for expandable table
 // Enhanced SummaryRow with roster fetching
 const SummaryRow = ({ row, clinicSlug, rosterOptions }) => {
@@ -125,10 +126,13 @@ const SummaryRow = ({ row, clinicSlug, rosterOptions }) => {
       >
         <TableCell component="th" scope="row" onClick={() => setOpen(!open)}>{row.hin}</TableCell>
         <TableCell onClick={() => setOpen(!open)}>{`${row.lname}, ${row.fname}`}</TableCell>
-        <TableCell align="right" onClick={() => setOpen(!open)}>${(row.capitationTotal.toFixed(2) * 3).toFixed(2)}</TableCell>
+        <TableCell align="right"
+                   onClick={() => setOpen(!open)}>${(row.capitationTotal.toFixed(2) * 3).toFixed(2)}</TableCell>
         <TableCell align="right" onClick={() => setOpen(!open)}>${row.outsideUseTotal.toFixed(2)}</TableCell>
-        <TableCell align="right" onClick={() => setOpen(!open)}>${((row.capitationTotal * 3) - row.outsideUseTotal).toFixed(2)}</TableCell>
-        <TableCell align="right"><Link fontWeight={'bolder'} target="_blank" href={`https://mapledoctors.ca:8443/oscar/billing/CA/ON/billingOB.jsp?billRegion=ON&billForm=MFP&hotclick=&appointment_no=0&demographic_name=${row.lname} ${row.fname}&demographic_no=${row.demo}&providerview=${providerNo}&user_no=${providerNo}&apptProvider_no=none`}>{row.demo}</Link></TableCell>
+        <TableCell align="right"
+                   onClick={() => setOpen(!open)}>${((row.capitationTotal * 3) - row.outsideUseTotal).toFixed(2)}</TableCell>
+        <TableCell align="right"><Link fontWeight={"bolder"} target="_blank"
+                                       href={`https://mapledoctors.ca:8443/oscar/billing/CA/ON/billingOB.jsp?billRegion=ON&billForm=MFP&hotclick=&appointment_no=0&demographic_name=${row.lname} ${row.fname}&demographic_no=${row.demo}&providerview=${providerNo}&user_no=${providerNo}&apptProvider_no=none`}>{row.demo}</Link></TableCell>
         <TableCell align="right" onClick={() => setOpen(!open)}>
           {isLoading ? (
             <CircularProgress size={16} />
@@ -262,7 +266,7 @@ const OutsideUseDialog1 = ({ open, onClose, data, loading, clinicSlug, onDataUpd
         // Create the updated data structure
         const updatedData = {
           ...data,
-          summary: updatedSummary
+          summary: updatedSummary,
         };
 
         // Notify parent component of the update
@@ -298,7 +302,8 @@ const OutsideUseDialog1 = ({ open, onClose, data, loading, clinicSlug, onDataUpd
     };
 
     if (!clinicInfoFetched && clinicSlug) {
-      fetchClinicInfo().then(r => {});
+      fetchClinicInfo().then(r => {
+      });
       setClinicInfoFetched(true);
     }
   }, [clinicInfoFetched, clinicSlug, data]);
@@ -348,7 +353,7 @@ const OutsideUseDialog1 = ({ open, onClose, data, loading, clinicSlug, onDataUpd
 
     return filteredData.summary.slice(
       page * rowsPerPage,
-      page * rowsPerPage + rowsPerPage
+      page * rowsPerPage + rowsPerPage,
     );
   };
 
@@ -460,73 +465,93 @@ const OutsideUseDialog1 = ({ open, onClose, data, loading, clinicSlug, onDataUpd
                     {/* Summary cards at the top */}
                     <Box sx={{
                       mb: 4,
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                      gap: 3
+                      display: "grid",
+                      gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+                      gap: 3,
                     }}>
                       <Box sx={{
                         p: 3,
-                        bgcolor: '#e3f2fd',
+                        bgcolor: "#e3f2fd",
                         borderRadius: 2,
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        textAlign: 'center'
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        textAlign: "center",
                       }}>
-                        <i className="fas fa-wallet" style={{ fontSize: '24px', color: '#1976d2', marginBottom: '12px' }}></i>
-                        <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{ fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif', letterSpacing: '0.5px' }}>
+                        <i className="fas fa-wallet"
+                           style={{ fontSize: "24px", color: "#1976d2", marginBottom: "12px" }}></i>
+                        <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{
+                          fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                          letterSpacing: "0.5px",
+                        }}>
                           TOTAL CAPITATION
                         </Typography>
-                        <Typography variant="h4" sx={{ fontWeight: '600', color: '#1976d2', fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif' }}>
+                        <Typography variant="h4" sx={{
+                          fontWeight: "600",
+                          color: "#1976d2",
+                          fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                        }}>
                           ${(filteredData.totalCapitation.toFixed(2) * 3).toFixed(2)}
                         </Typography>
                       </Box>
 
                       <Box sx={{
                         p: 3,
-                        bgcolor: '#fff8e1',
+                        bgcolor: "#fff8e1",
                         borderRadius: 2,
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        textAlign: 'center'
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        textAlign: "center",
                       }}>
-                        <i className="fas fa-hospital" style={{ fontSize: '24px', color: '#ff9800', marginBottom: '12px' }}></i>
-                        <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{ fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif', letterSpacing: '0.5px' }}>
+                        <i className="fas fa-hospital"
+                           style={{ fontSize: "24px", color: "#ff9800", marginBottom: "12px" }}></i>
+                        <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{
+                          fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                          letterSpacing: "0.5px",
+                        }}>
                           TOTAL OUTSIDE USE
                         </Typography>
-                        <Typography variant="h4" sx={{ fontWeight: '600', color: '#ff9800', fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif' }}>
+                        <Typography variant="h4" sx={{
+                          fontWeight: "600",
+                          color: "#ff9800",
+                          fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                        }}>
                           ${filteredData.totalOutsideUse.toFixed(2)}
                         </Typography>
                       </Box>
 
                       <Box sx={{
                         p: 3,
-                        bgcolor: ((filteredData.totalCapitation * 3) - filteredData.totalOutsideUse) < 0 ? '#ffebee' : '#e8f5e9',
+                        bgcolor: ((filteredData.totalCapitation * 3) - filteredData.totalOutsideUse) < 0 ? "#ffebee" : "#e8f5e9",
                         borderRadius: 2,
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        textAlign: 'center'
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        textAlign: "center",
                       }}>
-                        <i className={`fas fa-${((filteredData.totalCapitation * 3) - filteredData.totalOutsideUse) < 0 ? 'exclamation-triangle' : 'check-circle'}`}
-                           style={{
-                             fontSize: '24px',
-                             color: ((filteredData.totalCapitation * 3) - filteredData.totalOutsideUse) < 0 ? '#d32f2f' : '#2e7d32',
-                             marginBottom: '12px'
-                           }}></i>
-                        <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{ fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif', letterSpacing: '0.5px' }}>
+                        <i
+                          className={`fas fa-${((filteredData.totalCapitation * 3) - filteredData.totalOutsideUse) < 0 ? "exclamation-triangle" : "check-circle"}`}
+                          style={{
+                            fontSize: "24px",
+                            color: ((filteredData.totalCapitation * 3) - filteredData.totalOutsideUse) < 0 ? "#d32f2f" : "#2e7d32",
+                            marginBottom: "12px",
+                          }}></i>
+                        <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{
+                          fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                          letterSpacing: "0.5px",
+                        }}>
                           BALANCE
                         </Typography>
                         <Typography
                           variant="h4"
                           sx={{
-                            fontWeight: '600',
-                            color: ((filteredData.totalCapitation * 3) - filteredData.totalOutsideUse) < 0 ? '#d32f2f' : '#2e7d32',
-                            fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif'
+                            fontWeight: "600",
+                            color: ((filteredData.totalCapitation * 3) - filteredData.totalOutsideUse) < 0 ? "#d32f2f" : "#2e7d32",
+                            fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
                           }}
                         >
                           ${((filteredData.totalCapitation * 3) - filteredData.totalOutsideUse).toFixed(2)}
@@ -576,17 +601,17 @@ const OutsideUseDialog1 = ({ open, onClose, data, loading, clinicSlug, onDataUpd
                           disabled={isRefreshingRosters}
                           startIcon={isRefreshingRosters ? <CircularProgress size={16} /> : <RefreshIcon />}
                           sx={{
-                            textTransform: 'none',
+                            textTransform: "none",
                             fontWeight: "bold",
-                            fontFamily:"sans-serif",
+                            fontFamily: "sans-serif",
                             fontVariantCaps: "normal",
                             color: "white",
                             borderColor: "rgba(255, 255, 255, 0.3)",
-                            '&:hover': {
+                            "&:hover": {
                               backgroundColor: "rgba(255, 255, 255, 0.1)",
                               borderColor: "rgba(255, 255, 255, 0.5)",
                               color: "black",
-                            }
+                            },
                           }}
                         >
                           {isRefreshingRosters ? "Updating..." : "Refresh Current Page"}
@@ -594,7 +619,7 @@ const OutsideUseDialog1 = ({ open, onClose, data, loading, clinicSlug, onDataUpd
                       </Grid>
 
                       {/* Page info */}
-                      <Grid item sx={{ ml: 'auto', mr: 2 }}>
+                      <Grid item sx={{ ml: "auto", mr: 2 }}>
                         <Typography variant="body2" color="text.secondary">
                           Showing page {page + 1} of {Math.ceil(filteredData.summary.length / rowsPerPage)}
                         </Typography>
@@ -651,7 +676,7 @@ const OutsideUseDialog1 = ({ open, onClose, data, loading, clinicSlug, onDataUpd
                         </TableHead>
                         <TableBody>
                           {getCurrentPageData().map((row) => (
-                            <SummaryRow key={row.hin} row={row} clinicSlug={clinicSlug} rosterOptions={rosterOptions}/>
+                            <SummaryRow key={row.hin} row={row} clinicSlug={clinicSlug} rosterOptions={rosterOptions} />
                           ))}
                         </TableBody>
                       </Table>
@@ -668,12 +693,12 @@ const OutsideUseDialog1 = ({ open, onClose, data, loading, clinicSlug, onDataUpd
                       onPageChange={handleChangePage}
                       onRowsPerPageChange={handleChangeRowsPerPage}
                       sx={{
-                        '.MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows': {
-                          fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                        ".MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows": {
+                          fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
                         },
-                        '.MuiTablePagination-select': {
-                          fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-                        }
+                        ".MuiTablePagination-select": {
+                          fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                        },
                       }}
                     />
                   </>
@@ -711,7 +736,7 @@ const OutsideUseDialog1 = ({ open, onClose, data, loading, clinicSlug, onDataUpd
           open={updateSuccess}
           autoHideDuration={3000}
           onClose={() => setUpdateSuccess(false)}
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
         >
           <Alert onClose={() => setUpdateSuccess(false)} severity="success">
             Rosters updated successfully!
@@ -723,7 +748,7 @@ const OutsideUseDialog1 = ({ open, onClose, data, loading, clinicSlug, onDataUpd
             open={!!rosterUpdateError}
             autoHideDuration={5000}
             onClose={() => setRosterUpdateError(null)}
-            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
           >
             <Alert onClose={() => setRosterUpdateError(null)} severity="error">
               Error updating rosters: {rosterUpdateError}
@@ -742,8 +767,12 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
   const [clinicInfoFetched, setClinicInfoFetched] = useState(false);
   const [selectedRoster, setSelectedRoster] = useState("all");
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  // NotificationDialog
+  const [openModal, setOpenModal] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [modalContent, setModalContent] = useState("");
+
   const [isRefreshingRosters, setIsRefreshingRosters] = useState(false);
-  const [rosterUpdateError, setRosterUpdateError] = useState(null);
 
   // Pagination state
   const [page, setPage] = useState(0);
@@ -757,7 +786,6 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
     if (!filteredData?.summary || filteredData.summary.length === 0) return;
 
     setIsRefreshingRosters(true);
-    setRosterUpdateError(null);
 
     try {
       const accessToken = localStorage.getItem("accessToken");
@@ -790,8 +818,7 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
       const result = await response.json();
 
       if (result.rosterupdate) {
-        setUpdateSuccess(true); // Show success notification
-
+        handleSuccess("Current pages's roster enrolment status updated successfully!");
         // Update only the patients that were refreshed
         const updatedSummary = data.summary.map(row => {
           const updatedRoster = result.rosterupdate.find(item => item.hin === row.hin);
@@ -821,7 +848,7 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
         // Create the updated data structure
         const updatedData = {
           ...data,
-          summary: updatedSummary
+          summary: updatedSummary,
         };
 
         // Notify parent component of the update
@@ -834,7 +861,8 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
       }
     } catch (error) {
       console.error("Error refreshing rosters:", error);
-      setRosterUpdateError(error.message);
+
+      handleFailure(error.message);
       return data; // Return original data on error
     } finally {
       setIsRefreshingRosters(false);
@@ -861,7 +889,7 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
             hin: patient.hin,
             bDay: patient.bDay,
             rosterEnrolledTo: newRosterValue,
-            demographic:patient.demo,
+            demographic: patient.demo,
           }],
         }),
       };
@@ -885,7 +913,7 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
       if (result.success) {
         // Update the patient in the data
         const updatedSummary = data.summary.map(row =>
-          row.hin === hin ? { ...row, rosterEnrolledTo: newRosterValue } : row
+          row.hin === hin ? { ...row, rosterEnrolledTo: newRosterValue } : row,
         );
 
         // Update the cache
@@ -904,22 +932,21 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
         // Create the updated data structure
         const updatedData = {
           ...data,
-          summary: updatedSummary
+          summary: updatedSummary,
         };
 
         // Notify parent component of the update
         if (onDataUpdate) {
           onDataUpdate(updatedData);
         }
-
-        setUpdateSuccess(true);
+        handleSuccess(`Roster enrollment status updated successfully for Patient ${patient.lname} ${patient.fname}`);
         return updatedData;
       } else {
         throw new Error("Failed to update roster");
       }
     } catch (error) {
       console.error("Error updating patient roster:", error);
-      setRosterUpdateError(error.message);
+      handleFailure(error.message);
       return data;
     } finally {
       setIndividualRosterUpdating(false);
@@ -942,7 +969,8 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
     };
 
     if (!clinicInfoFetched && clinicSlug) {
-      fetchClinicInfo().then(r => {});
+      fetchClinicInfo().then(r => {
+      });
       setClinicInfoFetched(true);
     }
   }, [clinicInfoFetched, clinicSlug, data]);
@@ -992,7 +1020,7 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
 
     return filteredData.summary.slice(
       page * rowsPerPage,
-      page * rowsPerPage + rowsPerPage
+      page * rowsPerPage + rowsPerPage,
     );
   };
 
@@ -1010,6 +1038,20 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
   const handleRosterChange = (event) => {
     setSelectedRoster(event.target.value);
     setPage(0); // Reset to first page when filter changes
+  };
+
+  const handleSuccess = (message) => {
+    setModalContent(message);
+    setIsError(false);
+    setOpenModal(true);
+  };
+  const handleFailure = (message) => {
+    setModalContent(message);
+    setIsError(true);
+    setOpenModal(true);
+  };
+  const handleCloseApp = () => {
+    setOpenModal(false);
   };
 
   // Provide fallback UI if clinic info is still loading
@@ -1075,12 +1117,14 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
         }}>
           <TableCell component="th" scope="row" onClick={() => setOpen(!open)}>{row.hin}</TableCell>
           <TableCell onClick={() => setOpen(!open)}>{`${row.lname}, ${row.fname}`}</TableCell>
-          <TableCell align="right" onClick={() => setOpen(!open)}>${(row.capitationTotal.toFixed(2) * 3).toFixed(2)}</TableCell>
+          <TableCell align="right"
+                     onClick={() => setOpen(!open)}>${(row.capitationTotal.toFixed(2) * 3).toFixed(2)}</TableCell>
           <TableCell align="right" onClick={() => setOpen(!open)}>${row.outsideUseTotal.toFixed(2)}</TableCell>
-          <TableCell align="right" onClick={() => setOpen(!open)}>${((row.capitationTotal * 3) - row.outsideUseTotal).toFixed(2)}</TableCell>
+          <TableCell align="right"
+                     onClick={() => setOpen(!open)}>${((row.capitationTotal * 3) - row.outsideUseTotal).toFixed(2)}</TableCell>
           <TableCell align="right">
             <Link
-              fontWeight={'bolder'}
+              fontWeight={"bolder"}
               target="_blank"
               href={`https://mapledoctors.ca:8443/oscar/billing/CA/ON/billingOB.jsp?billRegion=ON&billForm=MFP&hotclick=&appointment_no=0&demographic_name=${row.lname} ${row.fname}&demographic_no=${row.demo}&providerview=${providerNo}&user_no=${providerNo}&apptProvider_no=none`}
             >
@@ -1097,10 +1141,10 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                   onChange={handleRosterChange}
                   onClick={(e) => e.stopPropagation()}
                   sx={{
-                    fontSize: '0.875rem',
-                    '.MuiSelect-select': {
-                      padding: '6px 8px',
-                    }
+                    fontSize: "0.875rem",
+                    ".MuiSelect-select": {
+                      padding: "6px 8px",
+                    },
                   }}
                 >
                   {rosterOptions.map((roster) => (
@@ -1213,73 +1257,93 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                     {/* Summary cards at the top */}
                     <Box sx={{
                       mb: 4,
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                      gap: 3
+                      display: "grid",
+                      gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+                      gap: 3,
                     }}>
                       <Box sx={{
                         p: 3,
-                        bgcolor: '#e3f2fd',
+                        bgcolor: "#e3f2fd",
                         borderRadius: 2,
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        textAlign: 'center'
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        textAlign: "center",
                       }}>
-                        <i className="fas fa-wallet" style={{ fontSize: '24px', color: '#1976d2', marginBottom: '12px' }}></i>
-                        <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{ fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif', letterSpacing: '0.5px' }}>
+                        <i className="fas fa-wallet"
+                           style={{ fontSize: "24px", color: "#1976d2", marginBottom: "12px" }}></i>
+                        <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{
+                          fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                          letterSpacing: "0.5px",
+                        }}>
                           TOTAL CAPITATION
                         </Typography>
-                        <Typography variant="h4" sx={{ fontWeight: '600', color: '#1976d2', fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif' }}>
+                        <Typography variant="h4" sx={{
+                          fontWeight: "600",
+                          color: "#1976d2",
+                          fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                        }}>
                           ${(filteredData.totalCapitation.toFixed(2) * 3).toFixed(2)}
                         </Typography>
                       </Box>
 
                       <Box sx={{
                         p: 3,
-                        bgcolor: '#fff8e1',
+                        bgcolor: "#fff8e1",
                         borderRadius: 2,
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        textAlign: 'center'
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        textAlign: "center",
                       }}>
-                        <i className="fas fa-hospital" style={{ fontSize: '24px', color: '#ff9800', marginBottom: '12px' }}></i>
-                        <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{ fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif', letterSpacing: '0.5px' }}>
+                        <i className="fas fa-hospital"
+                           style={{ fontSize: "24px", color: "#ff9800", marginBottom: "12px" }}></i>
+                        <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{
+                          fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                          letterSpacing: "0.5px",
+                        }}>
                           TOTAL OUTSIDE USE
                         </Typography>
-                        <Typography variant="h4" sx={{ fontWeight: '600', color: '#ff9800', fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif' }}>
+                        <Typography variant="h4" sx={{
+                          fontWeight: "600",
+                          color: "#ff9800",
+                          fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                        }}>
                           ${filteredData.totalOutsideUse.toFixed(2)}
                         </Typography>
                       </Box>
 
                       <Box sx={{
                         p: 3,
-                        bgcolor: ((filteredData.totalCapitation * 3) - filteredData.totalOutsideUse) < 0 ? '#ffebee' : '#e8f5e9',
+                        bgcolor: ((filteredData.totalCapitation * 3) - filteredData.totalOutsideUse) < 0 ? "#ffebee" : "#e8f5e9",
                         borderRadius: 2,
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        textAlign: 'center'
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        textAlign: "center",
                       }}>
-                        <i className={`fas fa-${((filteredData.totalCapitation * 3) - filteredData.totalOutsideUse) < 0 ? 'exclamation-triangle' : 'check-circle'}`}
-                           style={{
-                             fontSize: '24px',
-                             color: ((filteredData.totalCapitation * 3) - filteredData.totalOutsideUse) < 0 ? '#d32f2f' : '#2e7d32',
-                             marginBottom: '12px'
-                           }}></i>
-                        <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{ fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif', letterSpacing: '0.5px' }}>
+                        <i
+                          className={`fas fa-${((filteredData.totalCapitation * 3) - filteredData.totalOutsideUse) < 0 ? "exclamation-triangle" : "check-circle"}`}
+                          style={{
+                            fontSize: "24px",
+                            color: ((filteredData.totalCapitation * 3) - filteredData.totalOutsideUse) < 0 ? "#d32f2f" : "#2e7d32",
+                            marginBottom: "12px",
+                          }}></i>
+                        <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{
+                          fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                          letterSpacing: "0.5px",
+                        }}>
                           BALANCE
                         </Typography>
                         <Typography
                           variant="h4"
                           sx={{
-                            fontWeight: '600',
-                            color: ((filteredData.totalCapitation * 3) - filteredData.totalOutsideUse) < 0 ? '#d32f2f' : '#2e7d32',
-                            fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif'
+                            fontWeight: "600",
+                            color: ((filteredData.totalCapitation * 3) - filteredData.totalOutsideUse) < 0 ? "#d32f2f" : "#2e7d32",
+                            fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
                           }}
                         >
                           ${((filteredData.totalCapitation * 3) - filteredData.totalOutsideUse).toFixed(2)}
@@ -1329,17 +1393,17 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                           disabled={isRefreshingRosters || individualRosterUpdating}
                           startIcon={isRefreshingRosters ? <CircularProgress size={16} /> : <RefreshIcon />}
                           sx={{
-                            textTransform: 'none',
+                            textTransform: "none",
                             fontWeight: "bold",
-                            fontFamily:"sans-serif",
+                            fontFamily: "sans-serif",
                             fontVariantCaps: "normal",
                             color: "white",
                             borderColor: "rgba(255, 255, 255, 0.3)",
-                            '&:hover': {
+                            "&:hover": {
                               backgroundColor: "rgba(255, 255, 255, 0.1)",
                               borderColor: "rgba(255, 255, 255, 0.5)",
                               color: "black",
-                            }
+                            },
                           }}
                         >
                           {isRefreshingRosters ? "Updating..." : "Refresh Current Page"}
@@ -1347,7 +1411,7 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                       </Grid>
 
                       {/* Page info */}
-                      <Grid item sx={{ ml: 'auto', mr: 2 }}>
+                      <Grid item sx={{ ml: "auto", mr: 2 }}>
                         <Typography variant="body2" color="text.secondary">
                           Showing page {page + 1} of {Math.ceil(filteredData.summary.length / rowsPerPage)}
                         </Typography>
@@ -1421,19 +1485,29 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                       onPageChange={handleChangePage}
                       onRowsPerPageChange={handleChangeRowsPerPage}
                       sx={{
-                        '.MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows': {
-                          fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                        ".MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows": {
+                          fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
                         },
-                        '.MuiTablePagination-select': {
-                          fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-                        }
+                        ".MuiTablePagination-select": {
+                          fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                        },
                       }}
                     />
 
-                    <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', backgroundColor: 'rgba(25, 118, 210, 0.05)', p: 1.5, borderRadius: 1 }}>
-                      <i className="fas fa-info-circle" style={{ color: '#1976d2', marginRight: '8px', fontSize: '16px' }}></i>
-                      <Typography variant="body2" color="text.secondary" sx={{ fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif' }}>
-                        Click on any patient row to view detailed outside use information. You can also change a patient's roster enrollment directly from the dropdown menu.
+                    <Box sx={{
+                      mt: 2,
+                      display: "flex",
+                      alignItems: "center",
+                      backgroundColor: "rgba(25, 118, 210, 0.05)",
+                      p: 1.5,
+                      borderRadius: 1,
+                    }}>
+                      <i className="fas fa-info-circle"
+                         style={{ color: "#1976d2", marginRight: "8px", fontSize: "16px" }}></i>
+                      <Typography variant="body2" color="text.secondary"
+                                  sx={{ fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif" }}>
+                        Click on any patient row to view detailed outside use information. You can also change a
+                        patient's roster enrollment directly from the dropdown menu.
                       </Typography>
                     </Box>
                   </>
@@ -1467,33 +1541,18 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
           </CardContent>
         </Card>
 
-        <Snackbar
-          open={updateSuccess}
-          autoHideDuration={3000}
-          onClose={() => setUpdateSuccess(false)}
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        >
-          <Alert onClose={() => setUpdateSuccess(false)} severity="success">
-            Rosters updated successfully!
-          </Alert>
-        </Snackbar>
 
-        {rosterUpdateError && (
-          <Snackbar
-            open={!!rosterUpdateError}
-            autoHideDuration={5000}
-            onClose={() => setRosterUpdateError(null)}
-            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-          >
-            <Alert onClose={() => setRosterUpdateError(null)} severity="error">
-              Error updating rosters: {rosterUpdateError}
-            </Alert>
-          </Snackbar>
-        )}
+        <NotificationDialog
+          open={openModal}
+          onClose={handleCloseApp}
+          content={modalContent}
+          isError={isError}
+        />
       </div>
     </Layout>
   );
 };
+
 // Create a singleton instance to manage the dialog state
 class OutsideUseManager {
   static instance;

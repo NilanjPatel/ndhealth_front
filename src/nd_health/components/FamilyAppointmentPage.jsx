@@ -293,7 +293,6 @@ const FamilyAppointmentPage = () => {
     const time = selectedTime.split(",")[0];
     const duration = selectedTime.split(",")[1];
 
-
     //   call api to book appointment "api/book-appointment/" make post request
     try {
       const response = await fetch(`${API_BASE_PATH}/book-appointment/`, {
