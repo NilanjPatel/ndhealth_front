@@ -818,7 +818,7 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
       const result = await response.json();
 
       if (result.rosterupdate) {
-        handleSuccess("Current pages's roster enrolment status updated successfully!");
+        handleSuccess("Current pages's roster enrollment status updated successfully!");
         // Update only the patients that were refreshed
         const updatedSummary = data.summary.map(row => {
           const updatedRoster = result.rosterupdate.find(item => item.hin === row.hin);
