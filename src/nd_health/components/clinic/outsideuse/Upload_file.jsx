@@ -21,16 +21,16 @@ import {
   CircularProgress,
   Fade,
   FormHelperText,
-  colors
+  colors,
 } from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
-import DeleteIcon from '@mui/icons-material/Delete';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+import DeleteIcon from "@mui/icons-material/Delete";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 
 import axios from "axios";
 import HelmetComponent from "../../SEO/HelmetComponent";
@@ -59,7 +59,7 @@ export default function FileUploadForm() {
   const navigate = useNavigate();
   const [direct_login, setDirect_login] = useState(false);
 
-  const steps = ['Select File Type', 'Upload File', 'Choose Date', 'Submit'];
+  const steps = ["Select File Type", "Upload File", "Choose Date", "Submit"];
 
   useEffect(() => {
     const getClinicInfo = async (accessToken) => {
@@ -124,7 +124,6 @@ export default function FileUploadForm() {
   const handleFileTypeChange = (event) => {
     const selectedFileType = event.target.value;
     setFileType(selectedFileType);
-
     // Always move to the next step, regardless of which option is selected
     setActiveStep(1);
   };
@@ -197,7 +196,7 @@ export default function FileUploadForm() {
     switch (step) {
       case 0:
         return (
-          <FormControl fullWidth sx={{m: 1,minWidth: 120 }}>
+          <FormControl fullWidth sx={{ m: 1, minWidth: 120 }}>
             <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 500 }}>
               File Type
             </Typography>
@@ -226,7 +225,7 @@ export default function FileUploadForm() {
               type="file"
               onChange={handleFileChange}
               accept=".xml"
-              style={{ display: 'none' }}
+              style={{ display: "none" }}
             />
             <label htmlFor="file-upload">
               <Button
@@ -235,16 +234,16 @@ export default function FileUploadForm() {
                 startIcon={<CloudUploadIcon />}
                 sx={{
                   p: 2,
-                  border: '2px dashed #1976d2',
+                  border: "2px dashed #1976d2",
                   borderRadius: 2,
-                  width: '100%',
-                  height: '120px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  '&:hover': {
-                    backgroundColor: 'rgba(25, 118, 210, 0.04)'
-                  }
+                  width: "100%",
+                  height: "120px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  "&:hover": {
+                    backgroundColor: "rgba(25, 118, 210, 0.04)",
+                  },
                 }}
               >
                 <Typography variant="body1" gutterBottom>
@@ -255,6 +254,16 @@ export default function FileUploadForm() {
                 </Typography>
               </Button>
             </label>
+            {getFileTypeName() === "Capitation File" && (
+              <>
+                <Typography variant="caption" color="textSecondary" sx={{"color":"red"}}>
+                Please note that the name of RCX file should be "RCX-OHIP-GROUP-H-DMonYYYY.xml"
+                </Typography><br/>
+                <Typography variant="caption" color="textSecondary" sx={{"color":"danger"}}>
+                  Like this example : "RCX-034278-0BDC9-H-5May2025.xml"
+                </Typography>
+              </>
+            )}
           </Box>
         );
       case 2:
@@ -270,18 +279,18 @@ export default function FileUploadForm() {
                     fullWidth: true,
                     sx: { mb: 2 },
                     InputProps: {
-                      startAdornment: <CalendarTodayIcon sx={{ mr: 1, color: 'action.active' }} />
-                    }
-                  }
+                      startAdornment: <CalendarTodayIcon sx={{ mr: 1, color: "action.active" }} />,
+                    },
+                  },
                 }}
-                sx={{ width: '100%' }}
+                sx={{ width: "100%" }}
               />
             </LocalizationProvider>
           </Box>
         );
       case 3:
         return (
-          <Box sx={{ textAlign: 'center' }}>
+          <Box sx={{ textAlign: "center" }}>
             <Typography variant="h6" gutterBottom>Review & Submit</Typography>
             <Card variant="outlined" sx={{ mb: 2 }}>
               <CardContent>
@@ -295,7 +304,7 @@ export default function FileUploadForm() {
                   </Grid>
                   <Grid item xs={12}>
                     <Typography variant="subtitle1" color="textSecondary">File Name</Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                       <InsertDriveFileIcon color="primary" sx={{ mr: 1 }} />
                       <Typography variant="body1" noWrap>{file?.name}</Typography>
                     </Box>
@@ -306,7 +315,7 @@ export default function FileUploadForm() {
                   <Grid item xs={12}>
                     <Typography variant="subtitle1" color="textSecondary">Selected Date</Typography>
                     <Typography variant="body1">
-                      {date ? dayjs(date).format('MMMM D, YYYY') : 'No date selected'}
+                      {date ? dayjs(date).format("MMMM D, YYYY") : "No date selected"}
                     </Typography>
                   </Grid>
                 </Grid>
@@ -315,7 +324,7 @@ export default function FileUploadForm() {
           </Box>
         );
       default:
-        return 'Unknown step';
+        return "Unknown step";
     }
   };
 
@@ -344,20 +353,20 @@ export default function FileUploadForm() {
           <Paper
             elevation={3}
             sx={{
-              borderRadius: '12px',
-              overflow: 'hidden'
+              borderRadius: "12px",
+              overflow: "hidden",
             }}
           >
             <Box
               sx={{
                 // bgcolor: 'primary.main',
-                color: 'primary.main',
+                color: "primary.main",
                 p: 2,
-                textAlign: 'center'
+                textAlign: "center",
               }}
             >
               <Typography variant="h5">
-                {uploadSuccess ? 'Upload Complete' : 'File Upload Portal'}
+                {uploadSuccess ? "Upload Complete" : "File Upload Portal"}
               </Typography>
             </Box>
 
@@ -375,9 +384,16 @@ export default function FileUploadForm() {
                   {getStepContent(activeStep)}
 
                   {file && activeStep >= 1 && activeStep < 3 && (
-                    <Box sx={{ display: 'flex', alignItems: 'center', mt: 2, p: 1, bgcolor: 'action.hover', borderRadius: 1 }}>
+                    <Box sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      mt: 2,
+                      p: 1,
+                      bgcolor: "action.hover",
+                      borderRadius: 1,
+                    }}>
                       <InsertDriveFileIcon color="primary" sx={{ mr: 1 }} />
-                      <Typography variant="body2" sx={{ flexGrow: 1, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      <Typography variant="body2" sx={{ flexGrow: 1, overflow: "hidden", textOverflow: "ellipsis" }}>
                         {file.name}
                       </Typography>
                       <IconButton size="small" onClick={handleFileRemove}>
@@ -395,7 +411,7 @@ export default function FileUploadForm() {
 
                 <Divider />
 
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', p: 2, bgcolor: 'background.default' }}>
+                <Box sx={{ display: "flex", justifyContent: "space-between", p: 2, bgcolor: "background.default" }}>
                   <Button
                     onClick={handleReset}
                     disabled={activeStep === 0 || isLoading}
@@ -403,24 +419,24 @@ export default function FileUploadForm() {
                     Reset
                   </Button>
 
-                  <Box sx={{ position: 'relative' }}>
+                  <Box sx={{ position: "relative" }}>
                     <Button
                       variant="contained"
                       color="primary"
                       onClick={handleContinue}
                       disabled={isContinueDisabled() || isLoading}
                     >
-                      {activeStep === 3 ? 'Upload File' : 'Continue'}
+                      {activeStep === 3 ? "Upload File" : "Continue"}
                     </Button>
                     {isLoading && (
                       <CircularProgress
                         size={24}
                         sx={{
-                          position: 'absolute',
-                          top: '50%',
-                          left: '50%',
-                          marginTop: '-12px',
-                          marginLeft: '-12px',
+                          position: "absolute",
+                          top: "50%",
+                          left: "50%",
+                          marginTop: "-12px",
+                          marginLeft: "-12px",
                         }}
                       />
                     )}
@@ -429,8 +445,8 @@ export default function FileUploadForm() {
               </>
             ) : (
               <Fade in={uploadSuccess}>
-                <Box sx={{ p: 4, textAlign: 'center' }}>
-                  <CheckCircleIcon sx={{ fontSize: 64, color: 'success.main', mb: 2 }} />
+                <Box sx={{ p: 4, textAlign: "center" }}>
+                  <CheckCircleIcon sx={{ fontSize: 64, color: "success.main", mb: 2 }} />
                   <Typography variant="h6" gutterBottom>
                     {message}
                   </Typography>

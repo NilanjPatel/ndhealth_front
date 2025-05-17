@@ -22,7 +22,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
 import API_BASE_PATH from "../../../../apiConfig";
-import Layout from "./../../Layout";
+import Layout1 from "./../../Layout1";
 import { useParams } from "react-router-dom";
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { BrowserRouter } from "react-router-dom";
@@ -39,9 +39,14 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import TablePagination from "@mui/material/TablePagination";
 import Link from "@mui/material/Link";
+import Item from "@mui/material/ListItem";
+import { styled } from "@mui/material/styles";
+
 import NotificationDialog from "../../resources/Notification";
 // Row component for expandable table
 // Enhanced SummaryRow with roster fetching
+
+
 const SummaryRow = ({ row, clinicSlug, rosterOptions }) => {
   const [open, setOpen] = useState(false);
   const [rosterEnrolledTo, setRosterEnrolledTo] = useState("");
@@ -410,7 +415,7 @@ const OutsideUseDialog1 = ({ open, onClose, data, loading, clinicSlug, onDataUpd
   }
 
   return (
-    <Layout clinicInfo={clinicInfo}>
+    <Layout1 clinicInfo={clinicInfo}>
       <div>
         <Card
           open={open}
@@ -756,7 +761,7 @@ const OutsideUseDialog1 = ({ open, onClose, data, loading, clinicSlug, onDataUpd
           </Snackbar>
         )}
       </div>
-    </Layout>
+    </Layout1>
   );
 };
 
@@ -1201,68 +1206,70 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
     );
   };
 
+  const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: "#fff",
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: "center",
+    color: (theme.vars ?? theme).palette.text.secondary,
+    ...theme.applyStyles("dark", {
+      backgroundColor: "#1A2027",
+    }),
+  }));
+
   return (
-    <Layout clinicInfo={clinicInfo}>
+    <Layout1 clinicInfo={clinicInfo}>
       <div>
-        <Card
-          open={open}
-          maxwidth="md"
-          fullwidth="true"
-          paperprops={{
-            sx: {
-              borderRadius: "8px",
-              boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
-              overflow: "hidden",
-            },
+        {/* Title Card */}
+        <CardHeader
+          title="Last 3 months Outside Use Summary"
+          sx={{
+            backgroundColor: "#1976d2",
+            color: "white",
+            fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            padding: "16px 24px",
           }}
-        >
-          <CardHeader
-            title="Last 3 months Outside Use Summary"
-            sx={{
-              backgroundColor: "#1976d2",
-              color: "white",
-              fontWeight: "bold",
-              display: "flex",
-              alignItems: "center",
-              padding: "16px 24px",
-            }}
-          />
-
-          <CardContent sx={{ padding: "24px", paddingTop: "24px" }}>
-            {loading ? (
-              <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "300px" }}>
-                <CircularProgress />
-                <Typography sx={{ ml: 2 }}>Loading summary data...</Typography>
+        />
+        {loading ? (
+          <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "300px" }}>
+            <CircularProgress />
+            <Typography sx={{ ml: 2 }}>Loading summary data...</Typography>
+          </Box>
+        ) : data ? (
+          <>
+            {data.error && (
+              <Box sx={{
+                mb: 3,
+                p: 2,
+                bgcolor: "#ffebee",
+                borderRadius: 1,
+                border: "1px solid #ffcdd2",
+                display: "flex",
+                alignItems: "center",
+              }}>
+                <i className="fas fa-exclamation-circle"
+                   style={{ color: "#d32f2f", marginRight: "12px" }}></i>
+                <Typography color="error">{data.error}</Typography>
               </Box>
-            ) : data ? (
-              <>
-                {data.error && (
-                  <Box sx={{
-                    mb: 3,
-                    p: 2,
-                    bgcolor: "#ffebee",
-                    borderRadius: 1,
-                    border: "1px solid #ffcdd2",
-                    display: "flex",
-                    alignItems: "center",
-                  }}>
-                    <i className="fas fa-exclamation-circle"
-                       style={{ color: "#d32f2f", marginRight: "12px" }}></i>
-                    <Typography color="error">{data.error}</Typography>
-                  </Box>
-                )}
+            )}
+            {data.summary && data.summary.length > 0 ? (
 
-                {data.summary && data.summary.length > 0 ? (
-                  <>
-                    {/* Summary cards at the top */}
+              <Box sx={{ flexGrow: 1, mt: 2 }}>
+                <Grid container spacing={2}>
+                  {/* Summary blocks in a column on the left - FIXED */}
+                  <Grid item xs={12} md={2}
+                        sx={{ position: "sticky", top: 16, height: "fit-content", alignSelf: "flex-start" }}>
                     <Box sx={{
-                      mb: 4,
-                      display: "grid",
-                      gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-                      gap: 3,
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 1,
+                      height: "100%",
                     }}>
+                      {/* TOTAL CAPITATION */}
                       <Box sx={{
-                        p: 3,
+                        p: 1,
                         bgcolor: "#e3f2fd",
                         borderRadius: 2,
                         boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
@@ -1271,25 +1278,58 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                         alignItems: "center",
                         textAlign: "center",
                       }}>
-                        <i className="fas fa-wallet"
-                           style={{ fontSize: "24px", color: "#1976d2", marginBottom: "12px" }}></i>
+                        {/*<i className="fas fa-wallet" style={{ fontSize: "24px", color: "#1976d2", marginBottom: "12px" }}></i>*/}
                         <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{
                           fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
                           letterSpacing: "0.5px",
                         }}>
-                          TOTAL CAPITATION
+                          MAXIMUM BONUS
                         </Typography>
-                        <Typography variant="h4" sx={{
-                          fontWeight: "600",
-                          color: "#1976d2",
-                          fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                        }}>
-                          ${(filteredData.totalCapitation.toFixed(2) * 3).toFixed(2)}
+                        <Typography
+                          // variant="h4"
+                          sx={{
+                            fontWeight: "600",
+                            color: "#1976d2",
+                            fontSize: "1.5rem",
+                            fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                          }}>
+                          ${(3 * (filteredData.network_base_rate + filteredData.compare_care) * 0.1859).toFixed(2)}
                         </Typography>
                       </Box>
-
+                      {/* TOTAL current_roster_patients */}
                       <Box sx={{
-                        p: 3,
+                        p: 1,
+                        bgcolor: "#e3f2fd",
+                        borderRadius: 2,
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        textAlign: "center",
+                      }}>
+                        {/*<i className="fas fa-wallet" style={{ fontSize: "24px", color: "#1976d2", marginBottom: "12px" }}></i>*/}
+                        <Typography
+                          // variant="subtitle2"
+                          variant="subtitle2" color="text.secondary" gutterBottom sx={{
+                          fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                          letterSpacing: "0.5px",
+                        }}>
+                          CURRENT ROSTER PATIENTS
+                        </Typography>
+                        <Typography
+                          // variant="h4"
+                          sx={{
+                            fontWeight: "600",
+                            fontSize: "1.5rem",
+                            color: "#1976d2",
+                            fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                          }}>
+                          ${filteredData.current_roster_patients}
+                        </Typography>
+                      </Box>
+                      {/* TOTAL OUTSIDE USE */}
+                      <Box sx={{
+                        p: 1,
                         bgcolor: "#fff8e1",
                         borderRadius: 2,
                         boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
@@ -1298,26 +1338,29 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                         alignItems: "center",
                         textAlign: "center",
                       }}>
-                        <i className="fas fa-hospital"
-                           style={{ fontSize: "24px", color: "#ff9800", marginBottom: "12px" }}></i>
+                        {/*<i className="fas fa-hospital" style={{ fontSize: "24px", color: "#ff9800", marginBottom: "12px" }}></i>*/}
                         <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{
                           fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
                           letterSpacing: "0.5px",
                         }}>
                           TOTAL OUTSIDE USE
                         </Typography>
-                        <Typography variant="h4" sx={{
-                          fontWeight: "600",
-                          color: "#ff9800",
-                          fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                        }}>
+                        <Typography
+                          // variant="h4"
+                          sx={{
+                            fontWeight: "600",
+                            color: "#ff9800",
+                            fontSize: "1.5rem",
+                            fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                          }}>
                           ${filteredData.totalOutsideUse.toFixed(2)}
                         </Typography>
                       </Box>
 
+                      {/* BALANCE */}
                       <Box sx={{
-                        p: 3,
-                        bgcolor: ((filteredData.totalCapitation * 3) - filteredData.totalOutsideUse) < 0 ? "#ffebee" : "#e8f5e9",
+                        p: 1,
+                        bgcolor: (((filteredData.network_base_rate + filteredData.compare_care) * 3) * 0.1859 - filteredData.totalOutsideUse) < 0 ? "#ffebee" : "#e8f5e9",
                         borderRadius: 2,
                         boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
                         display: "flex",
@@ -1326,10 +1369,10 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                         textAlign: "center",
                       }}>
                         <i
-                          className={`fas fa-${((filteredData.totalCapitation * 3) - filteredData.totalOutsideUse) < 0 ? "exclamation-triangle" : "check-circle"}`}
+                          className={`fas fa-${(((filteredData.network_base_rate + filteredData.compare_care) * 3) * 0.1859 - filteredData.totalOutsideUse) < 0 ? "exclamation-triangle" : "check-circle"}`}
                           style={{
                             fontSize: "24px",
-                            color: ((filteredData.totalCapitation * 3) - filteredData.totalOutsideUse) < 0 ? "#d32f2f" : "#2e7d32",
+                            color: (((filteredData.network_base_rate + filteredData.compare_care) * 3) * 0.1859 - filteredData.totalOutsideUse) < 0 ? "#d32f2f" : "#2e7d32",
                             marginBottom: "12px",
                           }}></i>
                         <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{
@@ -1339,209 +1382,294 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                           BALANCE
                         </Typography>
                         <Typography
-                          variant="h4"
+                          // variant="h4"
                           sx={{
                             fontWeight: "600",
-                            color: ((filteredData.totalCapitation * 3) - filteredData.totalOutsideUse) < 0 ? "#d32f2f" : "#2e7d32",
+                            fontSize: "1.5rem",
+                            color: (((filteredData.network_base_rate + filteredData.compare_care) * 3) * 0.1859 - filteredData.totalOutsideUse) < 0 ? "#d32f2f" : "#2e7d32",
                             fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
                           }}
                         >
-                          ${((filteredData.totalCapitation * 3) - filteredData.totalOutsideUse).toFixed(2)}
+                          ${(((filteredData.network_base_rate + filteredData.compare_care) * 3) * 0.1859 - filteredData.totalOutsideUse).toFixed(2)}
                         </Typography>
                       </Box>
-                    </Box>
 
-                    <Grid container spacing={2} alignItems="center" sx={{ mb: 3, mt: 2 }}>
-                      {/* Roster Filter */}
-                      {rosterOptions.length > 1 && (
-                        <Grid item>
-                          <FormControl sx={{ minWidth: 200 }} size="small">
-                            <InputLabel id="roster-filter-label">Filter by Roster</InputLabel>
-                            <Select
-                              labelId="roster-filter-label"
-                              id="roster-filter"
-                              value={selectedRoster}
-                              label="Filter by Roster"
-                              onChange={handleRosterChange}
-                            >
-                              <MenuItem value="all">All Rosters ({data.summary.length})</MenuItem>
-                              {rosterOptions.map((roster) => (
-                                <MenuItem key={roster} value={roster}>
-                                  {roster} ({data.summary.filter(row => row.rosterEnrolledTo === roster).length})
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                        </Grid>
-                      )}
+                      {/* warning */}
+                      <Box sx={{
+                        p: 1,
+                        bgcolor: "#ffebee",
+                        borderRadius: 2,
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        textAlign: "center",
+                      }}>
 
-                      {/* Optional Active Filter Info */}
-                      {rosterOptions.length > 1 && activeFilterInfo && (
-                        <Grid item>
-                          {activeFilterInfo}
-                        </Grid>
-                      )}
-
-                      {/* Refresh Button */}
-                      <Grid item>
-                        <Button
-                          variant={"contained"}
-                          onClick={async () => {
-                            const updatedData = await refreshRosters();
-                            // Handle the updated data if needed
-                          }}
-                          disabled={isRefreshingRosters || individualRosterUpdating}
-                          startIcon={isRefreshingRosters ? <CircularProgress size={16} /> : <RefreshIcon />}
+                        <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{
+                          fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                          letterSpacing: "0.5px",
+                        }}>
+                          WARNING
+                        </Typography>
+                        <Typography
+                          // variant="h4"
                           sx={{
-                            textTransform: "none",
-                            fontWeight: "bold",
-                            fontFamily: "sans-serif",
-                            fontVariantCaps: "normal",
-                            color: "white",
-                            borderColor: "rgba(255, 255, 255, 0.3)",
-                            "&:hover": {
-                              backgroundColor: "rgba(255, 255, 255, 0.1)",
-                              borderColor: "rgba(255, 255, 255, 0.5)",
-                              color: "black",
-                            },
+                            fontWeight: "600",
+                            fontSize: "1.5rem",
+                            color: "#d32f2f",
+                            fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
                           }}
                         >
-                          {isRefreshingRosters ? "Updating..." : "Refresh Current Page"}
-                        </Button>
-                      </Grid>
-
-                      {/* Page info */}
-                      <Grid item sx={{ ml: "auto", mr: 2 }}>
-                        <Typography variant="body2" color="text.secondary">
-                          Showing page {page + 1} of {Math.ceil(filteredData.summary.length / rowsPerPage)}
+                          Data is approximate
                         </Typography>
-                      </Grid>
-                    </Grid>
+                      </Box>
 
-                    <TableContainer
-                      component={Paper}
+                    </Box>
+                  </Grid>
+
+                  {/* Table content area - SCROLLABLE */}
+                  <Grid item xs={12} md={9}>
+                    <Card
                       sx={{
-                        boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
                         borderRadius: "8px",
+                        boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
                         overflow: "hidden",
+                        maxHeight: "calc(100vh - 120px)",  // Set max height for scrolling
+                        display: "flex",
+                        flexDirection: "column",
                       }}
                     >
-                      <Table aria-label="collapsible table">
-                        <TableHead>
-                          <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
-                            <TableCell sx={{
-                              fontWeight: "600",
-                              fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                              fontSize: "0.875rem",
-                            }}>HIN</TableCell>
-                            <TableCell sx={{
-                              fontWeight: "600",
-                              fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                              fontSize: "0.875rem",
-                            }}>Patient Name</TableCell>
-                            <TableCell align="right" sx={{
-                              fontWeight: "600",
-                              fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                              fontSize: "0.875rem",
-                            }}>Capitation</TableCell>
-                            <TableCell align="right" sx={{
-                              fontWeight: "600",
-                              fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                              fontSize: "0.875rem",
-                            }}>Outside Use</TableCell>
-                            <TableCell align="right" sx={{
-                              fontWeight: "600",
-                              fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                              fontSize: "0.875rem",
-                            }}>Difference</TableCell>
-                            <TableCell align="right" sx={{
-                              fontWeight: "600",
-                              fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                              fontSize: "0.875rem",
-                            }}>Bill</TableCell>
-                            <TableCell align="right" sx={{
-                              fontWeight: "600",
-                              fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                              fontSize: "0.875rem",
-                            }}>Roster Enrolled To</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {getCurrentPageData().map((row) => (
-                            <EnhancedSummaryRow key={row.hin} row={row} />
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
+                      <CardContent sx={{
+                        padding: "24px",
+                        paddingTop: "24px",
+                        flexGrow: 1,
+                        overflow: "auto", // Make this content area scrollable
+                      }}>
+                        {loading ? (
+                          <Box
+                            sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "300px" }}>
+                            <CircularProgress />
+                            <Typography sx={{ ml: 2 }}>Loading summary data...</Typography>
+                          </Box>
+                        ) : (
+                          <>
+                            {/* Filters and controls - STICKY */}
+                            <Box sx={{
+                              // position: "sticky",
+                              // top: 0,
+                              // backgroundColor: "white",
+                              // zIndex: 10,
+                              // paddingBottom: 2,
+                              // borderBottom: "1px solid rgba(224, 224, 224, 0.5)",
+                            }}>
+                              <Grid container spacing={2} alignItems="center" sx={{ mb: 3, mt: 0 }}>
+                                {/* Roster Filter */}
+                                {rosterOptions.length > 1 && (
+                                  <Grid item>
+                                    <FormControl sx={{ minWidth: 200 }} size="small">
+                                      <InputLabel id="roster-filter-label">Filter by Roster</InputLabel>
+                                      <Select
+                                        labelId="roster-filter-label"
+                                        id="roster-filter"
+                                        value={selectedRoster}
+                                        label="Filter by Roster"
+                                        onChange={handleRosterChange}
+                                      >
+                                        <MenuItem value="all">All Rosters ({filteredData.summary.length})</MenuItem>
+                                        {rosterOptions.map((roster) => (
+                                          <MenuItem key={roster} value={roster}>
+                                            {roster} ({filteredData.summary.filter(row => row.rosterEnrolledTo === roster).length})
+                                          </MenuItem>
+                                        ))}
+                                      </Select>
+                                    </FormControl>
+                                  </Grid>
+                                )}
 
-                    {/* Pagination controls */}
-                    <TablePagination
-                      // rowsPerPageOptions={[15, 25, 50]}
-                      rowsPerPageOptions={false}
-                      component="div"
-                      count={filteredData.summary.length}
-                      rowsPerPage={rowsPerPage}
-                      page={page}
-                      onPageChange={handleChangePage}
-                      onRowsPerPageChange={handleChangeRowsPerPage}
-                      sx={{
-                        ".MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows": {
-                          fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                        },
-                        ".MuiTablePagination-select": {
-                          fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                        },
-                      }}
-                    />
+                                {/* Optional Active Filter Info */}
+                                {rosterOptions.length > 1 && activeFilterInfo && (
+                                  <Grid item>
+                                    {activeFilterInfo}
+                                  </Grid>
+                                )}
 
-                    <Box sx={{
-                      mt: 2,
-                      display: "flex",
-                      alignItems: "center",
-                      backgroundColor: "rgba(25, 118, 210, 0.05)",
-                      p: 1.5,
-                      borderRadius: 1,
-                    }}>
-                      <i className="fas fa-info-circle"
-                         style={{ color: "#1976d2", marginRight: "8px", fontSize: "16px" }}></i>
-                      <Typography variant="body2" color="text.secondary"
-                                  sx={{ fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif" }}>
-                        Click on any patient row to view detailed outside use information. You can also change a
-                        patient's roster enrollment directly from the dropdown menu.
-                      </Typography>
-                    </Box>
-                  </>
-                ) : (
-                  <Box sx={{
-                    p: 4,
-                    textAlign: "center",
-                    bgcolor: "#f5f5f5",
-                    borderRadius: 2,
-                    border: "1px dashed #ccc",
-                  }}>
-                    <i className="fas fa-search"
-                       style={{ fontSize: "48px", color: "#9e9e9e", marginBottom: "16px" }}></i>
-                    <Typography variant="h6" gutterBottom>No outside use data found</Typography>
-                    <Typography variant="body2" color="textSecondary">
-                      There are no outside use records matching your criteria.
-                    </Typography>
-                  </Box>
-                )}
-              </>
+                                {/* Refresh Button */}
+                                <Grid item>
+                                  <Button
+                                    variant="contained"
+                                    onClick={refreshRosters}
+                                    disabled={isRefreshingRosters || individualRosterUpdating}
+                                    startIcon={isRefreshingRosters ? <CircularProgress size={16} /> : <RefreshIcon />}
+                                    sx={{
+                                      textTransform: "none",
+                                      fontWeight: "bold",
+                                      fontFamily: "sans-serif",
+                                      fontVariantCaps: "normal",
+                                      color: "white",
+                                      borderColor: "rgba(255, 255, 255, 0.3)",
+                                      "&:hover": {
+                                        backgroundColor: "rgba(255, 255, 255, 0.1)",
+                                        borderColor: "rgba(255, 255, 255, 0.5)",
+                                        color: "black",
+                                      },
+                                    }}
+                                  >
+                                    {isRefreshingRosters ? "Updating..." : "Refresh Current Page"}
+                                  </Button>
+                                </Grid>
+
+                                {/* Page info */}
+                                <Grid item sx={{ ml: "auto", mr: 2 }}>
+                                  <Typography variant="body2" color="text.secondary">
+                                    Showing page {page + 1} of {Math.ceil(filteredData.summary.length / rowsPerPage)}
+                                  </Typography>
+                                </Grid>
+                              </Grid>
+                            </Box>
+
+                            {/* Scrollable table area */}
+                            <Box sx={{ overflow: "auto" }}>
+                              <TableContainer
+                                component={Paper}
+                                sx={{
+                                  boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                                  borderRadius: "8px",
+                                  overflow: "hidden",
+                                }}
+                              >
+                                <Table aria-label="collapsible table" stickyHeader>
+                                  <TableHead>
+                                    <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
+                                      <TableCell sx={{
+                                        fontWeight: "600",
+                                        fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                                        fontSize: "0.875rem",
+                                      }}>HIN</TableCell>
+                                      <TableCell sx={{
+                                        fontWeight: "600",
+                                        fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                                        fontSize: "0.875rem",
+                                      }}>Patient Name</TableCell>
+                                      <TableCell align="right" sx={{
+                                        fontWeight: "600",
+                                        fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                                        fontSize: "0.875rem",
+                                      }}>Capitation</TableCell>
+                                      <TableCell align="right" sx={{
+                                        fontWeight: "600",
+                                        fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                                        fontSize: "0.875rem",
+                                      }}>Outside Use</TableCell>
+                                      <TableCell align="right" sx={{
+                                        fontWeight: "600",
+                                        fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                                        fontSize: "0.875rem",
+                                      }}>Difference</TableCell>
+                                      <TableCell align="right" sx={{
+                                        fontWeight: "600",
+                                        fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                                        fontSize: "0.875rem",
+                                      }}>Bill</TableCell>
+                                      <TableCell align="right" sx={{
+                                        fontWeight: "600",
+                                        fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                                        fontSize: "0.875rem",
+                                      }}>Roster Enrolled To</TableCell>
+                                    </TableRow>
+                                  </TableHead>
+                                  <TableBody>
+                                    {getCurrentPageData().map((row) => (
+                                      <EnhancedSummaryRow key={row.hin} row={row} />
+                                    ))}
+                                  </TableBody>
+                                </Table>
+                              </TableContainer>
+                            </Box>
+
+                            {/* Pagination controls - STICKY to bottom */}
+                            <Box sx={{
+                              position: "sticky",
+                              bottom: 0,
+                              backgroundColor: "white",
+                              zIndex: 10,
+                              paddingTop: 2,
+                              borderTop: "1px solid rgba(224, 224, 224, 0.5)",
+                            }}>
+                              <TablePagination
+                                rowsPerPageOptions={false}
+                                component="div"
+                                count={filteredData.summary.length}
+                                rowsPerPage={rowsPerPage}
+                                page={page}
+                                onPageChange={handleChangePage}
+                                onRowsPerPageChange={handleChangeRowsPerPage}
+                                sx={{
+                                  ".MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows": {
+                                    fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                                  },
+                                  ".MuiTablePagination-select": {
+                                    fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                                  },
+                                }}
+                              />
+
+                              <Box sx={{
+                                mt: 1,
+                                display: "flex",
+                                alignItems: "center",
+                                backgroundColor: "rgba(25, 118, 210, 0.05)",
+                                p: 1,
+                                borderRadius: 1,
+                              }}>
+                                <i className="fas fa-info-circle"
+                                   style={{
+                                     color: "#1976d2",
+                                     marginRight: "8px",
+                                     fontSize: "16px",
+                                   }}></i>
+                                <Typography variant="body2" color="text.secondary"
+                                            sx={{ fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif" }}>
+                                  Click on any patient row to view detailed outside use information. You can also change
+                                  a
+                                  patient's roster enrollment directly from the dropdown menu.
+                                </Typography>
+                              </Box>
+                            </Box>
+                          </>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                </Grid>
+              </Box>
             ) : (
               <Box sx={{
                 p: 4,
                 textAlign: "center",
                 bgcolor: "#f5f5f5",
                 borderRadius: 2,
+                border: "1px dashed #ccc",
               }}>
-                <Typography>No data available</Typography>
+                <i className="fas fa-search"
+                   style={{ fontSize: "48px", color: "#9e9e9e", marginBottom: "16px" }}></i>
+                <Typography variant="h6" gutterBottom>No outside use data found</Typography>
+                <Typography variant="body2" color="textSecondary">
+                  There are no outside use records matching your criteria.
+                </Typography>
               </Box>
             )}
-          </CardContent>
-        </Card>
-
-
+          </>
+        ) : (
+          <Box sx={{
+            p: 4,
+            textAlign: "center",
+            bgcolor: "#f5f5f5",
+            borderRadius: 2,
+          }}>
+            <Typography>No data available</Typography>
+          </Box>
+        )}
         <NotificationDialog
           open={openModal}
           onClose={handleCloseApp}
@@ -1549,7 +1677,7 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
           isError={isError}
         />
       </div>
-    </Layout>
+    </Layout1>
   );
 };
 
