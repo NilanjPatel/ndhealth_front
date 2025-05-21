@@ -1332,7 +1332,7 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                             color: "#1976d2",
                             fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
                           }}>
-                          ${filteredData.current_roster_patients}
+                          {filteredData.current_roster_patients}
                         </Typography>
                       </Box>
                       {/* TOTAL OUTSIDE USE */}
