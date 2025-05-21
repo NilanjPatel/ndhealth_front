@@ -172,6 +172,7 @@ const Layout1 = ({ clinicInfo, children }) => {
   useEffect(() => {
     const fetchClinicInfo = async () => {
       setHome(`https://nd-health.ca`);
+      console.log(`get clinic info:${clinicInfo}`);
       try {
         // const response = await fetch(`${API_BASE_PATH}/clinic/${clinicSlug}/`);
 

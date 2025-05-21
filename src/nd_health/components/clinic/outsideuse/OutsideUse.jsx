@@ -41,7 +41,7 @@ import TablePagination from "@mui/material/TablePagination";
 import Link from "@mui/material/Link";
 import Item from "@mui/material/ListItem";
 import { styled } from "@mui/material/styles";
-
+import { RosterTerminatedPatients } from "./RosterTerminatedPatients";
 import NotificationDialog from "../../resources/Notification";
 // Row component for expandable table
 // Enhanced SummaryRow with roster fetching
@@ -224,7 +224,7 @@ const OutsideUseDialog1 = ({ open, onClose, data, loading, clinicSlug, onDataUpd
         }),
       };
 
-      const response = await fetch(`${API_BASE_PATH}/outsideuse/getletestRoster/`, {
+      const response = await fetch(`${API_BASE_PATH}/outsideuse/getletestRoster/letest/`, {
         method: "POST",
         headers: {
           "Authorization": `Token ${accessToken}`,
@@ -249,6 +249,8 @@ const OutsideUseDialog1 = ({ open, onClose, data, loading, clinicSlug, onDataUpd
             return {
               ...row,
               rosterEnrolledTo: updatedRoster.rosterEnrolledTo || row.rosterEnrolledTo || "Unknown",
+              rosterTerminationDate: updatedRoster.rosterTerminationDate || row.rosterTerminationDate || "Unknown",
+              rosterStatus: updatedRoster.rosterStatus || row.rosterStatus || "Unknown",
             };
           }
           return row;
@@ -598,9 +600,9 @@ const OutsideUseDialog1 = ({ open, onClose, data, loading, clinicSlug, onDataUpd
                       {/* Refresh Button */}
                       <Grid item>
                         <Button
-                          variant={"contained"}
+                          variant="contained"
                           onClick={async () => {
-                            const updatedData = await refreshRosters();
+                            await refreshRosters();
                             // Handle the updated data if needed
                           }}
                           disabled={isRefreshingRosters}
@@ -807,7 +809,7 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
         }),
       };
 
-      const response = await fetch(`${API_BASE_PATH}/outsideuse/getletestRoster/`, {
+      const response = await fetch(`${API_BASE_PATH}/outsideuse/getletestRoster/letest/`, {
         method: "POST",
         headers: {
           "Authorization": `Token ${accessToken}`,
@@ -991,6 +993,11 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
 
   // Filter data based on selected roster
   const filteredData = useMemo(() => {
+
+    if (data.network_base_rate === null) {
+      localStorage.removeItem("outsideUseData");
+    }
+
     if (!data || !data.summary) return null;
 
     if (selectedRoster === "all") {
@@ -1127,6 +1134,7 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
           <TableCell align="right" onClick={() => setOpen(!open)}>${row.outsideUseTotal.toFixed(2)}</TableCell>
           <TableCell align="right"
                      onClick={() => setOpen(!open)}>${((row.capitationTotal * 3) - row.outsideUseTotal).toFixed(2)}</TableCell>
+          <TableCell align="right">{row.code}</TableCell>
           <TableCell align="right">
             <Link
               fontWeight={"bolder"}
@@ -1217,7 +1225,7 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
     }),
   }));
 
-  return (
+  return clinicInfo ? (
     <Layout1 clinicInfo={clinicInfo}>
       <div>
         {/* Title Card */}
@@ -1393,7 +1401,39 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                           ${(((filteredData.network_base_rate + filteredData.compare_care) * 3) * 0.1859 - filteredData.totalOutsideUse).toFixed(2)}
                         </Typography>
                       </Box>
+                      <a href={`/clinic/${clinicSlug}/rosterterminated?token=${localStorage.getItem('accessToken')}`} target="_blank" rel="noopener noreferrer"
+                         style={{ textDecoration: "none" }}>
 
+                        <Box sx={{
+                          p: 1,
+                          bgcolor: "#c2cee1",
+                          borderRadius: 2,
+                          boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          textAlign: "center",
+                        }}>
+
+                          <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{
+                            fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                            letterSpacing: "0.5px",
+                          }}>
+                            FROM MCEDT
+                          </Typography>
+                          <Typography
+                            // variant="h4"
+                            sx={{
+                              fontWeight: "600",
+                              fontSize: "1.5rem",
+                              color: "#045ae1",
+                              fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                            }}
+                          >
+                            Roster Termination
+                          </Typography>
+                        </Box>
+                      </a>
                       {/* warning */}
                       <Box sx={{
                         p: 1,
@@ -1515,7 +1555,7 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                                       },
                                     }}
                                   >
-                                    {isRefreshingRosters ? "Updating..." : "Refresh Current Page"}
+                                    {isRefreshingRosters ? "Updating..." : "Refresh Enrolled Status"}
                                   </Button>
                                 </Grid>
 
@@ -1566,6 +1606,11 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                                         fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
                                         fontSize: "0.875rem",
                                       }}>Difference</TableCell>
+                                      <TableCell align="right" sx={{
+                                        fontWeight: "600",
+                                        fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                                        fontSize: "0.875rem",
+                                      }}>Code</TableCell>
                                       <TableCell align="right" sx={{
                                         fontWeight: "600",
                                         fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
@@ -1678,6 +1723,11 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
         />
       </div>
     </Layout1>
+  ) : (
+    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "300px" }}>
+      <CircularProgress />
+      <Typography sx={{ ml: 2 }}>Loading Clinic Data...</Typography>
+    </Box>
   );
 };
 
@@ -1759,18 +1809,18 @@ class OutsideUseManager {
     formData.append("demo", "NO");
     formData.append("period", "3");
     // formData.append("provider", "034288");
-    if (!localStorage.getItem("accessToken")) {
-      const urlParams = new URLSearchParams(window.location.search);
-      const accessToken = urlParams.get("token");
-      const username = urlParams.get("username");
-      const loggedIn = urlParams.get("loggedIn");
-      const providerNo = urlParams.get("providerNo");
-      if (accessToken && username && loggedIn && providerNo) {
-        localStorage.setItem("accessToken", accessToken);
+    const urlParams = new URLSearchParams(window.location.search);
+    const accessTokenurl = urlParams.get("token");
+    const username = urlParams.get("username");
+    const loggedIn = urlParams.get("loggedIn");
+    const providerNo = urlParams.get("providerNo");
+    if (!localStorage.getItem("accessToken") || localStorage.getItem("accessToken") !== accessTokenurl) {
+      if (accessTokenurl && username && loggedIn && providerNo) {
+        localStorage.setItem("accessToken", accessTokenurl);
         localStorage.setItem("username", username);
         localStorage.setItem("loggedIn", loggedIn);
         localStorage.setItem("providerNo", providerNo);
-
+        localStorage.removeItem("outsideUseData");
         // Proceed with authenticated actions
       }
     }
