@@ -50,47 +50,51 @@ const EnhancedTerminatedRow = ({ row, onUpdate }) => {
       setIsUpdating(false);
     }
   };
+
   return (
     <>
-      <TableRow
-        hover
-        sx={{
-          "&:hover": { backgroundColor: "rgba(25, 118, 210, 0.08)" },
-          cursor: "pointer",
-          borderLeft: open ? "4px solid #1976d2" : "none",
-        }}
-        onClick={(e) => {
-          e.stopPropagation();
-          setOpen(!open);
-        }}
+      <TableRow hover sx={{
+        "& > *": { borderBottom: "unset" },
+        cursor: "pointer",
+        ...(open && {
+          backgroundColor: "rgba(25, 118, 210, 0.08)",
+        }),
+      }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setOpen(!open);
+                }}
       >
         <TableCell
           align="left"
-          sx={{
-          }}
-        >
-          {row.name || "N/A"}
-        </TableCell>
+        >{row.hin || "N/A"}</TableCell>
         <TableCell
-          align="center"
-          sx={{
-          }}
-        >
-          {row.hin || "N/A"}
-        </TableCell>
+          component="th" scope="row"
+        >{row.name || "N/A"}</TableCell>
         <TableCell
           align="right"
-          sx={{
-          }}
-        >
-          {row.code}
-        </TableCell>
+        >{row.code || "N/A"}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 2, backgroundColor: "#f5f7fa", p: 3, borderRadius: 2, boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.05)", border: "1px solid #e0e4e8" }}>
-              <Typography variant="h6" component="div" sx={{ fontWeight: "600", color: "#2c3e50", mb: 2, borderBottom: "2px solid #3498db", pb: 1, display: "flex", alignItems: "center" }}>
+            <Box sx={{
+              margin: 2,
+              backgroundColor: "#f5f7fa",
+              p: 3,
+              borderRadius: 2,
+              boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.05)",
+              border: "1px solid #e0e4e8",
+            }}>
+              <Typography variant="h6" component="div" sx={{
+                fontWeight: "600",
+                color: "#2c3e50",
+                mb: 2,
+                borderBottom: "2px solid #3498db",
+                pb: 1,
+                display: "flex",
+                alignItems: "center",
+              }}>
                 <PersonIcon sx={{ mr: 1, color: "#3498db" }} />
                 Patient Details
               </Typography>
@@ -106,23 +110,26 @@ const EnhancedTerminatedRow = ({ row, onUpdate }) => {
                     <Stack spacing={1}>
                       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                         <Typography variant="body2" sx={{ fontWeight: "500", color: "#566573" }}>HIN:</Typography>
-                        <Typography variant="body2" sx={{fontSize:'1rem'}}>{row.hin || "N/A"}</Typography>
+                        <Typography variant="body2" sx={{ fontSize: "1rem" }}>{row.hin || "N/A"}</Typography>
                       </Box>
 
                       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                        <Typography variant="body2" sx={{ fontWeight: "500", color: "#566573" }}>Roster Status:</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: "500", color: "#566573" }}>Roster
+                          Status:</Typography>
                         <Chip
-                          sx={{fontSize:'1rem'}}
+                          sx={{ fontSize: "1rem" }}
                           size="small"
-                          label={row.rosterStatus}
+                          label={row.rosterStatus || "N/A"}
                           color={row.rosterStatus === "Active" ? "success" : "default"}
                           variant="outlined"
                         />
                       </Box>
 
                       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                        <Typography variant="body2" sx={{ fontWeight: "500", color: "#566573" }}>Termination Date:</Typography>
-                        <Typography variant="body2" sx={{fontSize:'1rem'}}>{row.rosterTerminationDate || "N/A"}</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: "500", color: "#566573" }}>Termination
+                          Date:</Typography>
+                        <Typography variant="body2"
+                                    sx={{ fontSize: "1rem" }}>{row.rosterTerminationDate || "N/A"}</Typography>
                       </Box>
 
                       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -131,7 +138,8 @@ const EnhancedTerminatedRow = ({ row, onUpdate }) => {
                         <Button
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleUpdate().then(r => {});
+                            handleUpdate().then(r => {
+                            });
                           }}
                           variant="contained"
                           size="small"
@@ -142,8 +150,8 @@ const EnhancedTerminatedRow = ({ row, onUpdate }) => {
                             backgroundColor: "#e74c3c",
                             "&:hover": { backgroundColor: "#c0392b" },
                             mt: 1,
-                            maxWidth:200,
-                            fontSize:'1rem',
+                            maxWidth: 200,
+                            fontSize: "1rem",
                             alignItems: "center",
                           }}
                         >
@@ -164,18 +172,19 @@ const EnhancedTerminatedRow = ({ row, onUpdate }) => {
                     <Stack spacing={1}>
                       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                         <Typography variant="body2" sx={{ fontWeight: "500", color: "#566573" }}>Base Rate:</Typography>
-                        <Typography variant="body2" sx={{fontSize:'1rem'}}>{row.baseRate || "N/A"}</Typography>
+                        <Typography variant="body2" sx={{ fontSize: "1rem" }}>{row.baseRate || "N/A"}</Typography>
                       </Box>
 
                       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                         <Typography variant="body2" sx={{ fontWeight: "500", color: "#566573" }}>Comp Care:</Typography>
-                        <Typography variant="body2" sx={{fontSize:'1rem'}}>{row.compCare || "N/A"}</Typography>
+                        <Typography variant="body2" sx={{ fontSize: "1rem" }}>{row.compCare || "N/A"}</Typography>
                       </Box>
 
                       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                        <Typography variant="body2" sx={{ fontWeight: "500", color: "#566573" }}>Termination Code:</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: "500", color: "#566573" }}>Termination
+                          Code:</Typography>
                         <Chip
-                          sx={{fontSize:'1rem'}}
+                          sx={{ fontSize: "1rem" }}
                           size="small"
                           label={row.code || "N/A"}
                           variant="outlined"
@@ -183,8 +192,9 @@ const EnhancedTerminatedRow = ({ row, onUpdate }) => {
                       </Box>
 
                       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                        <Typography variant="body2" sx={{ fontWeight: "500", color: "#566573" }}>Termination Date:</Typography>
-                        <Typography variant="body2" sx={{fontSize:'1rem'}}>{row.terminatedDate || "N/A"}</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: "500", color: "#566573" }}>Termination
+                          Date:</Typography>
+                        <Typography variant="body2" sx={{ fontSize: "1rem" }}>{row.terminatedDate || "N/A"}</Typography>
                       </Box>
                     </Stack>
                   </Paper>
@@ -197,6 +207,7 @@ const EnhancedTerminatedRow = ({ row, onUpdate }) => {
     </>
   );
 };
+
 export const RosterTerminatedPatients = () => {
   // State variables
   const [clinicInfo, setClinicInfo] = useState(null);
@@ -224,7 +235,7 @@ export const RosterTerminatedPatients = () => {
 
   // Fetch terminated patients data
 // Add this constant at the top of your component
-  const CACHE_KEY = 'terminatedPatientsCache';
+  const CACHE_KEY = "terminatedPatientsCache";
 
 // Modified fetchTerminatedPatients function
   const fetchTerminatedPatients = async (forceRefresh = false) => {
@@ -264,7 +275,7 @@ export const RosterTerminatedPatients = () => {
         // Update cache with new data
         localStorage.setItem(CACHE_KEY, JSON.stringify({
           data: result.terminatedPatients,
-          timestamp: Date.now() // Optional: keep timestamp for debugging
+          timestamp: Date.now(), // Optional: keep timestamp for debugging
         }));
       }
     } catch (error) {
@@ -430,7 +441,7 @@ export const RosterTerminatedPatients = () => {
               return {
                 ...patient,
                 rosterTerminationDate: patientData.terminatedDate,
-                rosterStatus: 'TE'
+                rosterStatus: "TE",
               };
             }
             return patient;
@@ -440,7 +451,7 @@ export const RosterTerminatedPatients = () => {
           setTerminatedPatients(updatedPatients);
           localStorage.setItem(CACHE_KEY, JSON.stringify({
             data: JSON.stringify(updatedPatients),
-            timestamp: Date.now()
+            timestamp: Date.now(),
           }));
 
           // Update totals if needed (e.g., if code changed)
@@ -450,8 +461,7 @@ export const RosterTerminatedPatients = () => {
           setTotalDeceased(deceased);
         }
         handleSuccess("Patient terminated in oscar successfully!");
-      }
-      else {
+      } else {
         throw new Error(`HTTP error! Status: ${response.status}`);
 
       }
@@ -468,375 +478,330 @@ export const RosterTerminatedPatients = () => {
     <Layout1 clinicInfo={clinicInfo}>
       <div>
 
-          {/* Title Card */}
-          <CardHeader
-            title="Roster Termination"
-            sx={{
-              backgroundColor: "#1976d2",
-              color: "white !important", // Force white color
-              "& .MuiCardHeader-title": {
-                color: "white !important", // Specifically target title
-              },
-              display: "flex",
-              alignItems: "center",
-              padding: "16px 24px",
-            }}
-          />
+        {/* Title Card */}
+        <CardHeader
+          title="Roster Termination"
+          sx={{
+            backgroundColor: "#1976d2",
+            color: "white !important", // Force white color
+            "& .MuiCardHeader-title": {
+              color: "white !important", // Specifically target title
+            },
+            display: "flex",
+            alignItems: "center",
+            padding: "16px 24px",
+          }}
+        />
 
-          {/* Main Content */}
-          <Box sx={{ flexGrow: 1, mt: 2 }}>
-            <Grid container spacing={2}>
-              {/* Summary blocks in a column on the left - FIXED */}
-              <Grid item xs={12} md={2}
-                    sx={{ position: "sticky", top: 16, height: "fit-content", alignSelf: "flex-start" }}>
+        {/* Main Content */}
+        <Box sx={{ flexGrow: 1, mt: 2 }}>
+          <Grid container spacing={2}>
+            {/* Summary blocks in a column on the left - FIXED */}
+            <Grid item xs={12} md={2}
+                  sx={{ position: "sticky", top: 16, height: "fit-content", alignSelf: "flex-start" }}>
+              <Box sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 1,
+                height: "100%",
+              }}>
+                {/* TOTAL TERMINATED */}
                 <Box sx={{
+                  p: 1,
+                  bgcolor: "#ffebee",
+                  borderRadius: 2,
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
                   display: "flex",
                   flexDirection: "column",
-                  gap: 1,
-                  height: "100%",
+                  alignItems: "center",
+                  textAlign: "center",
                 }}>
-                  {/* TOTAL TERMINATED */}
-                  <Box sx={{
-                    p: 1,
-                    bgcolor: "#ffebee",
-                    borderRadius: 2,
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    textAlign: "center",
+
+                  <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{
+                    fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                    letterSpacing: "0.5px",
                   }}>
-
-                    <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{
-                      fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                      letterSpacing: "0.5px",
-                    }}>
-                      CODE 91
-                    </Typography>
-                    <Typography variant="h4" sx={{
-                      fontWeight: "600",
-                      color: "#d32f2f",
-                      fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                    }}>
-                      {totalTerminated}
-                    </Typography>
-                  </Box>
-
-                  {/* TOTAL DECEASED */}
-                  <Box sx={{
-                    p: 1,
-                    bgcolor: "#fff8e1",
-                    borderRadius: 2,
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    textAlign: "center",
+                    CODE 91
+                  </Typography>
+                  <Typography variant="h4" sx={{
+                    fontWeight: "600",
+                    color: "#d32f2f",
+                    fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
                   }}>
-
-                    <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{
-                      fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                      letterSpacing: "0.5px",
-                    }}>
-                      CODE 44
-                    </Typography>
-                    <Typography variant="h4" sx={{
-                      fontWeight: "600",
-                      color: "#ff9800",
-                      fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                    }}>
-                      {totalDeceased}
-                    </Typography>
-                  </Box>
-
-                  {/* TOTAL PATIENTS */}
-                  <Box sx={{
-                    p: 1,
-                    bgcolor: "#e3f2fd",
-                    borderRadius: 2,
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    textAlign: "center",
-                  }}>
-
-                    <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{
-                      fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                      letterSpacing: "0.5px",
-                    }}>
-                      TOTAL PATIENTS
-                    </Typography>
-                    <Typography variant="h4" sx={{
-                      fontWeight: "600",
-                      color: "#1976d2",
-                      fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                    }}>
-                      {terminatedPatients.length}
-                    </Typography>
-                  </Box>
+                    {totalTerminated}
+                  </Typography>
                 </Box>
-              </Grid>
 
-              {/* Table content area - SCROLLABLE */}
-              <Grid item xs={12} md={10}>
-                <Card
-                  sx={{
-                    borderRadius: "8px",
-                    boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
-                    overflow: "hidden",
-                    maxHeight: "calc(100vh - 120px)",  // Set max height for scrolling
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
-                  <CardContent sx={{
-                    padding: "24px",
-                    paddingTop: "24px",
-                    // flexDirection: "column",
-                    flex: 1,
-                    overflow: "auto", // Make this content area scrollable
+                {/* TOTAL DECEASED */}
+                <Box sx={{
+                  p: 1,
+                  bgcolor: "#fff8e1",
+                  borderRadius: 2,
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  textAlign: "center",
+                }}>
+
+                  <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{
+                    fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                    letterSpacing: "0.5px",
                   }}>
-                    {loading ? (
-                      <Box
-                        sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "300px" }}>
-                        <CircularProgress />
-                        <Typography sx={{ ml: 2 }}>Loading termination data...</Typography>
-                      </Box>
-                    ) : (
-                      <>
-                        {/* Filters and controls - STICKY */}
-                        <Box sx={{
-                          // position: "sticky",
-                          // top: 0,
-                          // backgroundColor: "white",
-                          // zIndex: 10,
-                          // paddingBottom: 2,
-                          // borderBottom: "1px solid rgba(224, 224, 224, 0.5)"
-                        }}>
-                          <Grid container spacing={2} alignItems="center" sx={{ mb: 3, mt: 2 }}>
-                            {/* Roster Filter */}
-                            {rosterOptions.length > 1 && (
-                              <Grid item>
-                                <FormControl sx={{
-                                  minWidth: 200,
-                                  height: 40, // Explicit height
-                                  "& .MuiInputBase-root": {
-                                    height: 40, // Controls the inner input height
-                                  },
-                                }} size="small">
-                                  <InputLabel id="code-filter-label">Filter by Last Roster</InputLabel>
-                                  <Select
-                                    labelId="code-filter-label"
-                                    id="code-filter"
-                                    value={selectedCode}
-                                    label="Filter by Last Roster"
-                                    onChange={handleCodeChange}
+                    CODE 44
+                  </Typography>
+                  <Typography variant="h4" sx={{
+                    fontWeight: "600",
+                    color: "#ff9800",
+                    fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                  }}>
+                    {totalDeceased}
+                  </Typography>
+                </Box>
 
-                                  >
-                                    <MenuItem value="all">All Codes ({terminatedPatients.length})</MenuItem>
-                                    {/*{terminatedPatients.map((code) => (*/}
-                                    {/*  <MenuItem key={code} value={code}>*/}
-                                    {/*    {code} ({terminatedPatients.filter(row => row.code === code).length})*/}
-                                    {/*  </MenuItem>*/}
-                                    {/*))}*/}
-                                    <MenuItem value="91">Code 91
-                                      ({terminatedPatients.filter(row => row.code === 91).length})</MenuItem>
-                                    <MenuItem value="44">Code 44
-                                      ({terminatedPatients.filter(row => row.code === 44).length})</MenuItem>
-                                    {/* Add other codes if needed */}
-                                  </Select>
-                                </FormControl>
-                              </Grid>
-                            )}
+                {/* TOTAL PATIENTS */}
+                <Box sx={{
+                  p: 1,
+                  bgcolor: "#e3f2fd",
+                  borderRadius: 2,
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  textAlign: "center",
+                }}>
 
-                            {/* Refresh Button */}
+                  <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{
+                    fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                    letterSpacing: "0.5px",
+                  }}>
+                    TOTAL PATIENTS
+                  </Typography>
+                  <Typography variant="h4" sx={{
+                    fontWeight: "600",
+                    color: "#1976d2",
+                    fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                  }}>
+                    {terminatedPatients.length}
+                  </Typography>
+                </Box>
+              </Box>
+            </Grid>
+
+            {/* Table content area - SCROLLABLE */}
+            <Grid item xs={12} md={10}>
+              <Card sx={{
+                borderRadius: "8px",
+                boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+                overflow: "hidden",
+                maxHeight: "calc(100vh - 120px)",
+                display: "flex",
+                flexDirection: "column",
+              }}>
+                <CardContent sx={{ padding: "24px", paddingTop: "24px", flex: 1, overflow: "auto" }}>
+                  {loading ? (
+                    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "300px" }}>
+                      <CircularProgress />
+                      <Typography sx={{ ml: 2 }}>Loading termination data...</Typography>
+                    </Box>
+                  ) : (
+                    <>
+                      {/* Filters and controls - STICKY */}
+                      <Box>
+                        <Grid container spacing={2} alignItems="center" sx={{ mb: 3, mt: 2 }}>
+                          {/* Roster Filter */}
+                          {rosterOptions.length > 1 && (
                             <Grid item>
-                              <Button
-                                variant="contained"
-                                onClick={refreshTerminatedRosters}
-                                disabled={isRefreshingRosters || individualRosterUpdating}
-                                startIcon={isRefreshingRosters ? <CircularProgress size={16} /> : <RefreshIcon />}
-                                sx={{
-                                  textTransform: "none",
-                                  fontWeight: "bold",
-                                  fontFamily: "sans-serif",
-                                  fontVariantCaps: "normal",
-                                  color: "white",
-                                  borderColor: "rgba(255, 255, 255, 0.3)",
-                                  backgroundColor: "#1976d2",
-                                  "&:hover": {
-                                    backgroundColor: "#1565c0", // Slightly darker on hover
-                                    borderColor: "rgba(255, 255, 255, 0.5)",
-                                    color: "black",
-                                  },
-                                }}
-                              >
-                                {isRefreshingRosters ? "Updating..." : "Refresh Data"}
-                              </Button>
+                              <FormControl sx={{
+                                minWidth: 200,
+                                height: 40, // Explicit height
+                                "& .MuiInputBase-root": {
+                                  height: 40,
+                                },
+                              }} size="small">
+                                <InputLabel id="code-filter-label">Filter by Last Roster</InputLabel>
+                                <Select
+                                  labelId="code-filter-label"
+                                  id="code-filter"
+                                  value={selectedCode}
+                                  label="Filter by Last Roster"
+                                  onChange={handleCodeChange}
+                                >
+                                  <MenuItem value="all">All Codes ({terminatedPatients.length})</MenuItem>
+                                  {/*{terminatedPatients.map((code) => (*/}
+                                  {/*  <MenuItem key={code} value={code}>*/}
+                                  {/*    {code} ({terminatedPatients.filter(row => row.code === code).length})*/}
+                                  {/*  </MenuItem>*/}
+                                  {/*))}*/}
+                                  <MenuItem value="91">Code 91
+                                    ({terminatedPatients.filter(row => row.code === 91).length})</MenuItem>
+                                  <MenuItem value="44">Code 44
+                                    ({terminatedPatients.filter(row => row.code === 44).length})</MenuItem>
+                                  {/* Add other codes if needed */}
+                                </Select>
+                              </FormControl>
                             </Grid>
+                          )}
 
-                            {/* Page info */}
-                            <Grid item sx={{ ml: "auto", mr: 2 }}>
-                              <Typography variant="body2" color="text.secondary">
-                                Showing page {page + 1} of {Math.ceil(filteredData.length / rowsPerPage)}
-                              </Typography>
-                            </Grid>
-                          </Grid>
-                        </Box>
-
-                        {/* Scrollable table area */}
-                        <Box sx={{ overflow: "auto" }}>
-                          {filteredData.length > 0 ? (
-                            <TableContainer
-                              component={Paper}
+                          {/* Refresh Button */}
+                          <Grid item>
+                            <Button
+                              variant="contained"
+                              onClick={refreshTerminatedRosters}
+                              disabled={isRefreshingRosters || individualRosterUpdating}
+                              startIcon={isRefreshingRosters ? <CircularProgress size={16} /> : <RefreshIcon />}
                               sx={{
-                                boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-                                borderRadius: "8px",
-                                overflow: "hidden",
+                                textTransform: "none",
+                                fontWeight: "bold",
+                                fontFamily: "sans-serif",
+                                fontVariantCaps: "normal",
+                                color: "white",
+                                borderColor: "rgba(255, 255, 255, 0.3)",
+                                backgroundColor: "#1976d2",
+                                "&:hover": {
+                                  backgroundColor: "#1565c0", // Slightly darker on hover
+                                  borderColor: "rgba(255, 255, 255, 0.5)",
+                                  color: "black",
+                                },
                               }}
                             >
-                              <Table aria-label="collapsible table" stickyHeader>
-                                <TableHead>
-                                  <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
-                                    <TableCell
-                                      align="left"
-                                      sx={{
-                                        fontWeight: "600",
-                                        fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                                        fontSize: "0.875rem",
-                                        width: "50%", // Explicit width
-                                        paddingLeft: "16px", // Match body cell padding
-                                      }}
-                                    >
-                                      Patient
-                                    </TableCell>
-                                    {/*<TableCell*/}
-                                    {/*  align="center"*/}
-                                    {/*  sx={{*/}
-                                    {/*    fontWeight: "600",*/}
-                                    {/*    fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",*/}
-                                    {/*    fontSize: "0.875rem",*/}
-                                    {/*    width: "50%", // Explicit width*/}
-                                    {/*    paddingLeft: "16px", // Match body cell padding*/}
-                                    {/*  }}*/}
-                                    {/*>*/}
-                                    {/*  Name*/}
-                                    {/*</TableCell>*/}
+                              {isRefreshingRosters ? "Updating..." : "Refresh Data"}
+                            </Button>
+                          </Grid>
 
-                                    {/*<TableCell*/}
-                                    {/*  align="right"*/}
-                                    {/*  sx={{*/}
-                                    {/*    fontWeight: "600",*/}
-                                    {/*    fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",*/}
-                                    {/*    fontSize: "0.875rem",*/}
-                                    {/*    width: "50%", // Explicit width*/}
-                                    {/*    paddingRight: "16px", // Match body cell padding*/}
-                                    {/*  }}*/}
-                                    {/*>*/}
-                                    {/*  Status Code*/}
-                                    {/*</TableCell>*/}
-                                  </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                  {getCurrentPageData().map((row) => (
-                                    <EnhancedTerminatedRow key={row.hin} row={row} onUpdate={handleUpdatePatient} />
-                                  ))}
-                                </TableBody>
-                              </Table>
-                            </TableContainer>
-                          ) : (
-                            <Box sx={{
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              height: "200px",
-                              flexDirection: "column",
-                              backgroundColor: "#f5f5f5",
+                          {/* Page info */}
+                          <Grid item sx={{ ml: "auto", mr: 2 }}>
+                            <Typography variant="body2" color="text.secondary">
+                              Showing page {page + 1} of {Math.ceil(filteredData.length / rowsPerPage)}
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                      </Box>
+
+                      {/* Scrollable table area */}
+                      <Box sx={{ overflow: "auto" }}>
+                        {filteredData.length > 0 ? (
+                          <TableContainer
+                            component={Paper}
+                            sx={{
+                              boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
                               borderRadius: "8px",
-                            }}>
-                              <i className="fas fa-info-circle"
-                                 style={{ fontSize: "32px", color: "#1976d2", marginBottom: "16px" }}></i>
-                              <Typography variant="h6" color="text.secondary">
-                                No terminated patients found
-                              </Typography>
-                              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                                There are no patients terminated from roster in the last 3 months.
-                              </Typography>
-                            </Box>
-                          )}
-                        </Box>
-
-                        {/* Pagination controls - STICKY to bottom */}
-                        {filteredData.length > 0 && (
-                          <Box sx={{
-                            position: "sticky",
-                            bottom: 0,
-                            backgroundColor: "background.paper",
-                            zIndex: 2,
-                            pt: 2,
-                            pb: 1,
-                            borderTop: "1px solid",
-                            borderColor: "divider",
-                            boxShadow: "0 -2px 4px rgba(0,0,0,0.05)",
-                          }}
+                              overflow: "hidden",
+                            }}
                           >
-                            <TablePagination
-                              rowsPerPageOptions={[15, 25, 50]}
-                              component="div"
-                              count={filteredData.length}
-                              rowsPerPage={rowsPerPage}
-                              page={page}
-                              onPageChange={handleChangePage}
-                              onRowsPerPageChange={handleChangeRowsPerPage}
-                              sx={{
-                                ".MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows": {
-                                  fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                                },
-                                ".MuiTablePagination-select": {
-                                  fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                                },
-                              }}
-                            />
-
-                            {/*<Box sx={{*/}
-                            {/*  mt: 1,*/}
-                            {/*  display: "flex",*/}
-                            {/*  alignItems: "center",*/}
-                            {/*  backgroundColor: "rgba(25, 118, 210, 0.05)",*/}
-                            {/*  p: 1,*/}
-                            {/*  borderRadius: 1,*/}
-                            {/*}}>*/}
-                            {/*  <i className="fas fa-info-circle"*/}
-                            {/*     style={{*/}
-                            {/*       color: "#1976d2",*/}
-                            {/*       marginRight: "8px",*/}
-                            {/*       fontSize: "16px",*/}
-                            {/*     }}></i>*/}
-                            {/*  <Typography variant="body2" color="text.secondary"*/}
-                            {/*              sx={{ fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif" }}>*/}
-                            {/*    Click on any patient row to view detailed termination information. Code 91 indicates*/}
-                            {/*    a*/}
-                            {/*    terminated patient, while code 44 indicates deceased.*/}
-                            {/*  </Typography>*/}
-                            {/*</Box>*/}
+                            <Table aria-label="collapsible table" stickyHeader>
+                              {/*<TableHead>*/}
+                                {/*<TableRow sx={{ backgroundColor: "#f5f5f5" }}>*/}
+                                  <TableCell sx={{
+                                    fontWeight: "600",
+                                    fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                                    fontSize: "0.875rem",
+                                  }}>HIN</TableCell>
+                                  <TableCell sx={{
+                                    fontWeight: "600",
+                                    fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                                    fontSize: "0.875rem",
+                                  }}>Patient Name</TableCell>
+                                  <TableCell align="right" sx={{
+                                    fontWeight: "600",
+                                    fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                                    fontSize: "0.875rem",
+                                  }}>Code</TableCell>
+                                {/*</TableRow>*/}
+                              {/*</TableHead>*/}
+                              <TableBody>
+                                {getCurrentPageData().map((row) => (
+                                  <EnhancedTerminatedRow key={row.hin} row={row} onUpdate={handleUpdatePatient} />
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                        ) : (
+                          <Box sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "200px",
+                            flexDirection: "column",
+                            backgroundColor: "#f5f5f5",
+                            borderRadius: "8px",
+                          }}>
+                            <i className="fas fa-info-circle"
+                               style={{ fontSize: "32px", color: "#1976d2", marginBottom: "16px" }}></i>
+                            <Typography variant="h6" color="text.secondary">
+                              No terminated patients found
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                              There are no patients terminated from roster in the last 3 months.
+                            </Typography>
                           </Box>
                         )}
-                      </>
-                    )}
-                  </CardContent>
-                </Card>
-              </Grid>
-            </Grid>
-          </Box>
+                      </Box>
 
+                      {/* Pagination controls - STICKY to bottom */}
+                      {filteredData.length > 0 && (
+                        <Box sx={{
+                          position: "sticky",
+                          bottom: 0,
+                          backgroundColor: "background.paper",
+                          zIndex: 2,
+                          pt: 2,
+                          pb: 1,
+                          borderTop: "1px solid",
+                          borderColor: "divider",
+                          boxShadow: "0 -2px 4px rgba(0,0,0,0.05)",
+                        }}
+                        >
+                          <TablePagination
+                            rowsPerPageOptions={[15, 25, 50]}
+                            component="div"
+                            count={filteredData.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onPageChange={handleChangePage}
+                            onRowsPerPageChange={handleChangeRowsPerPage}
+                            sx={{
+                              ".MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows": {
+                                fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                              },
+                              ".MuiTablePagination-select": {
+                                fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                              },
+                            }}
+                          />
+
+                          {/*<Box sx={{*/}
+                          {/*  mt: 1,*/}
+                          {/*  display: "flex",*/}
+                          {/*  alignItems: "center",*/}
+                          {/*  backgroundColor: "rgba(25, 118, 210, 0.05)",*/}
+                          {/*  p: 1,*/}
+                          {/*  borderRadius: 1,*/}
+                          {/*}}>*/}
+                          {/*  <i className="fas fa-info-circle"*/}
+                          {/*     style={{*/}
+                          {/*       color: "#1976d2",*/}
+                          {/*       marginRight: "8px",*/}
+                          {/*       fontSize: "16px",*/}
+                          {/*     }}></i>*/}
+                          {/*  <Typography variant="body2" color="text.secondary"*/}
+                          {/*              sx={{ fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif" }}>*/}
+                          {/*    Click on any patient row to view detailed termination information. Code 91 indicates*/}
+                          {/*    a*/}
+                          {/*    terminated patient, while code 44 indicates deceased.*/}
+                          {/*  </Typography>*/}
+                          {/*</Box>*/}
+                        </Box>
+                      )}
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+        </Box>
         {/* Notification Dialog */}
-        <NotificationDialog
-          open={openModal}
-          onClose={handleCloseApp}
-          isError={isError}
-          content={modalContent}
-        />
+        <NotificationDialog open={openModal} onClose={handleCloseApp} isError={isError} content={modalContent} />
       </div>
     </Layout1>
   ) : (
@@ -846,3 +811,4 @@ export const RosterTerminatedPatients = () => {
     </Box>
   );
 };
+
