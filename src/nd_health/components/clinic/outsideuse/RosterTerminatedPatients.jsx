@@ -470,7 +470,7 @@ export const RosterTerminatedPatients = () => {
 
           {/* Title Card */}
           <CardHeader
-            title="Last 3 Month Roster Termination"
+            title="Roster Termination"
             sx={{
               backgroundColor: "#1976d2",
               color: "white !important", // Force white color

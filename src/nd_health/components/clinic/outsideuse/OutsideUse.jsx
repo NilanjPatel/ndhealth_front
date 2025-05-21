@@ -4,6 +4,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
+import DialogContentText from "@mui/material/DialogContentText";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -43,6 +44,7 @@ import Item from "@mui/material/ListItem";
 import { styled } from "@mui/material/styles";
 import { RosterTerminatedPatients } from "./RosterTerminatedPatients";
 import NotificationDialog from "../../resources/Notification";
+
 // Row component for expandable table
 // Enhanced SummaryRow with roster fetching
 
@@ -787,6 +789,9 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
 
   // State for individual roster updates
   const [individualRosterUpdating, setIndividualRosterUpdating] = useState(false);
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+
+
 
   // Batch fetch roster information for current page patients only
   const refreshRosters = async () => {
@@ -993,37 +998,39 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
 
   // Filter data based on selected roster
   const filteredData = useMemo(() => {
+    if (data) {
+      if (data.network_base_rate === null) {
+        localStorage.removeItem("outsideUseData");
+      }
 
-    if (data.network_base_rate === null) {
-      localStorage.removeItem("outsideUseData");
+      if (!data || !data.summary) return null;
+
+      if (selectedRoster === "all") {
+        return data;
+      }
+
+      // Filter summary rows
+      const filteredSummary = data.summary.filter(row =>
+        row.rosterEnrolledTo === selectedRoster,
+      );
+
+      // Calculate new totals for filtered data
+      const totalCapitation = filteredSummary.reduce(
+        (sum, row) => sum + row.capitationTotal, 0,
+      );
+
+      const totalOutsideUse = filteredSummary.reduce(
+        (sum, row) => sum + row.outsideUseTotal, 0,
+      );
+
+      return {
+        ...data,
+        summary: filteredSummary,
+        totalCapitation,
+        totalOutsideUse,
+      };
     }
 
-    if (!data || !data.summary) return null;
-
-    if (selectedRoster === "all") {
-      return data;
-    }
-
-    // Filter summary rows
-    const filteredSummary = data.summary.filter(row =>
-      row.rosterEnrolledTo === selectedRoster,
-    );
-
-    // Calculate new totals for filtered data
-    const totalCapitation = filteredSummary.reduce(
-      (sum, row) => sum + row.capitationTotal, 0,
-    );
-
-    const totalOutsideUse = filteredSummary.reduce(
-      (sum, row) => sum + row.outsideUseTotal, 0,
-    );
-
-    return {
-      ...data,
-      summary: filteredSummary,
-      totalCapitation,
-      totalOutsideUse,
-    };
   }, [data, selectedRoster]);
 
   // Get current page data
@@ -1225,6 +1232,12 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
     }),
   }));
 
+  const refreshoutsideUseData = () => {
+    setOpenConfirmDialog(true);
+    // localStorage.removeItem("outsideUseData");
+    // window.location.reload();
+  };
+
   return clinicInfo ? (
     <Layout1 clinicInfo={clinicInfo}>
       <div>
@@ -1401,7 +1414,8 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                           ${(((filteredData.network_base_rate + filteredData.compare_care) * 3) * 0.1859 - filteredData.totalOutsideUse).toFixed(2)}
                         </Typography>
                       </Box>
-                      <a href={`/clinic/${clinicSlug}/rosterterminated?token=${localStorage.getItem('accessToken')}`} target="_blank" rel="noopener noreferrer"
+                      <a href={`/clinic/${clinicSlug}/rosterterminated?token=${localStorage.getItem("accessToken")}`}
+                         target="_blank" rel="noopener noreferrer"
                          style={{ textDecoration: "none" }}>
 
                         <Box sx={{
@@ -1495,15 +1509,85 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                         ) : (
                           <>
                             {/* Filters and controls - STICKY */}
-                            <Box sx={{
-                              // position: "sticky",
-                              // top: 0,
-                              // backgroundColor: "white",
-                              // zIndex: 10,
-                              // paddingBottom: 2,
-                              // borderBottom: "1px solid rgba(224, 224, 224, 0.5)",
-                            }}>
+                            <Box>
+                              <Dialog
+                                open={openConfirmDialog}
+                                onClose={() => setOpenConfirmDialog(false)}
+                                aria-labelledby="alert-dialog-title"
+                                aria-describedby="alert-dialog-description"
+                              >
+                                <DialogTitle id="alert-dialog-title">
+                                  {"Refresh Outside Use Data?"}
+                                </DialogTitle>
+                                <DialogContent>
+                                  <DialogContentText id="alert-dialog-description">
+                                    This will take a while to clear outside data and refresh it from server. Do you want to continue?
+                                  </DialogContentText>
+                                </DialogContent>
+                                <DialogActions>
+                                  <Button onClick={() => setOpenConfirmDialog(false)}>Cancel</Button>
+                                  <Button
+                                    onClick={() => {
+                                      setOpenConfirmDialog(false);
+                                      localStorage.removeItem("outsideUseData");
+                                      window.location.reload();
+                                    }}
+                                    autoFocus
+                                  >
+                                    Yes, Refresh
+                                  </Button>
+                                </DialogActions>
+                              </Dialog>
+
                               <Grid container spacing={2} alignItems="center" sx={{ mb: 3, mt: 0 }}>
+                                {/* Refresh Outside Use Data Button */}
+                                <Grid item>
+                                  <Button
+                                    variant="contained"
+                                    onClick={refreshoutsideUseData}
+                                    disabled={isRefreshingRosters || individualRosterUpdating}
+                                    startIcon={isRefreshingRosters ? <CircularProgress size={16} /> : <RefreshIcon />}
+                                    sx={{
+                                      textTransform: "none",
+                                      fontWeight: "bold",
+                                      fontFamily: "sans-serif",
+                                      fontVariantCaps: "normal",
+                                      color: "white",
+                                      borderColor: "rgba(255, 255, 255, 0.3)",
+                                      "&:hover": {
+                                        backgroundColor: "rgba(255, 255, 255, 0.1)",
+                                        borderColor: "rgba(255, 255, 255, 0.5)",
+                                        color: "black",
+                                      },
+                                    }}
+                                  >
+                                    {isRefreshingRosters ? "Updating..." : "Refresh Outside Use Data"}
+                                  </Button>
+                                </Grid>
+                                {/* Refresh Enrolled Status Button */}
+                                <Grid item>
+                                  <Button
+                                    variant="contained"
+                                    onClick={refreshRosters}
+                                    disabled={isRefreshingRosters || individualRosterUpdating}
+                                    startIcon={isRefreshingRosters ? <CircularProgress size={16} /> : <RefreshIcon />}
+                                    sx={{
+                                      textTransform: "none",
+                                      fontWeight: "bold",
+                                      fontFamily: "sans-serif",
+                                      fontVariantCaps: "normal",
+                                      color: "white",
+                                      borderColor: "rgba(255, 255, 255, 0.3)",
+                                      "&:hover": {
+                                        backgroundColor: "rgba(255, 255, 255, 0.1)",
+                                        borderColor: "rgba(255, 255, 255, 0.5)",
+                                        color: "black",
+                                      },
+                                    }}
+                                  >
+                                    {isRefreshingRosters ? "Updating..." : "Refresh Enrolled Status ( Current 15 )"}
+                                  </Button>
+                                </Grid>
                                 {/* Roster Filter */}
                                 {rosterOptions.length > 1 && (
                                   <Grid item>
@@ -1526,40 +1610,13 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                                     </FormControl>
                                   </Grid>
                                 )}
-
                                 {/* Optional Active Filter Info */}
                                 {rosterOptions.length > 1 && activeFilterInfo && (
                                   <Grid item>
                                     {activeFilterInfo}
                                   </Grid>
                                 )}
-
-                                {/* Refresh Button */}
-                                <Grid item>
-                                  <Button
-                                    variant="contained"
-                                    onClick={refreshRosters}
-                                    disabled={isRefreshingRosters || individualRosterUpdating}
-                                    startIcon={isRefreshingRosters ? <CircularProgress size={16} /> : <RefreshIcon />}
-                                    sx={{
-                                      textTransform: "none",
-                                      fontWeight: "bold",
-                                      fontFamily: "sans-serif",
-                                      fontVariantCaps: "normal",
-                                      color: "white",
-                                      borderColor: "rgba(255, 255, 255, 0.3)",
-                                      "&:hover": {
-                                        backgroundColor: "rgba(255, 255, 255, 0.1)",
-                                        borderColor: "rgba(255, 255, 255, 0.5)",
-                                        color: "black",
-                                      },
-                                    }}
-                                  >
-                                    {isRefreshingRosters ? "Updating..." : "Refresh Enrolled Status"}
-                                  </Button>
-                                </Grid>
-
-                                {/* Page info */}
+                                {/* Page info - pushed to the right */}
                                 <Grid item sx={{ ml: "auto", mr: 2 }}>
                                   <Typography variant="body2" color="text.secondary">
                                     Showing page {page + 1} of {Math.ceil(filteredData.summary.length / rowsPerPage)}
@@ -1897,6 +1954,8 @@ class OutsideUseManager {
       if (cachedData && !this.data) {
         this.data = cachedData;
       } else if (!this.data) {
+        localStorage.removeItem("outsideUseData");
+
         this.data = {
           error: `Failed to fetch data: ${error instanceof Error ? error.message : String(error)}`,
           summary: [],
@@ -1904,6 +1963,8 @@ class OutsideUseManager {
           totalCapitation: 0,
           latestRefDate: null,
         };
+        // await this.fetchData();
+
       }
     }
   }
