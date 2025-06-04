@@ -10,6 +10,7 @@ import {
     Box,
     IconButton,
     CircularProgress,
+    MenuItem,
     Button, Dialog, DialogTitle, DialogContent, DialogActions,
 } from "@mui/material";
 import {blue, deepPurple, green, lime, teal} from "@mui/material/colors";
@@ -144,7 +145,9 @@ const ClinicLanding = () => {
             description_color: "white",
         },
     ];
-
+    const gotoPolicy = () => {
+        navigate(`/clinic/${clinicSlug}/policy`);
+    };
     return (
         <Layout clinicInfo={clinicInfo}>
             <div>
@@ -158,8 +161,7 @@ const ClinicLanding = () => {
                             minHeight="75vh"
                             width="100%"
                             sx={{
-                                backgroundImage: ({
-                                                      functions: {linearGradient, rgba},
+                                backgroundImage: ({ functions: {linearGradient, rgba},
                                                       palette: {gradients},
                                                   }) => `${linearGradient(rgba(gradients.dark.main, 0.4), rgba(gradients.dark.state, 0.9))}, url(${bgImage})`,
                                 backgroundSize: "inherit",
@@ -332,6 +334,10 @@ const ClinicLanding = () => {
                                 >
                                     Learn how to book an appointment, click here.
                                 </Button>
+                                <MenuItem key="policy" style={{ borderRadius: "10px", fontWeight: "bold" }}
+                                          onClick={gotoPolicy}>
+                                  Clinic Policy
+                                </MenuItem>
                             </CardContent>
                             {/*</CardActionArea>*/}
                         </Card>

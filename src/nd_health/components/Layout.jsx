@@ -248,10 +248,10 @@ const Layout = ({ clinicInfo, children }) => {
                     >
                       {clinicInfo.name}
                     </Link>
-                    <MenuItem key="policy" style={{ borderRadius: "10px", fontWeight: "bold" }}
-                              onClick={gotoPolicy}>
-                      Clinic Policy
-                    </MenuItem>
+                    {/*<MenuItem key="policy" style={{ borderRadius: "10px", fontWeight: "bold" }}*/}
+                    {/*          onClick={gotoPolicy}>*/}
+                    {/*  Clinic Policy*/}
+                    {/*</MenuItem>*/}
                     {/* Use an IconButton for the login dropdown */}
                     <IconButton color="inherit" onClick={handleMenuOpen}>
                       <AccountCircleIcon />

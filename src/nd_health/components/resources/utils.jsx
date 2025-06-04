@@ -221,3 +221,46 @@ export const ValidateHCV = async (clinicSlug, hin, versionCode, dob) => {
 
   }
 };
+
+
+
+export const TokenLogin = async (accessToken) => {
+  try {
+
+    if (!accessToken) {
+      return false;
+    }
+    const response = await fetch(`${API_BASE_PATH}/token-auth/`,{
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Token ${accessToken}`,
+      },
+      body: JSON.stringify({token: accessToken}),
+    });
+    // Store the token in local storage or state for future requests
+    const data = await response.json();
+    localStorage.setItem("accessToken", data.token);
+    localStorage.setItem("loggedIn", "true");
+    localStorage.setItem("clinicSlug", data.clinicSlug);
+    localStorage.setItem("user_type", data.user_type);
+    localStorage.setItem("providerNo", data.providerNo);
+    localStorage.setItem("mcedtProvider", data.mcedtProvider);
+
+
+    // window.location.reload();
+  } catch (error) {
+    console.error("Login failed:", error);
+
+  }
+};
+
+
+export const getCurrentDate = () => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+

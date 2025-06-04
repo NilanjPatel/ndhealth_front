@@ -1,4 +1,3 @@
-import ReactDOM from "react-dom";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -14,20 +13,16 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
+import TextField from "@mui/material/TextField";
 import Card from "@mui/material/Card";
-import IconButton from "@mui/material/IconButton";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import Collapse from "@mui/material/Collapse";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
 import API_BASE_PATH from "../../../../apiConfig";
 import Layout1 from "./../../Layout1";
-import { useParams } from "react-router-dom";
-import React, { useState, useEffect, useMemo, useRef } from "react";
-import { BrowserRouter } from "react-router-dom";
-import { CardActions } from "@mui/material";
+import { BrowserRouter, useParams } from "react-router-dom";
+import React, { useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
 import Chip from "@mui/material/Chip";
 import FormControl from "@mui/material/FormControl";
@@ -36,738 +31,14 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import Grid from "@mui/material/Grid";
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
 import TablePagination from "@mui/material/TablePagination";
 import Link from "@mui/material/Link";
-import Item from "@mui/material/ListItem";
-import { styled } from "@mui/material/styles";
-import { RosterTerminatedPatients } from "./RosterTerminatedPatients";
 import NotificationDialog from "../../resources/Notification";
+import { getCurrentDate, TokenLogin } from "../../resources/utils";
 
 // Row component for expandable table
 // Enhanced SummaryRow with roster fetching
 
-
-const SummaryRow = ({ row, clinicSlug, rosterOptions }) => {
-  const [open, setOpen] = useState(false);
-  const [rosterEnrolledTo, setRosterEnrolledTo] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const fetchedRef = useRef(false); // Track if we've already fetched
-  const providerNo = localStorage.getItem("providerNo");
-  const updateCachedData = (hin, newRosterValue) => {
-    try {
-      const cachedDataStr = localStorage.getItem("outsideUseData");
-      if (!cachedDataStr) return;
-
-      const cachedData = JSON.parse(cachedDataStr);
-
-      // Find and update the specific row
-      const updatedSummary = cachedData.summary.map(item =>
-        item.hin === hin ? { ...item, rosterEnrolledTo: newRosterValue } : item,
-      );
-
-      // Update cache with new data
-      localStorage.setItem(
-        "outsideUseData",
-        JSON.stringify({
-          ...cachedData,
-          summary: updatedSummary,
-        }),
-      );
-    } catch (error) {
-      console.error("Error updating cached data:", error);
-    }
-  };
-
-
-  useEffect(() => {
-    // Only fetch if:
-    // 1. We haven't fetched yet (fetchedRef.current is false)
-    // 2. We have all required data
-    // 3. rosterEnrolledTo is still null
-
-    if (!fetchedRef.current && row.hin && row.bDay && clinicSlug && rosterEnrolledTo === "") {
-      fetchedRef.current = true; // Mark as fetched
-
-      const fetchRosterInfo = async () => {
-        setIsLoading(true);
-        try {
-          const url = `${API_BASE_PATH}/doctors/${
-            row.bDay.replace(/\//g, "")
-          }/${row.hin.replace(/\//g, "")}/${clinicSlug}/outside/`;
-          const response = await fetch(url);
-          const data = await response.json();
-
-          if (data.status === "success") {
-            const newRosterValue = data.rosterEnrolledTo || "Unknown";
-            setRosterEnrolledTo(newRosterValue);
-            updateCachedData(row.hin, newRosterValue);
-          }
-        } catch (error) {
-          console.error("Error fetching roster info:", error);
-          setRosterEnrolledTo("Unknown");
-        } finally {
-          setIsLoading(false);
-        }
-      };
-
-      // fetchRosterInfo();
-    }
-  }, [row.hin, row.bDay, clinicSlug]); // Removed rosterEnrolledTo from
-
-  return (
-    <>
-      <TableRow sx={{
-        "& > *": { borderBottom: "unset" },
-        cursor: "pointer",
-        ...(open && {
-          backgroundColor: "primary.main",
-          color: "primary.contrastText",
-          "& .MuiTableCell-root": {
-            color: "primary.contrastText",
-          },
-        }),
-      }}
-
-      >
-        <TableCell component="th" scope="row" onClick={() => setOpen(!open)}>{row.hin}</TableCell>
-        <TableCell onClick={() => setOpen(!open)}>{`${row.lname}, ${row.fname}`}</TableCell>
-        <TableCell align="right"
-                   onClick={() => setOpen(!open)}>${(row.capitationTotal.toFixed(2) * 3).toFixed(2)}</TableCell>
-        <TableCell align="right" onClick={() => setOpen(!open)}>${row.outsideUseTotal.toFixed(2)}</TableCell>
-        <TableCell align="right"
-                   onClick={() => setOpen(!open)}>${((row.capitationTotal * 3) - row.outsideUseTotal).toFixed(2)}</TableCell>
-        <TableCell align="right"><Link fontWeight={"bolder"} target="_blank"
-                                       href={`https://mapledoctors.ca:8443/oscar/billing/CA/ON/billingOB.jsp?billRegion=ON&billForm=MFP&hotclick=&appointment_no=0&demographic_name=${row.lname} ${row.fname}&demographic_no=${row.demo}&providerview=${providerNo}&user_no=${providerNo}&apptProvider_no=none`}>{row.demo}</Link></TableCell>
-        <TableCell align="right" onClick={() => setOpen(!open)}>
-          {isLoading ? (
-            <CircularProgress size={16} />
-          ) : (
-            row.rosterEnrolledTo || "Unknown"
-          )}
-        </TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1 }}>
-              <Box sx={{ margin: 1 }}>
-                <Typography variant="subtitle1" sx={{
-                  fontWeight: "600",
-                  fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                  fontSize: "0.8rem",
-                }}>
-                  Capitation: Base Rate ${row.capitation?.baseRate?.toFixed(2) || "0.00"},
-                  Comprehensive Care ${row.capitation?.compCare?.toFixed(2) || "0.00"}
-                </Typography>
-              </Box>
-              <Table size="small" aria-label="outside use details">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Date</TableCell>
-                    <TableCell>Code</TableCell>
-                    <TableCell>Description</TableCell>
-                    <TableCell align="right">Amount</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {row.records.map((record, index) => (
-                    <TableRow key={index}>
-                      <TableCell>{record.serviceDate}</TableCell>
-                      <TableCell>{record.serviceCode}</TableCell>
-                      <TableCell>{record.ServiceDescr}</TableCell>
-                      <TableCell align="right">${record.serviceAmount.toFixed(2)}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Box>
-          </Collapse>
-        </TableCell>
-      </TableRow>
-    </>
-  );
-};
-// Update the dialog component to show debug info when there's no data
-const OutsideUseDialog1 = ({ open, onClose, data, loading, clinicSlug, onDataUpdate }) => {
-  // Original state variables
-  const [clinicInfo, setClinicInfo] = useState(null);
-  const [clinicInfoError, setClinicInfoError] = useState(null);
-  const [clinicInfoFetched, setClinicInfoFetched] = useState(false);
-  const [selectedRoster, setSelectedRoster] = useState("all");
-  const [updateSuccess, setUpdateSuccess] = useState(false);
-  const [isRefreshingRosters, setIsRefreshingRosters] = useState(false);
-  const [rosterUpdateError, setRosterUpdateError] = useState(null);
-
-  // Pagination state
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(15);
-
-  // Batch fetch roster information for current page patients only
-  const refreshRosters = async () => {
-    if (!filteredData?.summary || filteredData.summary.length === 0) return;
-
-    setIsRefreshingRosters(true);
-    setRosterUpdateError(null);
-
-    try {
-      const accessToken = localStorage.getItem("accessToken");
-
-      // Get only the current page's patients
-      const currentPagePatients = getCurrentPageData().map(row => ({
-        hin: row.hin,
-        bDay: row.bDay,
-      }));
-
-      const requestData = {
-        data: JSON.stringify({
-          summary: currentPagePatients,
-        }),
-      };
-
-      const response = await fetch(`${API_BASE_PATH}/outsideuse/getletestRoster/letest/`, {
-        method: "POST",
-        headers: {
-          "Authorization": `Token ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestData),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const result = await response.json();
-
-      if (result.rosterupdate) {
-        setUpdateSuccess(true); // Show success notification
-
-        // Update only the patients that were refreshed
-        const updatedSummary = data.summary.map(row => {
-          const updatedRoster = result.rosterupdate.find(item => item.hin === row.hin);
-          if (updatedRoster) {
-            return {
-              ...row,
-              rosterEnrolledTo: updatedRoster.rosterEnrolledTo || row.rosterEnrolledTo || "Unknown",
-              rosterTerminationDate: updatedRoster.rosterTerminationDate || row.rosterTerminationDate || "Unknown",
-              rosterStatus: updatedRoster.rosterStatus || row.rosterStatus || "Unknown",
-            };
-          }
-          return row;
-        });
-
-        // Update the cache
-        const cachedDataStr = localStorage.getItem("outsideUseData");
-        if (cachedDataStr) {
-          const cachedData = JSON.parse(cachedDataStr);
-          localStorage.setItem(
-            "outsideUseData",
-            JSON.stringify({
-              ...cachedData,
-              summary: updatedSummary,
-              lastRosterUpdate: new Date().toISOString(),
-            }),
-          );
-        }
-
-        // Create the updated data structure
-        const updatedData = {
-          ...data,
-          summary: updatedSummary,
-        };
-
-        // Notify parent component of the update
-        if (onDataUpdate) {
-          onDataUpdate(updatedData);
-        }
-
-        // Return the updated data structure
-        return updatedData;
-      }
-    } catch (error) {
-      console.error("Error refreshing rosters:", error);
-      setRosterUpdateError(error.message);
-      return data; // Return original data on error
-    } finally {
-      setIsRefreshingRosters(false);
-    }
-  };
-
-  useEffect(() => {
-    console.log(`Data:${data}`);
-    const fetchClinicInfo = async () => {
-      try {
-        const response = await fetch(`${API_BASE_PATH}/clinic/${clinicSlug}/`);
-        if (!response.ok) throw new Error("Failed to fetch clinic info");
-        const data = await response.json();
-        setClinicInfo(data.clinic || null);
-      } catch (error) {
-        setClinicInfoError(error.message);
-      } finally {
-        setClinicInfoFetched(true);
-      }
-    };
-
-    if (!clinicInfoFetched && clinicSlug) {
-      fetchClinicInfo().then(r => {
-      });
-      setClinicInfoFetched(true);
-    }
-  }, [clinicInfoFetched, clinicSlug, data]);
-
-  // Extract unique roster values
-  const rosterOptions = useMemo(() => {
-    if (!data || !data.summary || data.summary.length === 0) return [];
-
-    // Get unique roster values
-    const uniqueRosters = [...new Set(data.summary.map(row => row.rosterEnrolledTo))];
-    return uniqueRosters.sort();
-  }, [data]);
-
-  // Filter data based on selected roster
-  const filteredData = useMemo(() => {
-    if (!data || !data.summary) return null;
-
-    if (selectedRoster === "all") {
-      return data;
-    }
-
-    // Filter summary rows
-    const filteredSummary = data.summary.filter(row =>
-      row.rosterEnrolledTo === selectedRoster,
-    );
-
-    // Calculate new totals for filtered data
-    const totalCapitation = filteredSummary.reduce(
-      (sum, row) => sum + row.capitationTotal, 0,
-    );
-
-    const totalOutsideUse = filteredSummary.reduce(
-      (sum, row) => sum + row.outsideUseTotal, 0,
-    );
-
-    return {
-      ...data,
-      summary: filteredSummary,
-      totalCapitation,
-      totalOutsideUse,
-    };
-  }, [data, selectedRoster]);
-
-  // Get current page data
-  const getCurrentPageData = () => {
-    if (!filteredData || !filteredData.summary) return [];
-
-    return filteredData.summary.slice(
-      page * rowsPerPage,
-      page * rowsPerPage + rowsPerPage,
-    );
-  };
-
-  // Handle page change
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  // Handle rows per page change
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const handleRosterChange = (event) => {
-    setSelectedRoster(event.target.value);
-    setPage(0); // Reset to first page when filter changes
-  };
-
-  // Provide fallback UI if clinic info is still loading
-  // Add memoization to prevent unnecessary re-renders
-  const memoizedData = React.useMemo(() => data, [JSON.stringify(data)]);
-
-  // Display filtered count when filter is active
-  const activeFilterInfo = selectedRoster !== "all" && filteredData && (
-    <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-      <Typography variant="body2" sx={{ mr: 1 }}>
-        Showing {filteredData.summary.length} of {data.summary.length} patients
-      </Typography>
-      <Chip
-        label={`Roster: ${selectedRoster}`}
-        onDelete={() => setSelectedRoster("all")}
-        color="primary"
-        size="small"
-      />
-    </Box>
-  );
-
-  if (!clinicInfoFetched) {
-    return (
-      <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-        <CircularProgress />
-      </Box>
-    );
-  }
-
-  // Handle error case
-  if (clinicInfoError) {
-    return (
-      <Box sx={{ p: 3, color: "error.main" }}>
-        <Typography>Error loading clinic information: {clinicInfoError}</Typography>
-      </Box>
-    );
-  }
-
-  return (
-    <Layout1 clinicInfo={clinicInfo}>
-      <div>
-        <Card
-          open={open}
-          maxwidth="md"
-          fullwidth="true"
-          paperprops={{
-            sx: {
-              borderRadius: "8px",
-              boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
-              overflow: "hidden",
-            },
-          }}
-        >
-          <CardHeader
-            title="Last 3 months Outside Use Summary"
-            sx={{
-              backgroundColor: "#1976d2",
-              color: "white",
-              fontWeight: "bold",
-              display: "flex",
-              alignItems: "center",
-              padding: "16px 24px",
-            }}
-          />
-
-          <CardContent sx={{ padding: "24px", paddingTop: "24px" }}>
-            {loading ? (
-              <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "300px" }}>
-                <CircularProgress />
-                <Typography sx={{ ml: 2 }}>Loading summary data...</Typography>
-              </Box>
-            ) : data ? (
-              <>
-                {data.error && (
-                  <Box sx={{
-                    mb: 3,
-                    p: 2,
-                    bgcolor: "#ffebee",
-                    borderRadius: 1,
-                    border: "1px solid #ffcdd2",
-                    display: "flex",
-                    alignItems: "center",
-                  }}>
-                    <i className="fas fa-exclamation-circle"
-                       style={{ color: "#d32f2f", marginRight: "12px" }}></i>
-                    <Typography color="error">{data.error}</Typography>
-                  </Box>
-                )}
-
-                {data.summary && data.summary.length > 0 ? (
-                  <>
-                    {/* Summary cards at the top */}
-                    <Box sx={{
-                      mb: 4,
-                      display: "grid",
-                      gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-                      gap: 3,
-                    }}>
-                      <Box sx={{
-                        p: 3,
-                        bgcolor: "#e3f2fd",
-                        borderRadius: 2,
-                        boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        textAlign: "center",
-                      }}>
-                        <i className="fas fa-wallet"
-                           style={{ fontSize: "24px", color: "#1976d2", marginBottom: "12px" }}></i>
-                        <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{
-                          fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                          letterSpacing: "0.5px",
-                        }}>
-                          TOTAL CAPITATION
-                        </Typography>
-                        <Typography variant="h4" sx={{
-                          fontWeight: "600",
-                          color: "#1976d2",
-                          fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                        }}>
-                          ${(filteredData.totalCapitation.toFixed(2) * 3).toFixed(2)}
-                        </Typography>
-                      </Box>
-
-                      <Box sx={{
-                        p: 3,
-                        bgcolor: "#fff8e1",
-                        borderRadius: 2,
-                        boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        textAlign: "center",
-                      }}>
-                        <i className="fas fa-hospital"
-                           style={{ fontSize: "24px", color: "#ff9800", marginBottom: "12px" }}></i>
-                        <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{
-                          fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                          letterSpacing: "0.5px",
-                        }}>
-                          TOTAL OUTSIDE USE
-                        </Typography>
-                        <Typography variant="h4" sx={{
-                          fontWeight: "600",
-                          color: "#ff9800",
-                          fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                        }}>
-                          ${filteredData.totalOutsideUse.toFixed(2)}
-                        </Typography>
-                      </Box>
-
-                      <Box sx={{
-                        p: 3,
-                        bgcolor: ((filteredData.totalCapitation * 3) - filteredData.totalOutsideUse) < 0 ? "#ffebee" : "#e8f5e9",
-                        borderRadius: 2,
-                        boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        textAlign: "center",
-                      }}>
-                        <i
-                          className={`fas fa-${((filteredData.totalCapitation * 3) - filteredData.totalOutsideUse) < 0 ? "exclamation-triangle" : "check-circle"}`}
-                          style={{
-                            fontSize: "24px",
-                            color: ((filteredData.totalCapitation * 3) - filteredData.totalOutsideUse) < 0 ? "#d32f2f" : "#2e7d32",
-                            marginBottom: "12px",
-                          }}></i>
-                        <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{
-                          fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                          letterSpacing: "0.5px",
-                        }}>
-                          BALANCE
-                        </Typography>
-                        <Typography
-                          variant="h4"
-                          sx={{
-                            fontWeight: "600",
-                            color: ((filteredData.totalCapitation * 3) - filteredData.totalOutsideUse) < 0 ? "#d32f2f" : "#2e7d32",
-                            fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                          }}
-                        >
-                          ${((filteredData.totalCapitation * 3) - filteredData.totalOutsideUse).toFixed(2)}
-                        </Typography>
-                      </Box>
-                    </Box>
-
-                    <Grid container spacing={2} alignItems="center" sx={{ mb: 3, mt: 2 }}>
-                      {/* Roster Filter */}
-                      {rosterOptions.length > 1 && (
-                        <Grid item>
-                          <FormControl sx={{ minWidth: 200 }} size="small">
-                            <InputLabel id="roster-filter-label">Filter by Roster</InputLabel>
-                            <Select
-                              labelId="roster-filter-label"
-                              id="roster-filter"
-                              value={selectedRoster}
-                              label="Filter by Roster"
-                              onChange={handleRosterChange}
-                            >
-                              <MenuItem value="all">All Rosters ({data.summary.length})</MenuItem>
-                              {rosterOptions.map((roster) => (
-                                <MenuItem key={roster} value={roster}>
-                                  {roster} ({data.summary.filter(row => row.rosterEnrolledTo === roster).length})
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                        </Grid>
-                      )}
-
-                      {/* Optional Active Filter Info */}
-                      {rosterOptions.length > 1 && activeFilterInfo && (
-                        <Grid item>
-                          {activeFilterInfo}
-                        </Grid>
-                      )}
-
-                      {/* Refresh Button */}
-                      <Grid item>
-                        <Button
-                          variant="contained"
-                          onClick={async () => {
-                            await refreshRosters();
-                            // Handle the updated data if needed
-                          }}
-                          disabled={isRefreshingRosters}
-                          startIcon={isRefreshingRosters ? <CircularProgress size={16} /> : <RefreshIcon />}
-                          sx={{
-                            textTransform: "none",
-                            fontWeight: "bold",
-                            fontFamily: "sans-serif",
-                            fontVariantCaps: "normal",
-                            color: "white",
-                            borderColor: "rgba(255, 255, 255, 0.3)",
-                            "&:hover": {
-                              backgroundColor: "rgba(255, 255, 255, 0.1)",
-                              borderColor: "rgba(255, 255, 255, 0.5)",
-                              color: "black",
-                            },
-                          }}
-                        >
-                          {isRefreshingRosters ? "Updating..." : "Refresh Current Page"}
-                        </Button>
-                      </Grid>
-
-                      {/* Page info */}
-                      <Grid item sx={{ ml: "auto", mr: 2 }}>
-                        <Typography variant="body2" color="text.secondary">
-                          Showing page {page + 1} of {Math.ceil(filteredData.summary.length / rowsPerPage)}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-
-                    <TableContainer
-                      component={Paper}
-                      sx={{
-                        boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-                        borderRadius: "8px",
-                        overflow: "hidden",
-                      }}
-                    >
-                      <Table aria-label="collapsible table">
-                        <TableHead>
-                          <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
-                            <TableCell sx={{
-                              fontWeight: "600",
-                              fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                              fontSize: "1rem",
-                            }}>HIN</TableCell>
-                            <TableCell sx={{
-                              fontWeight: "600",
-                              fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                              fontSize: "1rem",
-                            }}>Patient Name</TableCell>
-                            <TableCell align="right" sx={{
-                              fontWeight: "600",
-                              fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                              fontSize: "1rem",
-                            }}>Capitation</TableCell>
-                            <TableCell align="right" sx={{
-                              fontWeight: "600",
-                              fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                              fontSize: "1rem",
-                            }}>Outside Use</TableCell>
-                            <TableCell align="right" sx={{
-                              fontWeight: "600",
-                              fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                              fontSize: "1rem",
-                            }}>Difference</TableCell>
-                            <TableCell align="right" sx={{
-                              fontWeight: "600",
-                              fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                              fontSize: "1rem",
-                            }}>Bill</TableCell>
-                            <TableCell align="right" sx={{
-                              fontWeight: "600",
-                              fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                              fontSize: "1rem",
-                            }}>Roster Enrolled To</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {getCurrentPageData().map((row) => (
-                            <SummaryRow key={row.hin} row={row} clinicSlug={clinicSlug} rosterOptions={rosterOptions} />
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-
-                    {/* Pagination controls */}
-                    <TablePagination
-                      // rowsPerPageOptions={[15, 25, 50]}
-                      rowsPerPageOptions={false}
-                      component="div"
-                      count={filteredData.summary.length}
-                      rowsPerPage={rowsPerPage}
-                      page={page}
-                      onPageChange={handleChangePage}
-                      onRowsPerPageChange={handleChangeRowsPerPage}
-                      sx={{
-                        ".MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows": {
-                          fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                        },
-                        ".MuiTablePagination-select": {
-                          fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                        },
-                      }}
-                    />
-                  </>
-                ) : (
-                  <Box sx={{
-                    p: 4,
-                    textAlign: "center",
-                    bgcolor: "#f5f5f5",
-                    borderRadius: 2,
-                    border: "1px dashed #ccc",
-                  }}>
-                    <i className="fas fa-search"
-                       style={{ fontSize: "48px", color: "#9e9e9e", marginBottom: "16px" }}></i>
-                    <Typography variant="h6" gutterBottom>No outside use data found</Typography>
-                    <Typography variant="body2" color="textSecondary">
-                      There are no outside use records matching your criteria.
-                    </Typography>
-                  </Box>
-                )}
-              </>
-            ) : (
-              <Box sx={{
-                p: 4,
-                textAlign: "center",
-                bgcolor: "#f5f5f5",
-                borderRadius: 2,
-              }}>
-                <Typography>No data available</Typography>
-              </Box>
-            )}
-          </CardContent>
-        </Card>
-
-        <Snackbar
-          open={updateSuccess}
-          autoHideDuration={3000}
-          onClose={() => setUpdateSuccess(false)}
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        >
-          <Alert onClose={() => setUpdateSuccess(false)} severity="success">
-            Rosters updated successfully!
-          </Alert>
-        </Snackbar>
-
-        {rosterUpdateError && (
-          <Snackbar
-            open={!!rosterUpdateError}
-            autoHideDuration={5000}
-            onClose={() => setRosterUpdateError(null)}
-            anchorOrigin={{ vertical: "top", horizontal: "center" }}
-          >
-            <Alert onClose={() => setRosterUpdateError(null)} severity="error">
-              Error updating rosters: {rosterUpdateError}
-            </Alert>
-          </Snackbar>
-        )}
-      </div>
-    </Layout1>
-  );
-};
 
 const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpdate }) => {
   // Original state variables
@@ -790,7 +61,8 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
   // State for individual roster updates
   const [individualRosterUpdating, setIndividualRosterUpdating] = useState(false);
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
-
+  const [totalSaved, setTotalSaved] = useState(0);
+  const [totalOthers, setTotalOthers] = useState(0);
 
 
   // Batch fetch roster information for current page patients only
@@ -880,9 +152,46 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
       setIsRefreshingRosters(false);
     }
   };
+  const calculateTotals = (datas: Row[]) => {
+    let totalForCode44 = 0;
+    let totalForOthers = 0;
+
+    datas.forEach((data) => {
+      const value =
+        data.code === 44
+          ? data.outsideUseTotal + data.capitationTotal * 3
+          : data.capitationTotal * 3 - data.outsideUseTotal;
+
+      if (data.code === 44) {
+        totalForCode44 += value;
+      } else {
+        totalForOthers += value;
+      }
+    });
+    return {
+      totalForCode44,
+      totalForOthers,
+    };
+  };
+
+  function getMonthsSinceTermination(terminatedDate) {
+    const termination = new Date(terminatedDate);
+    const today = new Date();
+
+    let months = (today.getFullYear() - termination.getFullYear()) * 12;
+    months += today.getMonth() - termination.getMonth();
+
+    // Optionally check if today is before the termination day of the month
+    if (today.getDate() < termination.getDate()) {
+      months -= 1;
+    }
+
+    return Math.max(months, 0); // Prevent negative values if termination is in the future
+  }
+
 
   // Function to update a single patient's roster
-  const updatePatientRoster = async (hin, newRosterValue) => {
+  const updatePatientRoster = async (hin, newRosterValue, note) => {
     setIndividualRosterUpdating(true);
 
     try {
@@ -891,9 +200,13 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
       if (!patient) {
         throw new Error("Patient not found");
       }
-
       const accessToken = localStorage.getItem("accessToken");
-
+      let terminatedDate;
+      if (patient.terminatedDate) {
+        terminatedDate = patient.terminatedDate;
+      } else {
+        terminatedDate = getEarliestServiceDate(patient.records);
+      }
       // Create request data for a single patient
       const requestData = {
         data: JSON.stringify({
@@ -902,6 +215,16 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
             bDay: patient.bDay,
             rosterEnrolledTo: newRosterValue,
             demographic: patient.demo,
+            terminatedDate: terminatedDate,
+            monthsSinceTermination: getMonthsSinceTermination(patient.terminatedDate),
+            mcedtProvider: localStorage.getItem("mcedtProvider"),
+            deRosterProvider: localStorage.getItem("deRosterProvider"),
+            createDate: getCurrentDate(),
+            baseRate: patient.capitation.baseRate,
+            outsideUse: patient.outsideUseTotal,
+            code: patient.code,
+            demo: patient.demo,
+            note : note,
           }],
         }),
       };
@@ -964,9 +287,41 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
       setIndividualRosterUpdating(false);
     }
   };
+  const handleAuthData = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const accessTokenurl = urlParams.get("token");
+    const username = urlParams.get("username");
+    const loggedIn = urlParams.get("loggedIn");
+    const providerNo = urlParams.get("providerNo");
+    const mcedtProvider = urlParams.get("mcedtProvider");
+    const deRosterProvider = urlParams.get("deRosterProvider");
+    if (accessTokenurl !== localStorage.getItem("accessToken")) {
+      localStorage.removeItem("outsideUseData");
+      localStorage.removeItem("deRosterProvider");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("username");
+      localStorage.removeItem("loggedIn");
+      localStorage.removeItem("providerNo");
+      localStorage.removeItem("mcedtProvider");
+    }
+    if (accessTokenurl && username && loggedIn && providerNo && mcedtProvider) {
+      localStorage.setItem("accessToken", accessTokenurl);
+      localStorage.setItem("username", username);
+      localStorage.setItem("loggedIn", loggedIn);
+      localStorage.setItem("providerNo", providerNo);
+      localStorage.setItem("mcedtProvider", mcedtProvider);
+      localStorage.setItem("deRosterProvider", deRosterProvider);
+      // Proceed with authenticated actions
+    } else {
+      TokenLogin(accessTokenurl).then(r => {
+      });
+    }
 
+  };
   useEffect(() => {
-    console.log(`Data:${data}`);
+    handleAuthData();
+  }, []);
+  useEffect(() => {
     const fetchClinicInfo = async () => {
       try {
         const response = await fetch(`${API_BASE_PATH}/clinic/${clinicSlug}/`);
@@ -985,7 +340,14 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
       });
       setClinicInfoFetched(true);
     }
-  }, [clinicInfoFetched, clinicSlug, data]);
+  }, [clinicInfoFetched, clinicSlug]);
+  useEffect(() => {
+    if (data) {
+      const { totalForCode44, totalForOthers } = calculateTotals(data.summary);
+      setTotalSaved(totalForCode44);
+      setTotalOthers(totalForOthers);
+    }
+  }, [data]);
 
   // Extract unique roster values
   const rosterOptions = useMemo(() => {
@@ -993,13 +355,19 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
 
     // Get unique roster values
     const uniqueRosters = [...new Set(data.summary.map(row => row.rosterEnrolledTo))];
+
+    // Add the new option (if not already in the list)
+    const newOption = localStorage.getItem("deRosterProvider");
+    if (newOption && !uniqueRosters.includes(newOption)) {
+      uniqueRosters.push(newOption);
+    }
     return uniqueRosters.sort();
   }, [data]);
 
   // Filter data based on selected roster
   const filteredData = useMemo(() => {
     if (data) {
-      if (data.network_base_rate === null) {
+      if (data.network_base_rate === null && data.deRosterProvider === null) {
         localStorage.removeItem("outsideUseData");
       }
 
@@ -1109,21 +477,89 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
     );
   }
 
+  // Function to get the earliest service date
+  const getEarliestServiceDate = (records) => {
+    if (!records || records.length === 0) return "N/A";
+
+    const dates = records
+      .map(record => new Date(record.serviceDate))
+      .filter(date => !isNaN(date)); // Filter out invalid dates
+
+    if (dates.length === 0) return "N/A";
+
+    const earliestDate = new Date(Math.min(...dates));
+    return earliestDate.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+  };
+
   // Custom SummaryRow component with roster toggle functionality
-  const EnhancedSummaryRow = ({ row }) => {
+  const EnhancedSummaryRow = ({ row, emrHomeUrl }) => {
     const [open, setOpen] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
     const providerNo = localStorage.getItem("providerNo");
+    const [mcedtProvider, setMcedtProvider] = useState(null);
+    const [thedeRosterProvider, setDeRosterProvider] = useState(null);
+    const [ready, setReady] = useState(false);
+    // Add these state variables to your component
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [pendingRosterValue, setPendingRosterValue] = useState('');
+    const [note, setNote] = useState('');
+
+
+    useEffect(() => {
+      const storedProvider = localStorage.getItem("mcedtProvider");
+      const deRosterProvider = localStorage.getItem("deRosterProvider");
+      if (storedProvider && deRosterProvider) {
+        setReady(true);
+      }
+      setMcedtProvider(storedProvider);
+      setDeRosterProvider(deRosterProvider);
+    }, []); // Only runs once on mount
+    if (mcedtProvider === null) {
+      // Don't render until localStorage is ready
+      return null;
+    }
+    const getStatus = () => {
+      const roster = row.rosterEnrolledTo || "Unknown";
+      if (roster === "unknown") return "unknown";
+      if (!mcedtProvider) return "Loading..."; // optional loading fallback
+      return mcedtProvider === roster ? "Rostered" : "De-rostered";
+    };
+
     const handleRosterChange = async (event) => {
       const newRosterValue = event.target.value;
-      setIsUpdating(true);
 
-      try {
-        await updatePatientRoster(row.hin, newRosterValue);
-      } finally {
-        setIsUpdating(false);
+      if (newRosterValue === thedeRosterProvider) {
+        // Store the pending roster value and open dialog
+        setPendingRosterValue(newRosterValue);
+        setDialogOpen(true);
+      } else {
+        handleFailure("Please note, you can't rostere patient from here.");
       }
     };
+
+    const handleDialogConfirm = async () => {
+      setIsUpdating(true);
+      setDialogOpen(false);
+
+      try {
+        // Pass the note to updatePatientRoster
+        await updatePatientRoster(row.hin, pendingRosterValue, note);
+      } finally {
+        setIsUpdating(false);
+        // Reset the note and pending value
+        setNote('');
+        setPendingRosterValue('');
+      }
+    };
+
+    const handleDialogCancel = () => {
+      setDialogOpen(false);
+      setNote('');
+      setPendingRosterValue('');
+      // Optionally reset the select value back to original
+      // You might need to trigger a re-render or reset the select value here
+    };
+
 
     return (
       <>
@@ -1139,43 +575,77 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
           <TableCell align="right"
                      onClick={() => setOpen(!open)}>${(row.capitationTotal.toFixed(2) * 3).toFixed(2)}</TableCell>
           <TableCell align="right" onClick={() => setOpen(!open)}>${row.outsideUseTotal.toFixed(2)}</TableCell>
-          <TableCell align="right"
-                     onClick={() => setOpen(!open)}>${((row.capitationTotal * 3) - row.outsideUseTotal).toFixed(2)}</TableCell>
+          {row.code === 44 ? (
+            <TableCell align="right" onClick={() => setOpen(!open)}>
+              ${(row.outsideUseTotal + (row.capitationTotal * 3)).toFixed(2)}
+            </TableCell>
+          ) : (
+            <TableCell align="right" onClick={() => setOpen(!open)}>
+              ${((row.capitationTotal * 3) - row.outsideUseTotal).toFixed(2)}
+            </TableCell>
+          )}
+
           <TableCell align="right">{row.code}</TableCell>
           <TableCell align="right">
             <Link
               fontWeight={"bolder"}
               target="_blank"
-              href={`https://mapledoctors.ca:8443/oscar/billing/CA/ON/billingOB.jsp?billRegion=ON&billForm=MFP&hotclick=&appointment_no=0&demographic_name=${row.lname} ${row.fname}&demographic_no=${row.demo}&providerview=${providerNo}&user_no=${providerNo}&apptProvider_no=none`}
+              href={`${emrHomeUrl}oscar/billing/CA/ON/billingOB.jsp?billRegion=ON&billForm=MFP&hotclick=&appointment_no=0&demographic_name=${row.lname} ${row.fname}&demographic_no=${row.demo}&providerview=${providerNo}&user_no=${providerNo}&apptProvider_no=none&AppointmentDate=${getEarliestServiceDate(row.records)}&deroster=Q402A&hin=${row.hin}`}
             >
-              {row.demo}
+              Bill in Oscar
+            </Link>
+          </TableCell>
+          <TableCell>
+            <Link
+              fontWeight={"bolder"}
+              target="_blank"
+              href={`${emrHomeUrl}oscar/demographic/demographiccontrol.jsp?demographic_no=${row.demo}&displaymode=edit&dboperation=search_detail`}
+            >
+              Demographic
             </Link>
           </TableCell>
           <TableCell align="right">
             {isUpdating ? (
               <CircularProgress size={20} />
             ) : (
-              <FormControl size="small" sx={{ minWidth: 120 }}>
-                <Select
-                  value={row.rosterEnrolledTo || "Unknown"}
-                  onChange={handleRosterChange}
-                  onClick={(e) => e.stopPropagation()}
-                  sx={{
-                    fontSize: "0.875rem",
-                    ".MuiSelect-select": {
-                      padding: "6px 8px",
-                    },
-                  }}
-                >
-                  {rosterOptions.map((roster) => (
-                    <MenuItem key={roster} value={roster}>
-                      {roster}
-                    </MenuItem>
-                  ))}
-                  {/*<MenuItem value="Unknown">Unknown</MenuItem>*/}
-                  {/*<MenuItem value="Not Enrolled">Not Enrolled</MenuItem>*/}
-                </Select>
-              </FormControl>
+              <>
+                <FormControl size="small" sx={{ minWidth: 120 }}>
+                  <Select
+                    value={row.rosterEnrolledTo || "Unknown"}
+                    onChange={handleRosterChange}
+                    onClick={(e) => e.stopPropagation()}
+                    sx={{
+                      fontSize: "0.875rem",
+                      ".MuiSelect-select": {
+                        padding: "6px 8px",
+                      },
+                    }}
+                  >
+                    {rosterOptions.map((roster) => (
+                      <MenuItem key={roster} value={roster}>
+                        {roster}
+                        {/*=== "unknown"*/}
+                        {/*  ? "unknown"*/}
+                        {/*  : mcedtProvider === parseInt(roster)*/}
+                        {/*    ? "Rostered"*/}
+                        {/*    : "De-rostered"}*/}
+                      </MenuItem>
+                    ))}
+                    {/*<MenuItem value="Unknown">Unknown</MenuItem>*/}
+                    {/*<MenuItem value="Not Enrolled">Not Enrolled</MenuItem>*/}
+                  </Select>
+                  {/*<Typography*/}
+                  {/*  variant="body2"*/}
+                  {/*  sx={{*/}
+                  {/*    fontSize: "0.875rem",*/}
+                  {/*    padding: "6px 8px",*/}
+                  {/*    minWidth: 120,*/}
+                  {/*  }}*/}
+                  {/*>*/}
+                  {/*  {getStatus()}*/}
+                  {/*</Typography>*/}
+                </FormControl>
+              </>
             )}
           </TableCell>
         </TableRow>
@@ -1217,26 +687,41 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
             </Collapse>
           </TableCell>
         </TableRow>
+
+        <Dialog open={dialogOpen} onClose={handleDialogCancel} maxWidth="sm" fullWidth>
+          <DialogTitle>Add Note</DialogTitle>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              label="Note (optional)"
+              fullWidth
+              multiline
+              rows={3}
+              variant="outlined"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder="Enter any additional notes..."
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDialogCancel}>Cancel</Button>
+            <Button onClick={handleDialogConfirm} variant="contained">
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
       </>
     );
   };
 
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: "#fff",
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: "center",
-    color: (theme.vars ?? theme).palette.text.secondary,
-    ...theme.applyStyles("dark", {
-      backgroundColor: "#1A2027",
-    }),
-  }));
 
   const refreshoutsideUseData = () => {
     setOpenConfirmDialog(true);
     // localStorage.removeItem("outsideUseData");
     // window.location.reload();
   };
+
 
   return clinicInfo ? (
     <Layout1 clinicInfo={clinicInfo}>
@@ -1314,7 +799,7 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                             fontSize: "1.5rem",
                             fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
                           }}>
-                          ${(3 * (filteredData.network_base_rate + filteredData.compare_care) * 0.1859).toFixed(2)}
+                          ${(3 * (filteredData.network_base_rate) * 0.1859).toFixed(2)}
                         </Typography>
                       </Box>
                       {/* TOTAL current_roster_patients */}
@@ -1411,7 +896,7 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                             fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
                           }}
                         >
-                          ${(((filteredData.network_base_rate + filteredData.compare_care) * 3) * 0.1859 - filteredData.totalOutsideUse).toFixed(2)}
+                          ${(((filteredData.network_base_rate) * 3) * 0.1859 - filteredData.totalOutsideUse).toFixed(2)}
                         </Typography>
                       </Box>
                       <a href={`/clinic/${clinicSlug}/rosterterminated?token=${localStorage.getItem("accessToken")}`}
@@ -1445,6 +930,40 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                             }}
                           >
                             Roster Termination
+                          </Typography>
+                        </Box>
+                      </a>
+                      <a href={`/clinic/${clinicSlug}/outsideuse/saved?token=${localStorage.getItem("accessToken")}`}
+                         target="_blank" rel="noopener noreferrer"
+                         style={{ textDecoration: "none" }}>
+
+                        <Box sx={{
+                          p: 1,
+                          bgcolor: "#c2cee1",
+                          borderRadius: 2,
+                          boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          textAlign: "center",
+                        }}>
+
+                          <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{
+                            fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                            letterSpacing: "0.5px",
+                          }}>
+
+                          </Typography>
+                          <Typography
+                            // variant="h4"
+                            sx={{
+                              fontWeight: "600",
+                              fontSize: "1.5rem",
+                              color: "#045ae1",
+                              fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                            }}
+                          >
+                            De-Rostered List
                           </Typography>
                         </Box>
                       </a>
@@ -1521,7 +1040,8 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                                 </DialogTitle>
                                 <DialogContent>
                                   <DialogContentText id="alert-dialog-description">
-                                    This will take a while to clear outside data and refresh it from server. Do you want to continue?
+                                    This will take a while to clear outside data and refresh it from server. Do you want
+                                    to continue?
                                   </DialogContentText>
                                 </DialogContent>
                                 <DialogActions>
@@ -1636,7 +1156,7 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                                 }}
                               >
                                 <Table aria-label="collapsible table" stickyHeader>
-                                  <TableHead>
+                                  {/*<TableHead>*/}
                                     <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
                                       <TableCell sx={{
                                         fontWeight: "600",
@@ -1677,12 +1197,17 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                                         fontWeight: "600",
                                         fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
                                         fontSize: "0.875rem",
+                                      }}>Demographic</TableCell>
+                                      <TableCell align="right" sx={{
+                                        fontWeight: "600",
+                                        fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                                        fontSize: "0.875rem",
                                       }}>Roster Enrolled To</TableCell>
                                     </TableRow>
-                                  </TableHead>
+                                  {/*</TableHead>*/}
                                   <TableBody>
                                     {getCurrentPageData().map((row) => (
-                                      <EnhancedSummaryRow key={row.hin} row={row} />
+                                      <EnhancedSummaryRow key={row.hin} row={row} emrHomeUrl={data.emrHomeUrl} />
                                     ))}
                                   </TableBody>
                                 </Table>
@@ -1871,12 +1396,16 @@ class OutsideUseManager {
     const username = urlParams.get("username");
     const loggedIn = urlParams.get("loggedIn");
     const providerNo = urlParams.get("providerNo");
-    if (!localStorage.getItem("accessToken") || localStorage.getItem("accessToken") !== accessTokenurl) {
-      if (accessTokenurl && username && loggedIn && providerNo) {
+    const mcedtProvider = urlParams.get("mcedtProvider");
+    const deRosterProvider = urlParams.get("deRosterProvider");
+    if (localStorage.getItem("accessToken") !== accessTokenurl) {
+      if (accessTokenurl && username && loggedIn && providerNo && mcedtProvider && deRosterProvider) {
         localStorage.setItem("accessToken", accessTokenurl);
         localStorage.setItem("username", username);
         localStorage.setItem("loggedIn", loggedIn);
         localStorage.setItem("providerNo", providerNo);
+        localStorage.setItem("mcedtProvider", mcedtProvider);
+        localStorage.setItem("deRosterProvider", deRosterProvider);
         localStorage.removeItem("outsideUseData");
         // Proceed with authenticated actions
       }
@@ -1904,7 +1433,6 @@ class OutsideUseManager {
         }
       }
       // If we have cached data, use it initially while fetching fresh
-      console.log(`CachedData:${cachedData}`);
       if (cachedData) {
         this.data = cachedData;
         this.isLoading = false;
@@ -1914,7 +1442,6 @@ class OutsideUseManager {
       }
 
       // Fetch fresh data from the API
-      console.log(`fetching outside use`);
       const fetchResponse = await fetch(API_BASE_PATH + "/outsideuse/schedule/", {
         method: "POST",
         body: formData,
@@ -1954,14 +1481,14 @@ class OutsideUseManager {
       if (cachedData && !this.data) {
         this.data = cachedData;
       } else if (!this.data) {
-        localStorage.removeItem("outsideUseData");
-
+        // localStorage.removeItem("outsideUseData");
         this.data = {
           error: `Failed to fetch data: ${error instanceof Error ? error.message : String(error)}`,
           summary: [],
           totalOutsideUse: 0,
           totalCapitation: 0,
           latestRefDate: null,
+          emrHomeUrl: null,
         };
         // await this.fetchData();
 
@@ -1972,10 +1499,8 @@ class OutsideUseManager {
   getCachedData() {
     try {
       const cachedDataStr = localStorage.getItem(OutsideUseManager.CACHE_KEY);
-      console.log(`cachedDataStr:${cachedDataStr}`);
       if (cachedDataStr) {
         const cachedData = JSON.parse(cachedDataStr);
-
 
         return cachedData;
       }

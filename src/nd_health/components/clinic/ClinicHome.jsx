@@ -15,7 +15,6 @@ import Tabs, { tabsClasses } from '@mui/material/Tabs';
 
 import Layout from '../Layout';
 import '../css/Marquee.css';
-import useAuthVerification from '../resources/useAuthVerification';
 import ClinicDashboard from './ClinicDashboard';
 import ApprovePatients from './ApprovePatients';
 import HelmetComponent from '../SEO/HelmetComponent';

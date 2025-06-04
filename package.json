@@ -28,6 +28,8 @@
     "dayjs": "^1.11.10",
     "fortawesome": "^0.0.1-security",
     "framer-motion": "^10.16.16",
+    "jspdf": "^3.0.1",
+    "jspdf-autotable": "^5.0.2",
     "lottie-react": "^2.4.0",
     "npm": "^10.6.0",
     "pdfjs-dist": "^3.4.120",

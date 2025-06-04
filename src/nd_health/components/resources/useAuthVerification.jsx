@@ -5,7 +5,7 @@ import API_BASE_PATH from "../../apiConfig";
 
 const useAuthVerification = () => {
   const [isAuthenticated, setIsAuthenticated] = useState();
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("accessToken");
 
   useEffect(() => {
     const verifyToken = async () => {
