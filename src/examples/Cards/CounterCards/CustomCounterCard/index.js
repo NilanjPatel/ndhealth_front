@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Material Kit 2 PRO React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-kit-pro-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
 
@@ -24,30 +9,27 @@ import Grid from "@mui/material/Grid";
 import MKBox from "components/MKBox";
 import MKTypography from "components/MKTypography";
 
-function HorizontalTeamCard({ image, name, position, description, displayText }) {
+function CustomCounterCard({ name, position, description, displayText }) {
   return (
     <Card sx={{ mt: 3 }}>
       <Grid container>
         <Grid item xs={12} md={6} lg={4} sx={{ mt: -6 }}>
           <MKBox width="100%" pt={2} pb={1} px={2}>
-            {image &&(
+            {displayText && (
               <MKBox
-                component="img"
-                src={image}
-                alt={name}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
                 width="100%"
+                height="200px"
                 borderRadius="md"
                 shadow="lg"
-              />
-            )}
-            {displayText &&(
-              <MKBox
-                component="img"
-                alt={name}
-                width="100%"
-                borderRadius="md"
-                shadow="lg"
-              >{{displayText}}</MKBox>
+                sx={{ backgroundColor: "grey.100" }}
+              >
+                <MKTypography variant="h2" color="text">
+                  {typeof displayText === 'object' ? JSON.stringify(displayText) : displayText}
+                </MKTypography>
+              </MKBox>
             )}
           </MKBox>
         </Grid>
@@ -67,9 +49,8 @@ function HorizontalTeamCard({ image, name, position, description, displayText })
   );
 }
 
-// Typechecking props for the HorizontalTeamCard
-HorizontalTeamCard.propTypes = {
-  image: PropTypes.string.isRequired,
+// Typechecking props for the CustomCounterCard
+CustomCounterCard.propTypes = {
   name: PropTypes.string.isRequired,
   position: PropTypes.shape({
     color: PropTypes.oneOf([
@@ -85,6 +66,11 @@ HorizontalTeamCard.propTypes = {
     label: PropTypes.string.isRequired,
   }).isRequired,
   description: PropTypes.string.isRequired,
+  displayText: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.object
+  ])
 };
 
-export default HorizontalTeamCard;
+export default CustomCounterCard;

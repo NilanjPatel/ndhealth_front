@@ -1,17 +1,17 @@
 /**
-=========================================================
-* Material Kit 2 PRO React - v2.1.0
-=========================================================
+ =========================================================
+ * Material Kit 2 PRO React - v2.1.0
+ =========================================================
 
-* Product Page: https://www.creative-tim.com/product/material-kit-pro-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
+ * Product Page: https://www.creative-tim.com/product/material-kit-pro-react
+ * Copyright 2023 Creative Tim (https://www.creative-tim.com)
 
-Coded by www.creative-tim.com
+ Coded by www.creative-tim.com
 
  =========================================================
 
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ */
 
 import { forwardRef, createContext, useContext } from "react";
 
@@ -29,7 +29,8 @@ const Context = createContext();
 
 const MKPagination = forwardRef(
   ({ item, variant, color, size, active, children, placement, ...rest }, ref) => {
-    const context = item ? useContext(Context) : null;
+    // Always call useContext - this fixes the hook rules violation
+    const context = useContext(Context);
     const paginationSize = context ? context.size : null;
     let placementValue = "flex-end";
 
@@ -45,8 +46,8 @@ const MKPagination = forwardRef(
           <MKPaginationItemRoot
             {...rest}
             ref={ref}
-            variant={active ? context.variant : "outlined"}
-            color={active ? context.color : "secondary"}
+            variant={active ? (context?.variant || variant) : "outlined"}
+            color={active ? (context?.color || color) : "secondary"}
             iconOnly
             circular
             ownerState={{ variant, active, paginationSize }}

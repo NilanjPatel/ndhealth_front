@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-// import formData1 from './test.json';
 import { useParams, useLocation } from "react-router-dom";
+import dayjs from "dayjs";
 
 import API_BASE_PATH from "../../../apiConfig";
 
@@ -29,20 +29,27 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
-const renderInput = (item, handleInputChange) => {
+
+const renderInput = (item, handleInputChange, formValues) => {
   switch (item.type) {
     case "yesno":
       return (
         <FormGroup style={{ minWidth: "100%" }}>
           <FormControlLabel
             control={
-              <Checkbox onChange={(event) => handleInputChange(event, item.type, item.question)} />
+              <Checkbox
+                checked={formValues[item.question] === "Yes"}
+                onChange={(event) => handleInputChange(event, item.type, item.question, "Yes")}
+              />
             }
             label="Yes"
           />
           <FormControlLabel
             control={
-              <Checkbox onChange={(event) => handleInputChange(event, item.type, item.question)} />
+              <Checkbox
+                checked={formValues[item.question] === "No"}
+                onChange={(event) => handleInputChange(event, item.type, item.question, "No")}
+              />
             }
             label="No"
           />
@@ -53,21 +60,25 @@ const renderInput = (item, handleInputChange) => {
       return (
         <TextField
           style={{ minWidth: "100%" }}
-          label={item.question}
+          // Remove label here to avoid duplication
+          value={formValues[item.question] || ""}
           onChange={(event) => handleInputChange(event, item.type, item.question)}
         />
       );
     case "checkbox":
       return (
         <FormControl component="fieldset">
-          <FormLabel component="legend">{item.question}</FormLabel>
+          {/* Remove FormLabel to avoid duplication */}
           <FormGroup>
             {item.options.map((option, index) => (
               <FormControlLabel
                 key={index}
                 control={
                   <Checkbox
-                    onChange={(event) => handleInputChange(event, item.type, item.question)}
+                    checked={formValues[item.question]?.includes(option) || false}
+                    onChange={(event) =>
+                      handleInputChange(event, item.type, item.question, option)
+                    }
                   />
                 }
                 label={option}
@@ -78,28 +89,12 @@ const renderInput = (item, handleInputChange) => {
       );
     case "radio":
       return (
-        //     <FormControl
-        //     component="fieldset"
-        // // style={{ minWidth: '100%' }}
-        // >
-        //     <FormLabel component="legend">{item.question}</FormLabel>
-        //     <FormGroup>
-        //         {item.options.map((option, index) => (
-        //             <FormControlLabel
-        //                 key={index}
-        //                 control={<Checkbox onChange={(event) => handleInputChange(event, item.type, item.question)} />}
-        //                 label={option}
-        //             />
-        //         ))}
-        //     </FormGroup>
-        // </FormControl>
-
         <FormControl component="fieldset">
-          <FormLabel component="legend">{item.question}</FormLabel>
+          {/* Remove FormLabel to avoid duplication */}
           <RadioGroup
             aria-label={item.question}
             name={item.question}
-            // value={formValues[item.question] || ''}
+            value={formValues[item.question] || ''}
             onChange={(event) => handleInputChange(event, item.type, item.question)}
           >
             {item.options.map((option, index) => (
@@ -110,45 +105,34 @@ const renderInput = (item, handleInputChange) => {
       );
     case "select":
       return (
-        <>
-          <FormControl>
-            <InputLabel id={item.question}>{item.question}</InputLabel>
-            <Select
-              labelId={item.question}
-              id={item.question}
-              label={item.question}
-              onChange={(event) => handleInputChange(event, item.type, item.question)}
-              style={{ minWidth: "20rem" }}
-            >
-              {item.options.map((option, index) => (
-                <MenuItem key={index} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          {/* <Select
-                        name={item.question}
-                        required={item.required}
-                        onChange={(event) => handleInputChange(event, item.type, item.question)}
-                        style={{ minWidth: '100%' }}
-                    >
-                        {item.options.map((option, index) => (
-                            <MenuItem key={index} value={option}>
-                                {option}
-                            </MenuItem>
-                        ))}
-                    </Select> */}
-        </>
+        <FormControl>
+          {/* Remove InputLabel to avoid duplication */}
+          <Select
+            labelId={item.question}
+            id={item.question}
+            value={formValues[item.question] || ''}
+            onChange={(event) => handleInputChange(event, item.type, item.question)}
+            style={{ minWidth: "20rem" }}
+          >
+            {item.options.map((option, index) => (
+              <MenuItem key={index} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       );
     case "date":
       return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
-            style={{ minWidth: "100%" }}
-            label={item.question}
-            onChange={(event) => handleInputChange(event, item.type, item.question)}
+            // Remove label here to avoid duplication
+            disableFuture={true}
+            value={formValues[item.question] ? dayjs(formValues[item.question]) : null}
+            onChange={(newValue) => handleInputChange(newValue, item.type, item.question)}
+            renderInput={(params) => (
+              <TextField {...params} style={{ minWidth: "100%" }} />
+            )}
           />
         </LocalizationProvider>
       );
@@ -156,9 +140,12 @@ const renderInput = (item, handleInputChange) => {
       return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <TimePicker
-            style={{ minWidth: "100%" }}
-            label={item.question}
-            onChange={(event) => handleInputChange(event, item.type, item.question)}
+            // Remove label here to avoid duplication
+            value={formValues[item.question] ? dayjs(formValues[item.question]) : null}
+            onChange={(newValue) => handleInputChange(newValue, item.type, item.question)}
+            renderInput={(params) => (
+              <TextField {...params} style={{ minWidth: "100%" }} />
+            )}
           />
         </LocalizationProvider>
       );
@@ -167,36 +154,43 @@ const renderInput = (item, handleInputChange) => {
   }
 };
 
-const renderSectionItems = (items, handleInputChange, parentName) => {
+const renderSectionItems = (items, handleInputChange, parentName, formValues) => {
   return (
     <Grid container spacing={2}>
       {items.map((item, idx) => (
-        <>
-          <Grid item xs={12} sm={12} md={12} lg={8} key={idx}>
-            <Typography>{item.question}</Typography>
-            {item.type !== "text" ||
-              item.type !== "date" ||
-              (item.type !== "time" && item.question && (
-                <Typography variant="subtitle1">{item.question}</Typography>
-              ))}
-            {item.subheading && <Typography variant="body2">{item.subheading}</Typography>}
+        <React.Fragment key={idx}>
+          <Grid item xs={12} sm={12} md={12} lg={8}>
+            {/* Display question only once */}
+            {item.question && (
+              <Typography variant="subtitle1" style={{ marginBottom: "10px", fontWeight: "500" }}>
+                {item.question}
+              </Typography>
+            )}
+
+            {item.subheading && (
+              <Typography variant="body2" style={{ marginBottom: "8px" }}>
+                {item.subheading}
+              </Typography>
+            )}
+
             {item.image && (
               <img
                 src={item.image}
                 alt="Question Image"
-                style={{ maxWidth: "100%", height: "auto" }}
+                style={{ maxWidth: "100%", height: "auto", marginBottom: "8px" }}
               />
             )}
 
-            {renderInput(item, handleInputChange, `${parentName}-${item.question}`)}
+            {renderInput(item, handleInputChange, formValues)}
+
             {item.items &&
-              renderSectionItems(item.items, handleInputChange, `${parentName}-${item.question}`)}
+              renderSectionItems(item.items, handleInputChange, `${parentName}-${item.question}`, formValues)}
           </Grid>
 
           <Grid item xs={12} sm={12} md={12} lg={8}>
             <Divider style={{ margin: "5px 0", backgroundColor: "black" }} />
           </Grid>
-        </>
+        </React.Fragment>
       ))}
     </Grid>
   );
@@ -215,7 +209,6 @@ const DynamicForm = () => {
   const [appointmentBookContent, setAppointmentBookContent] = useState("");
 
   useEffect(() => {
-    // fetch list of demographics using access token and clinic slug
     const fetchEform = async () => {
       try {
         const response = await fetch(`${API_BASE_PATH}/eform/fill/`, {
@@ -262,10 +255,10 @@ const DynamicForm = () => {
 
       const data = await response.json();
 
-      if (data.status == "success") {
+      if (data.status === "success") {
         setOpenApp(true);
         setButtonRedirect("Home");
-        setAppointmentBookContent("Form Successfully submited.");
+        setAppointmentBookContent("Form Successfully submitted.");
       } else {
         setOpenApp(true);
         setButtonRedirect("Try Again");
@@ -288,88 +281,62 @@ const DynamicForm = () => {
     redirectHome();
   };
 
-  const getEform = () => {
-    // send post request to server to get the form
-    // attatch eformID, clinicinfo as clinic slug or clinic id
-  };
-
-  const handleInputChange0 = (event, type) => {
-    if (type !== "date" && type !== "time") {
-      const { name, value, type1, checked } = event.target;
-      const newValue = type1 === "checkbox" ? checked : value;
-    } else if (type === "date") {
-      const date = new Date(event.$d);
-      // Extract components of the date
-      const weekday = date.toLocaleDateString("en-US", { weekday: "short" });
-      const month = date.toLocaleDateString("en-US", { month: "short" });
-      const day = date.getDate();
-      const year = date.getFullYear();
-      // Concatenate components to get the desired format
-      const formattedDate = `${weekday} ${month} ${day} ${year}`;
-    } else if (type === "time") {
-      const date = new Date(event.$d);
-      const time = date.toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-      });
-    }
-  };
-
-  const handleInputChange = (event, type, name) => {
-    if (type !== "date" && type !== "time") {
-      if (type === "checkbox") {
-        // Clone the current array of selected options
-        const { name, value, type, checked } = event.target;
-        const selectedOptions = [...(formValues[name] || [])];
-
-        if (checked) {
-          // Add the selected option to the array if checked
-          selectedOptions.push(value);
-        } else {
-          // Remove the selected option from the array if unchecked
-          const index = selectedOptions.indexOf(value);
-          if (index !== -1) {
-            selectedOptions.splice(index, 1);
-          }
-        }
-
-        // Update the formValues state with the new array of selected options
-        // setFormValues({ ...formValues, [name]: selectedOptions });
-        setFormValues((prevFormValues) => ({ ...prevFormValues, [name]: selectedOptions }));
-      } else if (type === "select") {
-        setFormValues((prevFormValues) => ({
-          ...prevFormValues,
-          [name]: event.target.value, // Update selected value for select input
-        }));
-      } else {
-        const newValue =
-          event.target.type === "checkbox" ? event.target.checked : event.target.value;
-        setFormValues((prevFormValues) => ({ ...prevFormValues, [name]: newValue }));
-      }
-
-      //   const newValue = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-      // setFormValues((prevFormValues) => ({ ...prevFormValues, [name]: newValue }));
-      //
-    } else {
-      let newValue;
-      if (type === "date") {
+  const handleInputChange = (event, type, name, optionValue) => {
+    if (type === "date") {
+      // Handle date picker value
+      if (event && event.$d) {
         const date = new Date(event.$d);
-        const weekday = date.toLocaleDateString("en-US", { weekday: "short" });
-        const month = date.toLocaleDateString("en-US", { month: "short" });
-        const day = date.getDate();
-        const year = date.getFullYear();
-        newValue = `${weekday} ${month} ${day} ${year}`;
-      } else if (type === "time") {
+        const formattedDate = date.toLocaleDateString("en-US", {
+          weekday: "short",
+          month: "short",
+          day: "numeric",
+          year: "numeric"
+        });
+        setFormValues((prevFormValues) => ({ ...prevFormValues, [name]: formattedDate }));
+      }
+    } else if (type === "time") {
+      // Handle time picker value
+      if (event && event.$d) {
         const date = new Date(event.$d);
         const time = date.toLocaleTimeString("en-US", {
           hour: "2-digit",
           minute: "2-digit",
           hour12: true,
         });
-        newValue = time;
+        setFormValues((prevFormValues) => ({ ...prevFormValues, [name]: time }));
       }
-      setFormValues((prevFormValues) => ({ ...prevFormValues, [name]: newValue }));
+    } else if (type === "checkbox") {
+      // Handle checkbox options
+      if (optionValue) {
+        // For multi-select checkboxes
+        const currentValues = [...(formValues[name] || [])];
+        const checked = event.target.checked;
+
+        if (checked && !currentValues.includes(optionValue)) {
+          currentValues.push(optionValue);
+        } else if (!checked && currentValues.includes(optionValue)) {
+          const index = currentValues.indexOf(optionValue);
+          currentValues.splice(index, 1);
+        }
+
+        setFormValues((prevFormValues) => ({ ...prevFormValues, [name]: currentValues }));
+      } else {
+        // For single checkboxes (like yes/no)
+        setFormValues((prevFormValues) => ({
+          ...prevFormValues,
+          [name]: event.target.checked
+        }));
+      }
+    } else if (type === "yesno") {
+      // Handle yes/no radio buttons
+      setFormValues((prevFormValues) => ({
+        ...prevFormValues,
+        [name]: optionValue
+      }));
+    } else {
+      // Handle text, radio, select inputs
+      const value = event.target.value;
+      setFormValues((prevFormValues) => ({ ...prevFormValues, [name]: value }));
     }
   };
 
@@ -391,7 +358,7 @@ const DynamicForm = () => {
                   <Grid item xs={12} sm={12} md={12} style={{ padding: "1rem" }}>
                     <Typography variant="h5">{section.title}</Typography>
                     <Typography variant="body2">{section.subheading}</Typography>
-                    {renderSectionItems(section.items, handleInputChange, `section-${index}`)}
+                    {renderSectionItems(section.items, handleInputChange, `section-${index}`, formValues)}
                   </Grid>
                 </div>
               ))}
@@ -405,22 +372,6 @@ const DynamicForm = () => {
         ) : (
           <Typography variant="body1">Loading...</Typography>
         )}
-        {/* <form onSubmit={handleSubmit}>
-                <h2>{formData.title}</h2>
-                {formData.sections.map((section, index) => (
-                    <div key={index}>
-                        <h3>{section.title}</h3>
-                        <h5>{section.subheading}</h5>
-                        {section.items.map((item, idx) => (
-                            <div key={idx}>
-                                <label htmlFor={item.question}>{item.question}</label>
-                                {renderInput(item, handleInputChange)}
-                            </div>
-                        ))}
-                    </div>
-                ))}
-                <button type="submit">Submit</button>
-            </form> */}
       </>
       <Dialog open={openApp} onClose={handleCloseApp}>
         <DialogTitle>Notification</DialogTitle>
@@ -428,9 +379,6 @@ const DynamicForm = () => {
         <DialogActions>
           <Button onClick={redirectHome}>{buttonRedirect}</Button>
         </DialogActions>
-        {/* <DialogActions>
-                            <Button onClick={handleCloseApp}>Close</Button>
-                        </DialogActions> */}
       </Dialog>
     </Layout>
   );

@@ -34,9 +34,6 @@ const ManageAppointment = () => {
   const [isError, setIsError] = useState(false);
   const [modalContent, setModalContent] = useState("");
 
-  useEffect(() => {
-    console.log(`data:${JSON.stringify(appointmentData)}`);
-  }, [appointmentData]);
 
   useEffect(() => {
     const fetchClinicAppointmentPolicy = async () => {

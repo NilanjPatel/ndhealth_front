@@ -218,12 +218,6 @@ const Layout = ({ clinicInfo, children }) => {
               <ThemeProvider theme={lightTheme}>
                 <AppBar position="fixed">
                   <Toolbar>
-                    {/* <img src={ndHealthLogo} alt="ND Health Logo" style={{ height: '40px' }} /> */}
-
-                    {/* <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                      <Link href={home} variant='title' color="inherit" underline="none" style={{ paddingLeft: '0.81rem', fontFamily: 'sans-serif' }} > ND Health</Link>
-                    </Typography> */}
-
                     {clinicInfo.logo && (
                       <img
                         alt={`Book family and walk in appointment at ${clinicInfo.name} near ${clinicInfo.user__city}, ${clinicInfo.user__province}`}
@@ -248,11 +242,7 @@ const Layout = ({ clinicInfo, children }) => {
                     >
                       {clinicInfo.name}
                     </Link>
-                    {/*<MenuItem key="policy" style={{ borderRadius: "10px", fontWeight: "bold" }}*/}
-                    {/*          onClick={gotoPolicy}>*/}
-                    {/*  Clinic Policy*/}
-                    {/*</MenuItem>*/}
-                    {/* Use an IconButton for the login dropdown */}
+
                     <IconButton color="inherit" onClick={handleMenuOpen}>
                       <AccountCircleIcon />
                     </IconButton>
@@ -436,18 +426,6 @@ const Layout = ({ clinicInfo, children }) => {
                 <AppBar position="fixed">
                   <Toolbar>
                     <img href={home} src={ndHealthLogo} alt="ND Health Logo" style={{ height: "90px" }} />
-
-                    {/*<Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>*/}
-                    {/*  <Link*/}
-                    {/*    */}
-                    {/*    variant="title"*/}
-                    {/*    color="inherit"*/}
-                    {/*    underline="none"*/}
-                    {/*    style={{ paddingLeft: "0.81rem", fontFamily: "sans-serif" }}*/}
-                    {/*  >*/}
-                    {/*    {" "}*/}
-                    {/*  </Link>*/}
-                    {/*</Typography>*/}
                   </Toolbar>
                 </AppBar>
               </ThemeProvider>

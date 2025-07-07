@@ -1,3 +1,4 @@
+//layouts/sections/page-sections/pricing/components/PricingOne/index
 /*
 =========================================================
 * Material Kit 2 PRO React - v2.1.0

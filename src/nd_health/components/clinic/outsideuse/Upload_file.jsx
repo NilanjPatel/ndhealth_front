@@ -21,6 +21,7 @@ import {
   CircularProgress,
   Fade,
   FormHelperText,
+  TextField,
   colors,
 } from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
@@ -161,6 +162,7 @@ export default function FileUploadForm() {
     setIsLoading(true);
     setErrorMessage("");
 
+    console.log(`Date: ${date.toISOString().split("T")[0]}`);
     const formData = new FormData();
     formData.append("xml_file", file);
     formData.append("date_field", date.toISOString().split("T")[0]);
@@ -189,7 +191,7 @@ export default function FileUploadForm() {
   };
 
   const getFileTypeName = () => {
-    return fileType === "outside" ? "Outside Use File" : "Capitation File";
+    return fileType === "outside" ? "Outside Use File" : fileType === "radetails" ? "RA Details File" : "Capitation File";
   };
 
   const getStepContent = (step) => {
@@ -213,6 +215,7 @@ export default function FileUploadForm() {
               </MenuItem>
               <MenuItem value="outside">Outside Use File</MenuItem>
               <MenuItem value="capitation">Capitation File</MenuItem>
+              <MenuItem value="radetails">RA Details File</MenuItem>
             </Select>
             <FormHelperText>Please select the type of file you wish to upload</FormHelperText>
           </FormControl>
@@ -224,7 +227,7 @@ export default function FileUploadForm() {
               id="file-upload"
               type="file"
               onChange={handleFileChange}
-              accept=".xml"
+              accept=".xml,.*"
               style={{ display: "none" }}
             />
             <label htmlFor="file-upload">
@@ -272,18 +275,23 @@ export default function FileUploadForm() {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 label="Select date"
-                value={date ? dayjs(date) : null}
-                onChange={handleDateChange}
-                slotProps={{
-                  textField: {
-                    fullWidth: true,
-                    sx: { mb: 2 },
-                    InputProps: {
-                      startAdornment: <CalendarTodayIcon sx={{ mr: 1, color: "action.active" }} />,
-                    },
-                  },
-                }}
-                sx={{ width: "100%" }}
+                value={date}
+                onChange={(newValue) => setDate(newValue)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    fullWidth
+                    InputProps={{
+                      ...params.InputProps,
+                      startAdornment: (
+                        <>
+                          <CalendarTodayIcon sx={{ mr: 1, color: "action.active" }} />
+                          {params.InputProps?.startAdornment}
+                        </>
+                      ),
+                    }}
+                  />
+                )}
               />
             </LocalizationProvider>
           </Box>

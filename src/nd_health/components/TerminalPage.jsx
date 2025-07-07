@@ -88,6 +88,8 @@ const ClinicPolicy = () => {
     const clinicData = async () => {
       if (!appointments) {
         try {
+          console.log(`clinicslug:${clinicSlugcurrent}`);
+          console.log(`clinic_location:${clinic_location}`);
           const response = await fetch(
             `${API_BASE_PATH}/terminal/${clinicSlugcurrent}/${clinic_location}/`,
           );
@@ -130,6 +132,7 @@ const ClinicPolicy = () => {
           alternative_phone: data.data.alternative_phone || "",
           email: data.data.email || "",
           version_code: data.data.version_code || "",
+          appointmentNumber: data.data.appointmentNumber || 0,
         });
       } else if (data.status === "failed") {
         setModalContent(data.message);
@@ -177,6 +180,7 @@ const ClinicPolicy = () => {
             alternative_phone: updatedInfo.alternative_phone,
             email: updatedInfo.email,
             cs: updatedInfo.version_code,
+            appointmentNumber: updatedInfo.appointmentNumber,
             update: true,
           }),
         });
@@ -206,6 +210,9 @@ const ClinicPolicy = () => {
           appointmentId: selectedAppointment.appointmentId,
           id: selectedAppointment.id,
           update: false,
+          appointmentNumber: updatedInfo.appointmentNumber,
+          phone: updatedInfo.phone,
+
         }),
       });
       const data = await response.json();

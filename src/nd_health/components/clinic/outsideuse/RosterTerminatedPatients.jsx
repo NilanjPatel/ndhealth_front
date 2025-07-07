@@ -34,6 +34,7 @@ import Stack from "@mui/material/Stack";
 import PersonIcon from "@mui/icons-material/Person";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { useParams } from "react-router-dom";
+import AdvancedDashboardLoading from "../../processes/AdvancedDashboardLoading";
 
 // Dynamic color generator for different codes
 const getCodeColor = (code, index) => {
@@ -53,7 +54,7 @@ const getCodeColor = (code, index) => {
 };
 
 // Row component for collapsible detail view
-const EnhancedTerminatedRow = ({ row, onUpdate }) => {
+const EnhancedTerminatedRow = ({ row, onUpdate , emrHomeUrl}) => {
   const [open, setOpen] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -84,6 +85,16 @@ const EnhancedTerminatedRow = ({ row, onUpdate }) => {
       >
         <TableCell align="left">{row.hin || "N/A"}</TableCell>
         <TableCell component="th" scope="row">{row.name || "N/A"}</TableCell>
+        <TableCell>
+          <Link
+            color={"blue"}
+            fontWeight={"bolder"}
+            target="_blank"
+            href={`${emrHomeUrl}oscar/demographic/demographiccontrol.jsp?demographic_no=${row.demo}&displaymode=edit&dboperation=search_detail`}
+          >
+            Demographic
+          </Link>
+        </TableCell>
         <TableCell align="right">{row.code || "N/A"}</TableCell>
       </TableRow>
       <TableRow>
@@ -415,7 +426,7 @@ export const RosterTerminatedPatients = () => {
   if (!clinicInfoFetched) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-        <CircularProgress />
+        <AdvancedDashboardLoading />
       </Box>
     );
   }
@@ -447,7 +458,8 @@ export const RosterTerminatedPatients = () => {
         const cachedData = localStorage.getItem(CACHE_KEY);
         if (cachedData) {
           const { data } = JSON.parse(cachedData);
-          const updatedPatients = JSON.parse(data).map(patient => {
+          const patientsData = typeof data === 'string' ? JSON.parse(data) : data;
+          const updatedPatients = patientsData.map(patient => {
             if (patient.hin === patientData.hin) {
               return {
                 ...patient,
@@ -466,33 +478,17 @@ export const RosterTerminatedPatients = () => {
         }
         handleSuccess("Patient terminated in oscar successfully!");
       } else {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        throw new Error(`Failed to update patient`);
       }
     } catch (error) {
-      console.error("Error updating patient:", error);
-      handleFailure(`Failed to update patient: ${error.message}`);
+      handleFailure(`Failed to update patient`);
       throw error;
     }
   };
 
   return clinicInfo ? (
-    <Layout1 clinicInfo={clinicInfo}>
+    <Layout1 clinicInfo={clinicInfo} title={"Roster Termination"} tabtitle={"Roster Termination"}>
       <div>
-        {/* Title Card */}
-        <CardHeader
-          title="Roster Termination"
-          sx={{
-            backgroundColor: "#1976d2",
-            color: "white !important",
-            "& .MuiCardHeader-title": {
-              color: "white !important",
-            },
-            display: "flex",
-            alignItems: "center",
-            padding: "16px 24px",
-          }}
-        />
-
         {/* Main Content */}
         <Box sx={{ flexGrow: 1, mt: 2 }}>
           <Grid container spacing={2}>
@@ -580,7 +576,7 @@ export const RosterTerminatedPatients = () => {
                 <CardContent sx={{ padding: "24px", paddingTop: "24px", flex: 1, overflow: "auto" }}>
                   {loading ? (
                     <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "300px" }}>
-                      <CircularProgress />
+                      <AdvancedDashboardLoading />
                       <Typography sx={{ ml: 2 }}>Loading termination data...</Typography>
                     </Box>
                   ) : (
@@ -676,6 +672,11 @@ export const RosterTerminatedPatients = () => {
                                     fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
                                     fontSize: "0.875rem",
                                   }}>Patient Name</TableCell>
+                                  <TableCell sx={{
+                                    fontWeight: "600",
+                                    fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                                    fontSize: "0.875rem",
+                                  }}>Demographic</TableCell>
                                   <TableCell align="right" sx={{
                                     fontWeight: "600",
                                     fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
@@ -685,7 +686,7 @@ export const RosterTerminatedPatients = () => {
                               {/*</TableHead>*/}
                               <TableBody>
                                 {getCurrentPageData().map((row) => (
-                                  <EnhancedTerminatedRow key={row.hin} row={row} onUpdate={handleUpdatePatient} />
+                                  <EnhancedTerminatedRow key={row.hin} row={row} onUpdate={handleUpdatePatient} emrHomeUrl={localStorage.getItem("emrHomeUrl")} />
                                 ))}
                               </TableBody>
                             </Table>
@@ -757,9 +758,6 @@ export const RosterTerminatedPatients = () => {
       </div>
     </Layout1>
   ) : (
-    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "300px" }}>
-      <CircularProgress />
-      <Typography sx={{ ml: 2 }}>Loading Clinic Data...</Typography>
-    </Box>
+      <AdvancedDashboardLoading />
   );
 };

@@ -1,6 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
 import {Link, useNavigate, useParams} from "react-router-dom";
-// import { useTheme } from "@mui/material/styles";
 import {
     Card,
     CardActionArea,
@@ -11,7 +10,13 @@ import {
     IconButton,
     CircularProgress,
     MenuItem,
-    Button, Dialog, DialogTitle, DialogContent, DialogActions,
+    Button,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    useTheme,
+    useMediaQuery,
 } from "@mui/material";
 import {blue, deepPurple, green, lime, teal} from "@mui/material/colors";
 import Layout from "../../Layout";
@@ -21,23 +26,16 @@ import {FaWpforms} from "react-icons/fa6";
 import {MdOutlineDateRange} from "react-icons/md";
 import {ImProfile} from "react-icons/im";
 import {CgProfile} from "react-icons/cg";
-import {alpha} from "@mui/material/styles";
 
 // Material Kit 2 PRO React components
 import MKTypography from "components/MKTypography";
-import bgImage from "../../../assets/images/maple_clinic.jpg";
-import book_appointment from "../../../assets/images/clinic_landing_page/appointment_book.png";
 import Container from "@mui/material/Container";
 import MKBox from "../../../../components/MKBox";
 import colors from "assets/theme/base/colors";
 // Material Kit 2 PRO React Examples
-import InfoBackgroundCard from "examples/Cards/BackgroundCards/InfoBackgroundCard";
-import appImg from "nd_health/assets/images/Wavy_Tech-27_Single-10.jpg"
-// Material Kit 2 PRO React Examples
 import SimpleInfoCard from "examples/Cards/InfoCards/SimpleInfoCard";
 import DefaultBlogCard from "examples/Cards/BlogCards/DefaultBlogCard";
 import Divider from "@mui/material/Divider";
-
 
 const ClinicLanding = () => {
     const headerRef = useRef(null);
@@ -53,22 +51,19 @@ const ClinicLanding = () => {
     const navigate = useNavigate();
     const [clinic_locations_multiple] = useState("We provide services at the following location(s):");
 
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const isTablet = useMediaQuery(theme.breakpoints.between('md', 'lg'));
+
     // Function to invert a hex color
     function invertColor(hex) {
-        // Remove the hash at the start if it's there
         hex = hex.replace(/^#/, "");
-
-        // Parse the r, g, b values
         let r = parseInt(hex.slice(0, 2), 16);
         let g = parseInt(hex.slice(2, 4), 16);
         let b = parseInt(hex.slice(4, 6), 16);
-
-        // Invert each color component
         r = 255 - r;
         g = 255 - g;
         b = 255 - b;
-
-        // Convert back to hex and return
         return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
     }
 
@@ -99,359 +94,474 @@ const ClinicLanding = () => {
             setClinicInfoFetched(true);
         }
     }, [clinicSlug, clinicInfoFetched]);
+
     const handleLocationClick = (location) => {
         const locationId = location.id;
         setSelectedLocation(selectedLocation === locationId ? null : locationId);
         setLocationColor(location.color);
     };
+
     const handleClose = () => {
         setSelectedLocation(null);
     };
+
     const cardData = [
         {
             name: "Appointment",
             description: "Schedule, check, Cancel",
-            icon: <MdOutlineDateRange sx={{height: 38, width: 38}}/>,
+            icon: <MdOutlineDateRange />,
             onClick: () => navigate(`/clinic/${clinicSlug}/appointment`),
             backgroundcolor: green[400],
-            title_font_color: "black",
-            description_color: "white",
+            title_font_color: "white",
+            description_color: "rgba(255,255,255,0.9)",
         },
         {
             name: "Update Profile",
             description: "Update your information, like address or version code",
-            icon: <CgProfile sx={{height: 38, width: 38}}/>,
+            icon: <CgProfile />,
             onClick: () => navigate(`/clinic/${clinicSlug}/UpdateProfileOauth`),
             backgroundcolor: blue[400],
-            title_font_color: "black",
-            description_color: "white",
+            title_font_color: "white",
+            description_color: "rgba(255,255,255,0.9)",
         },
         {
             name: "Fill Form",
             description: "Find forms assigned to you.",
-            icon: <FaWpforms sx={{height: 38, width: 38}}/>,
+            icon: <FaWpforms />,
             onClick: () => navigate(`/EformOauth/${clinicSlug}/`),
             backgroundcolor: deepPurple[400],
-            title_font_color: "black",
-            description_color: "white",
+            title_font_color: "white",
+            description_color: "rgba(255,255,255,0.9)",
         },
         {
             name: "Patient Registration",
             description: "If you are new patient to our clinic, register first.",
-            icon: <ImProfile sx={{height: 38, width: 38}}/>,
+            icon: <ImProfile />,
             onClick: () => navigate(`/patient/${clinicSlug}/requestpatientprofile`),
             backgroundcolor: teal[400],
-            title_font_color: "black",
-            description_color: "white",
+            title_font_color: "white",
+            description_color: "rgba(255,255,255,0.9)",
         },
     ];
+
     const gotoPolicy = () => {
         navigate(`/clinic/${clinicSlug}/policy`);
     };
+
     return (
-        <Layout clinicInfo={clinicInfo}>
-            <div>
-                <HelmetComponent/>
-                {clinicInfo ? (
-                    <>
-                        {/*<h3>Welcome to {clinicInfo.name}</h3>*/}
+      <Layout clinicInfo={clinicInfo}>
+          <div>
+              <HelmetComponent/>
+              {clinicInfo ? (
+                <>
+                    {/* Hero Section with improved mobile responsiveness */}
+                    <MKBox
+                      ref={headerRef}
+                      minHeight={isMobile ? "40vh" : "35vh"}
+                      width="100%"
+                      sx={{
+                          backgroundImage: ({ functions: {linearGradient, rgba},
+                                                palette: {gradients},
+                                            }) => `${linearGradient(rgba(gradients.dark.main, 0.4), rgba(gradients.dark.state, 0.9))}, url(${clinicInfo.clinicPhoto})`,
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                          display: "grid",
+                          placeItems: "center",
+                          borderRadius: isMobile ? "0.5rem" : "1rem",
+                          mx: 0,
+                      }}
+                    >
+                        <Container maxWidth="lg">
+                            <Grid
+                              container
+                              item
+                              xs={12}
+                              lg={10}
+                              justifyContent="center"
+                              alignItems="center"
+                              flexDirection="column"
+                              sx={{mx: "auto", textAlign: "center", px: isMobile ? 2 : 0}}
+                            >
+                                <MKTypography
+                                  variant={isMobile ? "h3" : "h1"}
+                                  color="white"
+                                  sx={{
+                                      fontSize: isMobile ? "1.8rem" : isTablet ? "2.5rem" : "3rem",
+                                      fontWeight: "bold",
+                                      lineHeight: 1.2,
+                                      mb: 2,
+                                  }}
+                                >
+                                    Welcome to {clinicInfo.name}
+                                </MKTypography>
+                                <MKTypography
+                                  variant="body1"
+                                  color="white"
+                                  opacity={0.9}
+                                  sx={{
+                                      fontSize: isMobile ? "1rem" : "1.2rem",
+                                      maxWidth: "600px",
+                                      lineHeight: 1.6,
+                                  }}
+                                >
+                                    {clinicInfo.slogan}
+                                </MKTypography>
+                            </Grid>
+                        </Container>
+                    </MKBox>
 
-                        <MKBox
-                            ref={headerRef}
-                            minHeight="75vh"
-                            width="100%"
-                            sx={{
-                                backgroundImage: ({ functions: {linearGradient, rgba},
-                                                      palette: {gradients},
-                                                  }) => `${linearGradient(rgba(gradients.dark.main, 0.4), rgba(gradients.dark.state, 0.9))}, url(${bgImage})`,
-                                backgroundSize: "inherit",
-                                backgroundPosition: "center",
-                                display: "grid",
-                                placeItems: "center",
-                                borderRadius: "1rem",
+                    {/* Main Content Card with improved spacing */}
+                    <Card sx={{
+                        p: isMobile ? 1.5 : 3,
+                        mx: isMobile ? 1 : 3,
+                        mt: isMobile ? -6 : -8,
+                        mb: 4,
+                        backgroundColor: ({palette: {white}, functions: {rgba}}) => rgba(white.main, 0.95),
+                        backdropFilter: "saturate(200%) blur(30px)",
+                        boxShadow: ({boxShadows: {xxl}}) => xxl,
+                        borderRadius: isMobile ? "1rem" : "1.5rem",
+                    }}>
+                        {/* Notice Section with better mobile styling */}
+                        {notice && (
+                          <Box sx={{
+                              mb: 3,
+                              p: isMobile ? 1.5 : 2,
+                              backgroundColor: "rgba(255, 0, 0, 0.1)",
+                              borderRadius: "0.5rem",
+                              border: "1px solid rgba(255, 0, 0, 0.3)"
+                          }}>
+                              <MKTypography
+                                variant={isMobile ? "body2" : "body1"}
+                                sx={{
+                                    color: "red",
+                                    fontWeight: "bold",
+                                    fontSize: isMobile ? "0.9rem" : "1rem",
+                                    lineHeight: 1.5,
+                                }}
+                              >
+                                  <strong>Clinic Notice:</strong> {notice}
+                              </MKTypography>
+                          </Box>
+                        )}
 
-
-                            }}
-                        >
-                            <Container>
-                                <Grid
-                                    container
+                        {/* Service Cards with improved mobile layout and centering */}
+                        <Box sx={{ mb: 4 }}>
+                            <Grid
+                              container
+                              spacing={isMobile ? 2 : 3}
+                              justifyContent="center"
+                              alignItems="stretch"
+                            >
+                                {cardData.map((card, index) => (
+                                  <Grid
                                     item
                                     xs={12}
-                                    lg={8}
-                                    justifyContent="center"
-                                    alignItems="center"
-                                    flexDirection="column"
-                                    sx={{mx: "auto", textAlign: "center"}}
-                                >
-                                    <MKTypography
-                                        variant="h1"
-                                        color="white"
-                                        sx={({breakpoints, typography: {size}}) => ({
-                                            [breakpoints.down("md")]: {
-                                                fontSize: size["3xl"],
-                                            },
-                                        })}
-                                    >
-                                        <span ref={typedJSRef}/> Welcome to {clinicInfo.name}
-                                    </MKTypography>
-                                    <MKTypography variant="body1" color="white" opacity={0.8} mt={1} mb={3}>
-                                        {clinicInfo.slogan}
-                                    </MKTypography>
-                                    {/*<MKButton color="default" sx={{ color: ({ palette: { dark } }) => dark.main }}>*/}
-                                    {/*  create account*/}
-                                    {/*</MKButton>*/}
-                                </Grid>
-                            </Container>
-                        </MKBox>
-
-                        <Card sx={{
-                            p: 2,
-                            mx: {xs: 2, lg: 3},
-                            mt: -8,
-                            mb: 4,
-                            backgroundColor: ({palette: {white}, functions: {rgba}}) => rgba(white.main, 0.8),
-                            backdropFilter: "saturate(200%) blur(30px)",
-                            boxShadow: ({boxShadows: {xxl}}) => xxl,
-                        }}>
-                            {notice && (
-                                <Grid item xs={12} md={12}>
-                                    <MKTypography
-                                        style={{
-                                            color: "red",
-                                            fontWeight: "bold",
-                                            fontSize: "1rem",
-                                            padding: "0.8rem",
-                                        }}
-                                    >
-                                        Clinic Notice: {notice}
-                                    </MKTypography>
-                                </Grid>
-                            )}
-                            <Grid container spacing={2} paddingLeft={2} paddingRight={2}>
-
-                                {/*<Grid item xs={12} md={3} sm={6}>*/}
-                                {/*    <DefaultBlogCard*/}
-                                {/*        image={appImg}*/}
-                                {/*        category={{ color: "warning", label: "Appointments" }}*/}
-                                {/*        title="Appointments"*/}
-                                {/*        description="Book, cancel, check appointments"*/}
-                                {/*        action={{*/}
-                                {/*            type: "internal",*/}
-                                {/*            // route: "/somewhere",*/}
-                                {/*            color: "info",*/}
-                                {/*            // label: "More about us"*/}
-                                {/*        }}*/}
-                                {/*    />*/}
-                                {/*</Grid>*/}
-                                {/*<Grid item xs={12} md={3} sm={6}>*/}
-                                {/*    <InfoBackgroundCard*/}
-                                {/*        image={appImg}*/}
-                                {/*        icon={<MdOutlineDateRange sx={{height: 38, width: 38}}/>}*/}
-                                {/*        title="Appointments"*/}
-                                {/*        label="Book, cancel, check appointments"*/}
-                                {/*    />*/}
-                                {/*</Grid>*/}
-                                {/*<Grid item xs={12} md={3} sm={6}>*/}
-                                {/*    <SimpleInfoCard*/}
-                                {/*        icon={<MdOutlineDateRange sx={{height: 38, width: 38}}/>}*/}
-                                {/*        title="Appointments"*/}
-                                {/*        description="Book, cancel, check appointments"*/}
-                                {/*    />*/}
-                                {/*</Grid>*/}
-                                {cardData.map((card, index) => (
-                                    <Grid item xs={12} sm={6} md={3} key={index}>
-                                        <Card
-                                            variant="outlined"
-                                            onClick={card.onClick}
-                                            sx={{
-                                                height: "100%",
-                                                backgroundColor: card.backgroundcolor,
-                                                "&:hover .icon-button": {
-                                                    transform: "scale(1.4)",
-                                                    color: "#008080",
+                                    sm={6}
+                                    md={6}
+                                    lg={3}
+                                    key={index}
+                                    sx={{
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        maxWidth: isMobile ? "400px" : "none",
+                                        mx: isMobile ? "auto" : 0,
+                                    }}
+                                  >
+                                      <Card
+                                        variant="outlined"
+                                        onClick={card.onClick}
+                                        sx={{
+                                            width: "100%",
+                                            maxWidth: isMobile ? "350px" : "none",
+                                            height: "100%",
+                                            minHeight: isMobile ? "160px" : "180px",
+                                            backgroundColor: card.backgroundcolor,
+                                            cursor: "pointer",
+                                            transition: "all 0.3s ease",
+                                            borderRadius: "1rem",
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            "&:hover": {
+                                                transform: "translateY(-4px)",
+                                                boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
+                                                "& .icon-button": {
+                                                    transform: "scale(1.2)",
                                                 },
-
-                                            }}
-                                        >
-                                            <Box sx={{display: "flex", flexDirection: "column", height: "100%"}}>
-                                                <CardContent sx={{flexGrow: 1}}>
-                                                    <Typography
-                                                        component="div"
-                                                        variant="h5"
-                                                        style={{
-                                                            fontWeight: "bold",
-                                                            color: card.title_font_color,
-                                                        }}
-                                                    >
-                                                        {card.name}
-                                                    </Typography>
-                                                    <Typography
-                                                        variant="subtitle1"
-                                                        color="text.secondary"
-                                                        component="div"
-                                                        style={{color: card.description_color, fontWeight: "bold"}}
-                                                    >
-                                                        {card.description}
-                                                    </Typography>
-                                                </CardContent>
-                                                <Box
+                                            },
+                                            "&:active": {
+                                                transform: "translateY(-2px)",
+                                            },
+                                        }}
+                                      >
+                                          <CardContent sx={{
+                                              height: "100%",
+                                              display: "flex",
+                                              flexDirection: "column",
+                                              justifyContent: "space-between",
+                                              p: isMobile ? 2 : 3,
+                                              textAlign: "center",
+                                          }}>
+                                              <Box>
+                                                  <Typography
+                                                    variant={isMobile ? "h6" : "h5"}
                                                     sx={{
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        justifyContent: "center",
-                                                        pb: 1,
+                                                        fontWeight: "bold",
+                                                        color: card.title_font_color,
+                                                        mb: 1,
+                                                        fontSize: isMobile ? "1.1rem" : "1.3rem",
                                                     }}
-                                                >
-                                                    <IconButton
-                                                        className="icon-button"
-                                                        style={{
-                                                            fontSize: "3rem",
-                                                            color: "black",
-                                                            fontWeight: "bolder",
-                                                            transition: "transform 0.3s",
-                                                        }}
-                                                        aria-label={card.name}
-                                                        onClick={card.onClick}
-                                                    >
-                                                        {card.icon}
-                                                    </IconButton>
-                                                </Box>
-                                            </Box>
-                                        </Card>
-                                    </Grid>
+                                                  >
+                                                      {card.name}
+                                                  </Typography>
+                                                  <Typography
+                                                    variant="body2"
+                                                    sx={{
+                                                        color: card.description_color,
+                                                        fontSize: isMobile ? "0.85rem" : "1rem",
+                                                        lineHeight: 1.4,
+                                                        fontWeight:600,
+                                                        mb: 2,
+                                                    }}
+                                                  >
+                                                      {card.description}
+                                                  </Typography>
+                                              </Box>
+                                              <Box sx={{
+                                                  display: "flex",
+                                                  justifyContent: "center",
+                                                  alignItems: "center",
+                                              }}>
+                                                  <IconButton
+                                                    className="icon-button"
+                                                    sx={{
+                                                        fontSize: isMobile ? "2rem" : "2.5rem",
+                                                        color: "white",
+                                                        transition: "transform 0.3s ease",
+                                                        p: 1,
+                                                    }}
+                                                    aria-label={card.name}
+                                                  >
+                                                      {React.cloneElement(card.icon, { style: { color: "white" } })}
+                                                  </IconButton>
+                                              </Box>
+                                          </CardContent>
+                                      </Card>
+                                  </Grid>
                                 ))}
                             </Grid>
-                            <Divider/>
-                            {/*<CardActionArea>*/}
-                            <CardContent>
-                                <Button
-                                    variant="contained"
-                                    href="https://www.youtube.com/watch?v=N00wcFxDuRw"
-                                    target="_blank"
-                                    color="info"
-                                    style={{fontSize: "1rem", fontWeight: "bold", color: "white"}}
-                                >
-                                    Learn how to book an appointment, click here.
-                                </Button>
-                                <MenuItem key="policy" style={{ borderRadius: "10px", fontWeight: "bold" }}
-                                          onClick={gotoPolicy}>
-                                  Clinic Policy
-                                </MenuItem>
-                            </CardContent>
-                            {/*</CardActionArea>*/}
-                        </Card>
-                        <h3>{clinic_locations_multiple}</h3>
-                        <Grid container spacing={2}>
+                        </Box>
+
+                        <Divider sx={{ my: 3 }} />
+
+                        {/* Action Buttons with improved mobile layout */}
+                        <Box sx={{
+                            display: "flex",
+                            flexDirection: isMobile ? "column" : "row",
+                            gap: 2,
+                            alignItems: isMobile ? "stretch" : "center",
+                            justifyContent: "space-between",
+                        }}>
+                            <Button
+                              variant="contained"
+                              href="https://www.youtube.com/watch?v=N00wcFxDuRw"
+                              target="_blank"
+                              color="info"
+                              size={isMobile ? "large" : "medium"}
+                              sx={{
+                                  fontSize: isMobile ? "0.9rem" : "1rem",
+                                  fontWeight:500,
+                                  color: "white",
+                                  py: isMobile ? 1.5 : 1,
+                                  borderRadius: "0.5rem",
+                                  textTransform: "none",
+                              }}
+                            >
+                                📹 Learn how to book an appointment
+                            </Button>
+                            <Button
+                              variant="outlined"
+                              onClick={gotoPolicy}
+                              size={isMobile ? "large" : "medium"}
+                              sx={{
+                                  borderRadius: "0.5rem",
+                                  fontWeight:500,
+                                  py: isMobile ? 1.5 : 1,
+                                  textTransform: "none",
+                              }}
+                            >
+                                📋 Clinic Policy
+                            </Button>
+                        </Box>
+                    </Card>
+
+                    {/* Locations Section with improved mobile design */}
+                    <Container maxWidth="lg" sx={{ px: isMobile ? 2 : 3, mb: 4 }}>
+                        <MKTypography
+                          variant={isMobile ? "h5" : "h4"}
+                          sx={{
+                              mb: 3,
+                              fontWeight: "bold",
+                              textAlign: isMobile ? "center" : "left",
+                          }}
+                        >
+                            {clinic_locations_multiple}
+                        </MKTypography>
+                        <Grid container spacing={isMobile ? 2 : 3}>
                             {locationsData &&
-                                locationsData.map(
-                                    (location) =>
-                                        location.doctorsLocation.length > 0 && (
-                                            <>
-                                                <Grid item key={location.id} xs={12} md={6} lg={4}>
-                                                    <Card
-                                                        onClick={() => handleLocationClick(location)}
-                                                        style={{
-                                                            cursor: "pointer",
-                                                            backgroundColor: location.color,
-                                                            marginBottom: "16px",
-                                                        }}
-                                                    >
-                                                        <CardContent>
-                                                            <Typography variant="h6">{location.name}</Typography>
-                                                            <Typography variant="body2">{location.address}</Typography>
-                                                            <Typography variant="body2">
-                                                                {location.city}, {location.province}, {location.postal}
-                                                            </Typography>
-                                                        </CardContent>
-                                                    </Card>
-                                                </Grid>
-
-                                                <Dialog
-                                                    open={selectedLocation === location.id}
-                                                    onClose={handleClose}
-                                                    PaperProps={{style: {boxShadow: `0 0 65px 10px ${locationColor}`}}}
+                              locationsData.map(
+                                (location) =>
+                                  location.doctorsLocation.length > 0 && (
+                                    <Grid item key={location.id} xs={12} sm={6} lg={4}>
+                                        <Card
+                                          sx={{
+                                              backgroundColor: location.color,
+                                              borderRadius: "1rem",
+                                              transition: "all 0.3s ease",
+                                              "&:hover": {
+                                                  transform: "translateY(-2px)",
+                                                  boxShadow: "0 6px 20px rgba(0,0,0,0.15)",
+                                              },
+                                          }}
+                                        >
+                                            <CardContent sx={{ p: isMobile ? 2 : 3 }}>
+                                                <Typography
+                                                  variant={isMobile ? "h6" : "h5"}
+                                                  sx={{
+                                                      fontWeight: "bold",
+                                                      mb: 1,
+                                                      color: "white",
+                                                  }}
                                                 >
-                                                    <Grid item key={location.id} xs={12} md={12} lg={12}>
-                                                        <DialogTitle style={{fontWeight: "bolder"}}>
-                                                            {location.name}
-                                                        </DialogTitle>
-                                                        <DialogContent>
-                                                            <Grid container spacing={1}>
-                                                                {location.doctorsLocation &&
-                                                                    location.doctorsLocation.map((doctor) => (
-                                                                        <Grid
-                                                                            item
-                                                                            key={doctor.doctor__user__first_name}
-                                                                            xs={12}
-                                                                            md={12}
-                                                                            lg={12}
-                                                                        >
-                                                                            <Card
-                                                                                variant="outlined"
-                                                                                style={{
-                                                                                    minWidth: "fit-content",
-                                                                                    width: "100%",
-                                                                                    height: "100%",
-                                                                                    border: "1px solid dark",
-                                                                                }}
-                                                                            >
-                                                                                {/* TODO change doctor__user to doctor.id */}
-                                                                                <CardContent>
-                                                                                    <Typography
-                                                                                        variant="subtitle1"
-                                                                                        style={{
-                                                                                            fontSize: "1rem",
-                                                                                            fontWeight: "bold",
-                                                                                            whiteSpace: "nowrap",
-                                                                                            overflow: "hidden",
-                                                                                            textOverflow: "ellipsis",
-                                                                                        }}
-                                                                                    >
-                                                                                        Dr. {doctor.doctor__user__first_name}{" "}
-                                                                                        {doctor.doctor__user__last_name}
-                                                                                    </Typography>
-                                                                                    <Typography variant="body2">
-                                                                                        {doctor.docType}
-                                                                                    </Typography>
-                                                                                </CardContent>
-                                                                            </Card>
-                                                                        </Grid>
-                                                                    ))}
-                                                            </Grid>
-                                                        </DialogContent>
-                                                        <DialogActions>
-                                                            <Button onClick={handleClose} color="primary">
-                                                                Close
-                                                            </Button>
-                                                        </DialogActions>
-                                                    </Grid>
-                                                </Dialog>
-                                            </>
-                                        ),
-                                )}
+                                                    📍 {location.name}
+                                                </Typography>
+                                                <Typography
+                                                  variant="body2"
+                                                  sx={{
+                                                      color: "rgba(255,255,255,0.9)",
+                                                      lineHeight: 1.5,
+                                                      fontWeight:500,
+                                                  }}
+                                                >
+                                                    {location.address}
+                                                </Typography>
+                                                <Typography
+                                                  variant="body2"
+                                                  sx={{
+                                                      color: "rgba(255,255,255,0.9)",
+                                                      mt: 0.5,
+                                                      fontWeight:500,
+                                                  }}
+                                                >
+                                                    {location.city}, {location.province}, {location.postal}
+                                                </Typography>
+                                            </CardContent>
+                                        </Card>
+                                    </Grid>
+                                  ),
+                              )}
                         </Grid>
+                    </Container>
+                </>
+              ) : (
+                <Box sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    minHeight: "50vh",
+                    flexDirection: "column",
+                    gap: 2,
+                }}>
+                    <CircularProgress size={60} />
+                    <Typography variant="h6" color="text.secondary">
+                        Loading clinic information...
+                    </Typography>
+                </Box>
+              )}
 
-
-                    </>
-                ) : (
-                    <p>Loading...</p>
-                )}
-                {!submitbutton && (
-                    <div
-                        style={{
-                            position: "absolute",
-                            top: "50%",
-                            left: "50%",
-                            transform: "translate(-50%, -50%)",
-                        }}
-                    >
-                        <CircularProgress size="lg" variant="solid" value={70} color="primary"/>
-                    </div>
-                )}
-            </div>
-        </Layout>
+              {!submitbutton && (
+                <Box
+                  sx={{
+                      position: "fixed",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      backgroundColor: "rgba(0,0,0,0.5)",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      zIndex: 9999,
+                  }}
+                >
+                    <CircularProgress size={80} />
+                </Box>
+              )}
+          </div>
+      </Layout>
     );
 };
 
 export default ClinicLanding;
+
+
+
+{/*<Dialog*/}
+{/*    open={selectedLocation === location.id}*/}
+{/*    onClose={handleClose}*/}
+{/*    PaperProps={{style: {boxShadow: `0 0 65px 10px ${locationColor}`}}}*/}
+{/*>*/}
+{/*    <Grid item key={location.id} xs={12} md={12} lg={12}>*/}
+{/*        <DialogTitle style={{fontWeight: "bolder"}}>*/}
+{/*            {location.name}*/}
+{/*        </DialogTitle>*/}
+{/*        <DialogContent>*/}
+{/*            <Grid container spacing={1}>*/}
+{/*                {location.doctorsLocation &&*/}
+{/*                    location.doctorsLocation.map((doctor) => (*/}
+{/*                        <Grid*/}
+{/*                            item*/}
+{/*                            key={doctor.doctor__user__first_name}*/}
+{/*                            xs={12}*/}
+{/*                            md={12}*/}
+{/*                            lg={12}*/}
+{/*                        >*/}
+{/*                            <Card*/}
+{/*                                variant="outlined"*/}
+{/*                                style={{*/}
+{/*                                    minWidth: "fit-content",*/}
+{/*                                    width: "100%",*/}
+{/*                                    height: "100%",*/}
+{/*                                    border: "1px solid dark",*/}
+{/*                                }}*/}
+{/*                            >*/}
+{/*                                /!* TODO change doctor__user to doctor.id *!/*/}
+{/*                                <CardContent>*/}
+{/*                                    <Typography*/}
+{/*                                        variant="subtitle1"*/}
+{/*                                        style={{*/}
+{/*                                            fontSize: "1rem",*/}
+{/*                                            fontWeight: "bold",*/}
+{/*                                            whiteSpace: "nowrap",*/}
+{/*                                            overflow: "hidden",*/}
+{/*                                            textOverflow: "ellipsis",*/}
+{/*                                        }}*/}
+{/*                                    >*/}
+{/*                                        Dr. {doctor.doctor__user__first_name}{" "}*/}
+{/*                                        {doctor.doctor__user__last_name}*/}
+{/*                                    </Typography>*/}
+{/*                                    <Typography variant="body2">*/}
+{/*                                        {doctor.docType}*/}
+{/*                                    </Typography>*/}
+{/*                                </CardContent>*/}
+{/*                            </Card>*/}
+{/*                        </Grid>*/}
+{/*                    ))}*/}
+{/*            </Grid>*/}
+{/*        </DialogContent>*/}
+{/*        <DialogActions>*/}
+{/*            <Button onClick={handleClose} color="primary">*/}
+{/*                Close*/}
+{/*            </Button>*/}
+{/*        </DialogActions>*/}
+{/*    </Grid>*/}
+{/*</Dialog>*/}

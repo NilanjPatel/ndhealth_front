@@ -35,12 +35,14 @@ import TablePagination from "@mui/material/TablePagination";
 import Link from "@mui/material/Link";
 import NotificationDialog from "../../resources/Notification";
 import { getCurrentDate, TokenLogin } from "../../resources/utils";
+import AdvancedDashboardLoading from "../../processes/AdvancedDashboardLoading";
 
 // Row component for expandable table
 // Enhanced SummaryRow with roster fetching
 
 
 const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpdate }) => {
+  const tabtitle = "ND Health - Outside Use"
   // Original state variables
   const [clinicInfo, setClinicInfo] = useState(null);
   const [clinicInfoError, setClinicInfoError] = useState(null);
@@ -139,7 +141,6 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
         if (onDataUpdate) {
           onDataUpdate(updatedData);
         }
-
         // Return the updated data structure
         return updatedData;
       }
@@ -357,7 +358,7 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
     const uniqueRosters = [...new Set(data.summary.map(row => row.rosterEnrolledTo))];
 
     // Add the new option (if not already in the list)
-    const newOption = localStorage.getItem("deRosterProvider");
+    const newOption = parseInt(localStorage.getItem("deRosterProvider"));
     if (newOption && !uniqueRosters.includes(newOption)) {
       uniqueRosters.push(newOption);
     }
@@ -463,7 +464,7 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
   if (!clinicInfoFetched) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-        <CircularProgress />
+        <AdvancedDashboardLoading />
       </Box>
     );
   }
@@ -527,8 +528,7 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
 
     const handleRosterChange = async (event) => {
       const newRosterValue = event.target.value;
-
-      if (newRosterValue === thedeRosterProvider) {
+      if (parseInt(newRosterValue) === parseInt(thedeRosterProvider)) {
         // Store the pending roster value and open dialog
         setPendingRosterValue(newRosterValue);
         setDialogOpen(true);
@@ -570,43 +570,42 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
             backgroundColor: "rgba(25, 118, 210, 0.08)",
           }),
         }}>
-          <TableCell component="th" scope="row" onClick={() => setOpen(!open)}>{row.hin}</TableCell>
+          <TableCell onClick={() => setOpen(!open)}>{row.hin}</TableCell>
           <TableCell onClick={() => setOpen(!open)}>{`${row.lname}, ${row.fname}`}</TableCell>
-          <TableCell align="right"
+          <TableCell
                      onClick={() => setOpen(!open)}>${(row.capitationTotal.toFixed(2) * 3).toFixed(2)}</TableCell>
-          <TableCell align="right" onClick={() => setOpen(!open)}>${row.outsideUseTotal.toFixed(2)}</TableCell>
+          <TableCell  onClick={() => setOpen(!open)}>${row.outsideUseTotal.toFixed(2)}</TableCell>
           {row.code === 44 ? (
-            <TableCell align="right" onClick={() => setOpen(!open)}>
+            <TableCell  onClick={() => setOpen(!open)}>
               ${(row.outsideUseTotal + (row.capitationTotal * 3)).toFixed(2)}
             </TableCell>
           ) : (
-            <TableCell align="right" onClick={() => setOpen(!open)}>
+            <TableCell  onClick={() => setOpen(!open)}>
               ${((row.capitationTotal * 3) - row.outsideUseTotal).toFixed(2)}
             </TableCell>
           )}
 
-          <TableCell align="right">{row.code}</TableCell>
-          <TableCell align="right">
-            <Link
-              fontWeight={"bolder"}
-              target="_blank"
-              href={`${emrHomeUrl}oscar/billing/CA/ON/billingOB.jsp?billRegion=ON&billForm=MFP&hotclick=&appointment_no=0&demographic_name=${row.lname} ${row.fname}&demographic_no=${row.demo}&providerview=${providerNo}&user_no=${providerNo}&apptProvider_no=none&AppointmentDate=${getEarliestServiceDate(row.records)}&deroster=Q402A&hin=${row.hin}`}
-            >
-              Bill in Oscar
-            </Link>
-          </TableCell>
+          {/*<TableCell >{row.code}</TableCell>*/}
+          {/*<TableCell >*/}
+          {/*  <Link*/}
+          {/*    fontWeight={"bolder"}*/}
+          {/*    target="_blank"*/}
+          {/*    href={`${emrHomeUrl}oscar/billing/CA/ON/billingOB.jsp?billRegion=ON&billForm=MFP&hotclick=&appointment_no=0&demographic_name=${row.lname} ${row.fname}&demographic_no=${row.demo}&providerview=${providerNo}&user_no=${providerNo}&apptProvider_no=none&AppointmentDate=${getEarliestServiceDate(row.records)}&deroster=Q402A&hin=${row.hin}`}*/}
+          {/*  >*/}
+          {/*    Bill in Oscar*/}
+          {/*  </Link>*/}
+          {/*</TableCell>*/}
           <TableCell>
             <Link
+
               fontWeight={"bolder"}
               target="_blank"
               href={`${emrHomeUrl}oscar/demographic/demographiccontrol.jsp?demographic_no=${row.demo}&displaymode=edit&dboperation=search_detail`}
-            >
-              Demographic
-            </Link>
+            >Demographic</Link>
           </TableCell>
-          <TableCell align="right">
+          <TableCell >
             {isUpdating ? (
-              <CircularProgress size={20} />
+              <AdvancedDashboardLoading />
             ) : (
               <>
                 <FormControl size="small" sx={{ minWidth: 120 }}>
@@ -669,7 +668,7 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                       <TableCell>Date</TableCell>
                       <TableCell>Code</TableCell>
                       <TableCell>Description</TableCell>
-                      <TableCell align="right">Amount</TableCell>
+                      <TableCell >Amount</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -678,7 +677,7 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                         <TableCell>{record.serviceDate}</TableCell>
                         <TableCell>{record.serviceCode}</TableCell>
                         <TableCell>{record.ServiceDescr}</TableCell>
-                        <TableCell align="right">${record.serviceAmount.toFixed(2)}</TableCell>
+                        <TableCell >${record.serviceAmount.toFixed(2)}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -724,23 +723,11 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
 
 
   return clinicInfo ? (
-    <Layout1 clinicInfo={clinicInfo}>
+    <Layout1 clinicInfo={clinicInfo} tabtitle={tabtitle} title={'Last 3 months Outside Use Summary'}>
       <div>
-        {/* Title Card */}
-        <CardHeader
-          title="Last 3 months Outside Use Summary"
-          sx={{
-            backgroundColor: "#1976d2",
-            color: "white",
-            fontWeight: "bold",
-            display: "flex",
-            alignItems: "center",
-            padding: "16px 24px",
-          }}
-        />
         {loading ? (
           <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "300px" }}>
-            <CircularProgress />
+            <AdvancedDashboardLoading />
             <Typography sx={{ ml: 2 }}>Loading summary data...</Typography>
           </Box>
         ) : data ? (
@@ -1020,11 +1007,11 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                         overflow: "auto", // Make this content area scrollable
                       }}>
                         {loading ? (
-                          <Box
-                            sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "300px" }}>
-                            <CircularProgress />
-                            <Typography sx={{ ml: 2 }}>Loading summary data...</Typography>
-                          </Box>
+                          // <Box
+                          //   sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "300px" }}>
+                            <AdvancedDashboardLoading />
+                            // <Typography sx={{ ml: 2 }}>Loading summary data...</Typography>
+                          // </Box>
                         ) : (
                           <>
                             {/* Filters and controls - STICKY */}
@@ -1168,37 +1155,37 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                                         fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
                                         fontSize: "0.875rem",
                                       }}>Patient Name</TableCell>
-                                      <TableCell align="right" sx={{
+                                      <TableCell  sx={{
                                         fontWeight: "600",
                                         fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
                                         fontSize: "0.875rem",
                                       }}>Capitation</TableCell>
-                                      <TableCell align="right" sx={{
+                                      <TableCell  sx={{
                                         fontWeight: "600",
                                         fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
                                         fontSize: "0.875rem",
                                       }}>Outside Use</TableCell>
-                                      <TableCell align="right" sx={{
+                                      <TableCell  sx={{
                                         fontWeight: "600",
                                         fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
                                         fontSize: "0.875rem",
                                       }}>Difference</TableCell>
-                                      <TableCell align="right" sx={{
-                                        fontWeight: "600",
-                                        fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                                        fontSize: "0.875rem",
-                                      }}>Code</TableCell>
-                                      <TableCell align="right" sx={{
-                                        fontWeight: "600",
-                                        fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                                        fontSize: "0.875rem",
-                                      }}>Bill</TableCell>
-                                      <TableCell align="right" sx={{
+                                      {/*<TableCell  sx={{*/}
+                                      {/*  fontWeight: "600",*/}
+                                      {/*  fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",*/}
+                                      {/*  fontSize: "0.875rem",*/}
+                                      {/*}}>Code</TableCell>*/}
+                                      {/*<TableCell  sx={{*/}
+                                      {/*  fontWeight: "600",*/}
+                                      {/*  fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",*/}
+                                      {/*  fontSize: "0.875rem",*/}
+                                      {/*}}>Bill</TableCell>*/}
+                                      <TableCell  sx={{
                                         fontWeight: "600",
                                         fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
                                         fontSize: "0.875rem",
                                       }}>Demographic</TableCell>
-                                      <TableCell align="right" sx={{
+                                      <TableCell  sx={{
                                         fontWeight: "600",
                                         fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
                                         fontSize: "0.875rem",
@@ -1306,10 +1293,10 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
       </div>
     </Layout1>
   ) : (
-    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "300px" }}>
-      <CircularProgress />
-      <Typography sx={{ ml: 2 }}>Loading Clinic Data...</Typography>
-    </Box>
+    // <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "300px" }}>
+      <AdvancedDashboardLoading />
+      // <Typography sx={{ ml: 2 }}>Loading Clinic Data...</Typography>
+    // </Box>
   );
 };
 

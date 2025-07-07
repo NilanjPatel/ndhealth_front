@@ -39,6 +39,7 @@ import autoTable from "jspdf-autotable";
 import { getCurrentDate } from "../../resources/utils";
 import powered_by_logo from "nd_health/assets/images/powered_by_nd_health_n.png";
 import ndHealthLogo from "nd_health/assets/images/ND(1).png";
+import AdvancedDashboardLoading from "../../processes/AdvancedDashboardLoading";
 // Row component for collapsible detail view
 const EnhancedTerminatedRow = ({ row, onUpdate, emrHomeUrl }) => {
   const [open, setOpen] = useState(false);
@@ -114,12 +115,9 @@ const EnhancedTerminatedRow = ({ row, onUpdate, emrHomeUrl }) => {
         <TableCell component="th" scope="row">{row.createDate || "N/A"}</TableCell>
         <TableCell component="th" scope="row">{row.amountSaved.toFixed(2) || "N/A"}</TableCell>
         <TableCell component="th" scope="row">{row.note || "N/A"}</TableCell>
-        <TableCell component="th" scope="row" sx={{
-          backgroundColor: row.code && row.code !== "N/A" ? "#fff3cd" : "transparent",
-          fontWeight: row.code && row.code !== "N/A" ? "bold" : "normal",
-          color: row.code && row.code !== "N/A" ? "#856404" : "inherit",
-          border: row.code && row.code !== "N/A" ? "1px solid #ffeaa7" : "none",
-        }}>{row.code || "N/A"}</TableCell>
+        <TableCell component="th" scope="row">
+          {row.lname || row.fname ? `${row.lname || ''}, ${row.fname || ''}` : ''}
+        </TableCell>
         <TableCell component="th" scope="row">
           <Button
             onClick={(e) => {
@@ -533,9 +531,7 @@ export const SavedByDerostering = () => {
   // Display loading indicator
   if (!clinicInfoFetched) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-        <CircularProgress />
-      </Box>
+        <AdvancedDashboardLoading />
     );
   }
 
@@ -620,7 +616,7 @@ export const SavedByDerostering = () => {
       "Bill Date",
       "Amount Saved",
       "Note",
-      // "Code",
+      "Patient Name",
       "Billing Status",
     ];
     const tableRows = [];
@@ -636,7 +632,7 @@ export const SavedByDerostering = () => {
           row.createDate || "N/A",
           row.amountSaved.toFixed(2) || "N/A",
           row.note || "N/A",
-          // row.code || "N/A",
+          row.lname || row.fname ? `${row.lname || ''}, ${row.fname || ''}` : '',
           billingStatus,
         ]);
       }
@@ -659,24 +655,8 @@ export const SavedByDerostering = () => {
   };
 
   return clinicInfo ? (
-    <Layout1 clinicInfo={clinicInfo}>
+    <Layout1 clinicInfo={clinicInfo} title="List of De-Rostered Patients" tabtitle={"De-Rostered Patients"}>
       <div>
-
-        {/* Title Card */}
-        <CardHeader
-          title="List of De-Rostered Patients"
-          sx={{
-            backgroundColor: "#1976d2",
-            color: "white !important", // Force white color
-            "& .MuiCardHeader-title": {
-              color: "white !important", // Specifically target title
-            },
-            display: "flex",
-            alignItems: "center",
-            padding: "16px 24px",
-          }}
-        />
-
         {/* Main Content */}
         <Box sx={{ flexGrow: 1, mt: 2 }}>
           <Grid container spacing={2}>
@@ -819,7 +799,7 @@ export const SavedByDerostering = () => {
                 <CardContent sx={{ padding: "24px", paddingTop: "24px", flex: 1, overflow: "auto" }}>
                   {loading ? (
                     <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "300px" }}>
-                      <CircularProgress />
+                      <AdvancedDashboardLoading />
                       <Typography sx={{ ml: 2 }}>Loading termination data...</Typography>
                     </Box>
                   ) : (
@@ -938,7 +918,7 @@ export const SavedByDerostering = () => {
                                   fontWeight: "600",
                                   fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
                                   fontSize: "0.875rem",
-                                }}>Code</TableCell>
+                                }}>Patient Name</TableCell>
                                 <TableCell sx={{
                                   fontWeight: "600",
                                   fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
@@ -1059,10 +1039,7 @@ export const SavedByDerostering = () => {
       </div>
     </Layout1>
   ) : (
-    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "300px" }}>
-      <CircularProgress />
-      <Typography sx={{ ml: 2 }}>Loading Clinic Data...</Typography>
-    </Box>
+      <AdvancedDashboardLoading />
   );
 };
 

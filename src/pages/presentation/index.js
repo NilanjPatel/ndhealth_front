@@ -1,4 +1,7 @@
+// home
+
 import { useEffect, useRef } from "react";
+
 // rellax
 import Rellax from "rellax";
 

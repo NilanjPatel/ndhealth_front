@@ -44,6 +44,10 @@ import FileUploadForm from "./nd_health/components/clinic/outsideuse/Upload_file
 import { InitallOutsideUse } from "./nd_health/components/clinic/outsideuse/OutsideUse";
 import { RosterTerminatedPatients } from "./nd_health/components/clinic/outsideuse/RosterTerminatedPatients";
 import { SavedByDerostering } from "./nd_health/components/clinic/outsideuse/SavedFromDerostering";
+import ClinicQueue from "./nd_health/components/Queue";
+import RADetails from "./nd_health/components/clinic/outsideuse/billing/RADetails";
+import RADx250 from "./nd_health/components/clinic/outsideuse/billing/RADx250";
+import RAServiceCodeAnalytics from "./nd_health/components/clinic/outsideuse/billing/RAAnalytics";
 
 export default function App() {
   const { pathname } = useLocation();
@@ -88,13 +92,11 @@ export default function App() {
         <Route path="/demo" element={<DemoRequestForm />} />
         {/* clinic policy*/}
         <Route path="/clinic/:clinicSlug/policy" element={<ClinicPolicy />} />
-
         {/*clinic dashboard*/}
         <Route path="/clinic/:clinicSlug/home/" element={<ClinicDashboard />} />
-
         {/*  clinic terminal */}
         <Route path="/:clinicSlug/terminal/:clinicUid/:clinic" element={<TerminalPage />} />
-
+        <Route path="/:clinicSlug/queue/:clinicUid/:clinic" element={<ClinicQueue />} />
         {/*  nd-health's policy*/}
         <Route path="OurPolicy" element={<DisplayPolicy />} />
         {/* eform */}
@@ -103,7 +105,9 @@ export default function App() {
         <Route path="/clinic/:clinicSlug/rosterterminated/" element={<RosterTerminatedPatients />} />
         <Route path="/clinic/:clinicSlug/outsideuse/saved/" element={<SavedByDerostering />} />
         <Route path="/clinic/:clinicSlug/outsideuse/upload" element={<FileUploadForm />} />
-
+        <Route path="/clinic/:clinicSlug/billing/radetails" element={<RADetails />} />
+        <Route path="/clinic/:clinicSlug/billing/radx250" element={<RADx250 />} />
+        <Route path="/clinic/:clinicSlug/billing/raanalytics" element={<RAServiceCodeAnalytics />} />
 
       </Routes>
     </ThemeProvider>

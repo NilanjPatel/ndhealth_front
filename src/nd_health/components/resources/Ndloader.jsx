@@ -96,25 +96,6 @@ const Section = styled.section`
   }
 `;
 
-// const AppHeader = styled.header`
-//   background: #0d161b;
-//   padding: 10px 20px;
-//   min-height: 50px;
-//   position: fixed;
-//   top: 0;
-//   left: 0;
-//   width: 100%;
-//   display: flex;
-//   align-items: center;
-//   z-index: 2000;
-//   justify-content: space-between;
-// `;
-//
-// const NavBtn = styled.a`
-//   color: #fff;
-//   text-decoration: none;
-// `;
-
 const NdLoader = () => {
   return (
     <Section data-index="73">

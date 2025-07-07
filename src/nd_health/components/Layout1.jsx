@@ -35,12 +35,13 @@ import HelmetComponent from "./SEO/HelmetComponent";
 // login
 import axios from "axios";
 import PropTypes from "prop-types";
+import CardHeader from "@mui/material/CardHeader";
 
 const lightTheme = createTheme({
   palette: {
     mode: "light", // Ensure the theme is in light mode
     primary: {
-      main: "#ffffff", // Creamy color for primary elements
+      main: "#1976d2", // Creamy color for primary elements
     },
     background: {
       default: "#ffffff", // White background
@@ -48,7 +49,7 @@ const lightTheme = createTheme({
   },
 });
 
-const Layout1 = ({ clinicInfo, children }) => {
+const Layout1 = ({ clinicInfo, tabtitle, children, title }) => {
   const [password, setPassword] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
@@ -212,7 +213,7 @@ const Layout1 = ({ clinicInfo, children }) => {
         if (clinicInfo) {
           return (
             <>
-              <HelmetComponent />
+              <HelmetComponent tabtitle={tabtitle}/>
 
               <CssBaseline />
               <ThemeProvider theme={lightTheme}>
@@ -232,7 +233,7 @@ const Layout1 = ({ clinicInfo, children }) => {
                         style={{
                           marginRight: "10px",
                           boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", // Adjust the shadow to create a lifting effect
-
+                          backgroundColor:'white',
                           transform: "translateY(-2px)", // Slightly lift the logo
                           transition: "transform 0.3s ease, box-shadow 0.3s ease", // Smooth transition
                           borderRadius: "50%", // Ensure the shadow follows the shape of the logo
@@ -246,12 +247,25 @@ const Layout1 = ({ clinicInfo, children }) => {
                       underline="none"
                       style={{ flexGrow: 1 }}
                     >
-                      {clinicInfo.name}
+                      {title ? (
+                        <CardHeader
+                          title={title}
+                          sx={{
+                            backgroundColor: "#1976d2",
+                            color: "white !important",
+                            "& .MuiCardHeader-title": {
+                              color: "white !important",
+                            },
+                            display: "flex",
+                            alignItems: "center",
+                            padding: "16px 24px",
+                          }}
+                        />
+                      ) : (
+                        <span>{clinicInfo.name}</span>
+                      )}
+
                     </Link>
-                    <MenuItem key="policy" style={{ borderRadius: "10px", fontWeight: "bold" }}
-                              onClick={gotoPolicy}>
-                      Clinic Policy
-                    </MenuItem>
                     {/* Use an IconButton for the login dropdown */}
                     <IconButton color="inherit" onClick={handleMenuOpen}>
                       <AccountCircleIcon />
@@ -376,62 +390,12 @@ const Layout1 = ({ clinicInfo, children }) => {
                 </Paper>
               </Modal>
 
-              {/*<Container*/}
-              {/*  component="main"*/}
-              {/*  maxWidth="md"*/}
-              {/*  sx={{ mt: 2, paddingBottom: "10rem", paddingTop: "4rem" }}*/}
-              {/*>*/}
-              {/*   /!*<Paper elevation={1} sx={{ p: 2 }}>*!/*/}
-              {/*  {children}*/}
-              {/*   /!*</Paper>*!/*/}
-              {/*</Container>*/}
-
               <div className="w-full mt-8 pb-40 pt-16 px-2">
                    <Paper elevation={1} sx={{ p: 2 ,mt:7}}>
                   {children}
                    </Paper>
               </div>
 
-              {/* <footer style={{ position: 'fixed', bottom: 0, width: '100%', padding: '-3rem', backgroundColor: '#ebedf5' }}>
-                <Divider style={{ width: '100%', margin: 'auto', marginBottom: '0rem' }} />
-                <Card style={{ justifyContent: 'center' }}>
-                  <img src={ndHealthLogo} alt="ND Health Logo" style={{ height: '40px' }} />
-
-                  <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                    <Link href={home} variant='title' color="inherit" underline="none" style={{ paddingLeft: '0.81rem', fontFamily: 'sans-serif' }} > ND Health</Link>
-                  </Typography>
-                </Card>
-                <Typography variant="body2" color="text.secondary" align="center">
-                  © {new Date().getFullYear()} ND Health. All rights reserved.
-                </Typography>
-              </footer> */}
-              {/*<footer*/}
-              {/*  style={{*/}
-              {/*    position: "fixed",*/}
-              {/*    bottom: 0,*/}
-              {/*    width: "100%",*/}
-              {/*    textAlign: "center",*/}
-              {/*    paddingTop: "1rem",*/}
-              {/*    backgroundColor: "#ffffff",*/}
-              {/*    zIndex: 1000,*/}
-              {/*  }}*/}
-              {/*>*/}
-              {/*  <Typography variant="h6">*/}
-              {/*    <Link*/}
-              {/*      href={home}*/}
-              {/*      variant="title"*/}
-              {/*      color="inherit"*/}
-              {/*      underline="none"*/}
-              {/*      style={{ fontFamily: "sans-serif" }}*/}
-              {/*    >*/}
-              {/*      <img*/}
-              {/*        src={powered_by_logo}*/}
-              {/*        alt={`Book family and walk in appointment at ${clinicInfo.name} near ${clinicInfo.user__city}, ${clinicInfo.user__province}`}*/}
-              {/*        style={{ height: "2.5rem" }}*/}
-              {/*      />*/}
-              {/*    </Link>*/}
-              {/*  </Typography>*/}
-              {/*</footer>*/}
             </>
           );
         } else {
@@ -442,18 +406,6 @@ const Layout1 = ({ clinicInfo, children }) => {
                 <AppBar position="fixed">
                   <Toolbar>
                     <img href={home} src={ndHealthLogo} alt="ND Health Logo" style={{ height: "90px" }} />
-
-                    {/*<Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>*/}
-                    {/*  <Link*/}
-                    {/*    */}
-                    {/*    variant="title"*/}
-                    {/*    color="inherit"*/}
-                    {/*    underline="none"*/}
-                    {/*    style={{ paddingLeft: "0.81rem", fontFamily: "sans-serif" }}*/}
-                    {/*  >*/}
-                    {/*    {" "}*/}
-                    {/*  </Link>*/}
-                    {/*</Typography>*/}
                   </Toolbar>
                 </AppBar>
               </ThemeProvider>

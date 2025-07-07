@@ -1,10 +1,7 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useCallback} from "react";
 import {useParams, useLocation} from "react-router-dom";
 import API_BASE_PATH from "../../apiConfig";
-
 import Layout from "nd_health/components/Layout";
-// import LinearProgressWithLabel from './processes/LinearProgressWithLabel';
-import MKProgress from "../../components/MKProgress";
 import {
     Typography,
     Button,
@@ -25,54 +22,114 @@ import {
     DialogActions,
     Card,
     CardContent,
+    Box,
+    CircularProgress,
+    Stepper,
+    Step,
+    StepLabel,
+    Divider,
+    Chip,
+    useTheme,
+    useMediaQuery,
+    Container,
+    IconButton,
+    Tooltip,
+    MobileStepper
 } from "@mui/material";
+import { alpha } from '@mui/material/styles';
+// Updated imports for dayjs
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+
+// Icons
+import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import PersonIcon from '@mui/icons-material/Person';
+import VideocamIcon from '@mui/icons-material/Videocam';
+import PhoneIcon from '@mui/icons-material/Phone';
+import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
+import EventIcon from '@mui/icons-material/Event';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import NoteIcon from '@mui/icons-material/Note';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import WarningIcon from '@mui/icons-material/Warning';
+import EmailIcon from '@mui/icons-material/Email';
+import InfoIcon from '@mui/icons-material/Info';
 
 import {formatPhone, isValidEmail, redirectHomeM} from "nd_health/components/resources/utils";
-// import CircularProgress from '@mui/joy/CircularProgress';
 import NdLoader from "../components/resources/Ndloader.jsx";
 import MKTypography from "components/MKTypography";
 import MKBox from "../../components/MKBox";
-import MKButton from "../../components/MKButton";
 import NotificationDialog from "./resources/Notification";
 import GoHome from "./resources/GoHome";
+import {StepConnector } from "@mui/material";
+import { styled } from "@mui/system";
+import ProfessionalStepper from "./resources/ProfessionalStepper";
+import AppointmentConfirmationCard from "./resources/AppointmentConfirmationCard";
+
+const TOTAL_STEPS = 7;
+const STEP_LABELS = [
+    "Location",
+    "Doctor",
+    "Mode",
+    "Date",
+    "Time",
+    "Details",
+    "Confirm"
+];
+
+const STEP_ICONS = [
+    <LocationOnIcon />,
+    <PersonIcon />,
+    <LocalHospitalIcon />,
+    <EventIcon />,
+    <AccessTimeIcon />,
+    <NoteIcon />,
+    <CheckCircleIcon />
+];
+const CustomStepConnector = styled(StepConnector)(({ theme }) => ({
+    [`& .${StepConnector.line}`]: {
+        borderColor: theme.palette.divider,
+        borderTopWidth: 2,
+    },
+}));
 
 const WalkinAppointmentPage = () => {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isTablet = useMediaQuery(theme.breakpoints.down('md'));
     const {clinicSlug} = useParams();
-    // const [clinicInfo, setClinicInfo] = useState(null);
-
     const [locations, setLocations] = useState([]);
     const [selectedLocation, setSelectedLocation] = useState("");
-    // const [providers, setProviders] = useState([]);
     const [selectedProvider, setSelectedProvider] = useState("Select Doctor");
-    const [selectedDate, setSelectedDate] = useState("");
+    const [selectedDate, setSelectedDate] = useState(""); // Stores date as 'YYYY-MM-DD' string
     const [selectedTime, setSelectedTime] = useState("");
     const [availableTimes, setAvailableTimes] = useState([]);
-    const [availableDates, setAvailableDates] = useState([]);
-
-    // const [selectedDuration, setSelectedDuration] = useState('');
-    const [selectedAppointmentMode, setSelectedAppointmentMode] = useState("");
+    const [availableDates, setAvailableDates] = useState([]); // Stores dates as 'YYYY-MM-DD' strings
+    const [dateObject, setDateObject] = useState(null); // Stores dayjs object or null for DatePicker
+    const [slotIndex, setSlotIndex] = useState(0);
+    const [appointmentMode, setSelectedAppointmentMode] = useState("");
     const [appointmentModes, setAppointmentModes] = useState([]);
     const [isAppointmentAvailable, setIsAppointmentAvailable] = useState(false);
     const [reason, setReason] = useState("");
     const [agreementChecked, setAgreementChecked] = useState(false);
     const [openAgreementPopup, setOpenAgreementPopup] = useState(false);
     const [termsInfo, settermsInfo] = useState(null);
-    const [selectedOption, setSelectedOption] = useState(""); // Default selected option
-    const [phoneNumber, setPhoneNumber] = useState(""); // Default selected option
+    const [selectedOption, setSelectedOption] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
     const [appointmentBookContent, setAppointmentBookContent] = useState("");
     const [openApp, setOpenApp] = useState(false);
     const [buttonRedirect, setButtonRedirect] = useState("");
     const [progress, setProgress] = useState(0);
-    // const [drNotice, setDrNotice] = useState(null);
-    // const [clinicAddress, setClinicAddress] = useState("");
-    // const [clinicpostalCode, setClinicPostalCode] = useState("");
-    // const [clinicLocation, setClinicLocation] = useState('');
 
     const [appointmentlist, setAppointmentlist] = useState([]);
     const [app_list_dilog, setApp_list_dilog] = useState(false);
-    const [same_date_app, setSame_date_app] = useState(false);
+    const [same_date_app, setSame_date_app] = useState(true);
 
-    const [email, setEmail] = useState(""); // Default selected option
+    const [email, setEmail] = useState("");
     const [isEmailValid, setIsEmailValid] = useState(true);
     const [submitbutton, setSubmitbutton] = useState(true);
 
@@ -81,167 +138,129 @@ const WalkinAppointmentPage = () => {
     const clinicInfo = location.state && location.state.clinicInfo;
     const clinicLocation = location.state && location.state.locationsData;
     const [titlePaperColor, setTitlePaperColor] = useState("");
-    // Simulate fetching locations data
 
-    // //animation running light
-    // const [stylefade, setStylefade] = useState({
-    //   color: "blue",
-    //   fontWeight: "bold",
-    //   transition: "color 2s ease-in-out, font-weight 2s ease-in-out",
-    // });
-
-    // NotificationDialog
     const [openModal, setOpenModal] = useState(false);
     const [isError, setIsError] = useState(false);
     const [modalContent, setModalContent] = useState("");
 
-    // useEffect(() => {
-    //   const timeoutId = setTimeout(() => {
-    //     setStylefade({
-    //       color: "black",
-    //       fontWeight: "normal",
-    //       transition: "color 5s ease-in-out, font-weight 2s ease-in-out",
-    //     });
-    //   }, 500); // Delay before starting the transition
-    //   return () => clearTimeout(timeoutId);
-    // }, [clinicAddress]);
+    const [currentStep, setCurrentStep] = useState(1);
+
+    const primaryColor = clinicInfo?.colors?.primary || theme.palette.primary.main;
+    const secondaryColor = clinicInfo?.colors?.secondary || theme.palette.secondary.main;
+    const [hasShownAppointmentDialog, setHasShownAppointmentDialog] = useState(false);
+    const updateProgressAndColor = useCallback((step) => {
+        const newProgress = (step / TOTAL_STEPS) * 100;
+        setProgress(newProgress);
+        if (newProgress >= 100 && step === TOTAL_STEPS) {
+            setTitlePaperColor(primaryColor);
+        } else if (newProgress > 0) {
+            setTitlePaperColor(secondaryColor);
+        } else {
+            setTitlePaperColor("");
+        }
+    }, [TOTAL_STEPS, primaryColor, secondaryColor]);
+
+    // Updated formatTime to use dayjs
+    const formatTime = (timeString) => {
+        if (!timeString) return "";
+        // Assuming timeString is in "HH:mm" or "H:m" format
+        return dayjs(timeString, "HH:mm").format("h:mm A");
+    };
 
     useEffect(() => {
-        setLocations(Object.keys(responseData.location));
+        if (responseData) {
+            const locKeys = Object.keys(responseData.location);
+            setLocations(locKeys);
 
-        //  set setApp_list_dilog if there is any appointment
-        if (responseData.letest_appointments.length > 0) {
-            setApp_list_dilog(true);
-            const appointmentlist = responseData.letest_appointments.map((appointment) => (
-                <React.Fragment key={appointment.id}>
-                    <p>Date: {appointment.appointmentDate}</p>
-                    <p>Start Time: {appointment.startTime}</p>
-                </React.Fragment>
-            ));
+            if (locKeys.length === 1 && !selectedLocation) {
+                setSelectedLocation(locKeys[0]);
+            }
 
-            setAppointmentlist(appointmentlist);
+            if (responseData.letest_appointments && responseData.letest_appointments.length > 0) {
+                setApp_list_dilog(true);
+                setHasShownAppointmentDialog(true); // appointment shown
+                const appointmentListContent = responseData.letest_appointments.map((appointment) => (
+                  <Box key={appointment.id} mb={1.5}>
+                      <Typography variant="subtitle1" gutterBottom>Date: {appointment.appointmentDate}</Typography>
+                      <Typography variant="body2">Start Time: {formatTime(appointment.startTime)}</Typography>
+                  </Box>
+                ));
+                setAppointmentlist(appointmentListContent);
+            }
+            updateProgressAndColor(currentStep);
+        } else {
+            if (typeof redirectHomeM === 'function') {
+                redirectHomeM(clinicSlug);
+            } else {
+                window.location.href = `/clinic/${clinicSlug}/`;
+            }
         }
+    }, [responseData, selectedLocation, clinicSlug]); // formatTime removed as it's stable if dayjs is stable
 
-        // change to pre-select location
-        if (Object.keys(responseData.location).length == 1) {
-            setSelectedLocation(Object.keys(responseData.location)[0]);
-            // showClinicLocation(Object.keys(responseData.location)[0]);
-        }
-    }, [responseData]);
+    // Add a separate useEffect for progress updates
+    useEffect(() => {
+        updateProgressAndColor(currentStep);
+    }, [currentStep, updateProgressAndColor]);
 
     const redirectHome = () => {
         setOpenApp(false);
-        window.location.href = `/clinic/${clinicSlug}/`;
-    };
-
-    if (!responseData) {
-        // redirect to clinic page
-        redirectHome();
-    }
-
-    const paperColor = (progress1) => {
-        if (progress1 === 100) {
-            setTitlePaperColor("#4caf50");
+        if (typeof redirectHomeM === 'function') {
+            redirectHomeM(clinicSlug);
         } else {
-            setTitlePaperColor("#2196F3");
+            window.location.href = `/clinic/${clinicSlug}/`;
         }
     };
 
-    // Handle location change
     const handleLocationChange = (event) => {
         const locationName = event.target.value;
         setSelectedLocation(locationName);
-        // setProviders(Object.keys(responseData.location[locationName].provider_number));
-        setSelectedProvider('');
+        setSelectedProvider('Select Doctor');
+        setAppointmentModes([]);
+        setSelectedAppointmentMode("");
+        setAvailableDates([]);
         setSelectedDate('');
-        setSelectedTime(''); // Reset selectedTime when the date changes'
-        setProgress(14.32);
+        setDateObject(null);
+        setAvailableTimes([]);
+        setSelectedTime('');
         setIsAppointmentAvailable(false);
-        // showClinicLocation(locationName);
-        paperColor(14.32);
-        setSelectedAppointmentMode('');
+        setAgreementChecked(false);
+        setSame_date_app(true);
     };
 
-
-    // Handle provider change
     const handleProviderChange = (event) => {
         const providerNumber = event.target.value;
         setSelectedProvider(providerNumber);
-        const providerData = responseData.location[selectedLocation].provider_number[providerNumber];
-        setAppointmentModes(Object.keys(providerData.AppointmentMode));
-        setIsAppointmentAvailable(Object.keys(providerData.letestappointmentslots).length > 0);
-        setSelectedTime(''); // Reset selectedTime when the date changes'
+        if (providerNumber && providerNumber !== "Select Doctor" && responseData.location[selectedLocation]?.provider_number[providerNumber]) {
+            const providerData = responseData.location[selectedLocation].provider_number[providerNumber];
+            setAppointmentModes(Object.keys(providerData.AppointmentMode));
+            setIsAppointmentAvailable(Object.keys(providerData.letestappointmentslots || {}).length > 0);
+        } else {
+            setAppointmentModes([]);
+            setIsAppointmentAvailable(false);
+        }
+        setSelectedAppointmentMode("");
+        setAvailableDates([]);
         setSelectedDate('');
-        setProgress(28.6);
+        setDateObject(null);
+        setAvailableTimes([]);
+        setSelectedTime('');
         setAgreementChecked(false);
-        paperColor(28.6);
-        setSelectedAppointmentMode('');
+        setSame_date_app(true);
     };
 
-    // show clinic location
-    // const showClinicLocation = (name) => {
-    //   //  get address from clinicInfo using clinicLocation
-    //   for (let i = 0; i < clinicLocation.length; i++) {
-    //     if (clinicLocation[i].name === name) {
-    //       setClinicAddress(clinicLocation[i].address);
-    //       // setClinicPostalCode(clinicLocation[i].postal);
-    //     }
-    //   }
-    // };
+    const handleAppointmentModeChange = (event) => {
+        const selectedMode = event.target.value;
+        setSelectedAppointmentMode(selectedMode);
 
-    // Handle date change
-    const handleDateChange = (event) => {
-        const selectedDate = event.target.value;
-        setSelectedDate(selectedDate);
-        setSelectedTime(''); // Reset selectedTime when the date changes
-        setProgress(42.88);
-        paperColor(42.88);
+        setSelectedDate('');
+        setDateObject(null);
+        setSelectedTime('');
+        setAvailableTimes([]);
         setAgreementChecked(false);
         setSame_date_app(true);
 
-        // // Filter available times based on the selected appointment type
-        // const appointmentType = responseData.appointment_bookCode[selectedAppointmentMode];
-        // const availableTimes = responseData.location[selectedLocation]?.provider_number[selectedProvider]?.letestappointmentslots[selectedDate]
-        //     .filter(slot => slot.type === appointmentType);
-
-        // Filter available times based on the selected appointment type
-        const appointmentTypes = responseData.appointment_bookCode[selectedAppointmentMode];
-
-        const availableTimes = responseData.location[selectedLocation]?.provider_number[selectedProvider]?.letestappointmentslots[selectedDate]
-            .filter(slot => appointmentTypes.includes(slot.type));
-
-        setAvailableTimes(availableTimes);
-        // Check if there is any appointment in appointment list
-        if (responseData.letest_appointments) {
-            for (let i = 0; i < responseData.letest_appointments.length; i++) {
-                if (responseData.letest_appointments[i].appointmentDate === selectedDate) {
-                    setSame_date_app(false);
-                }
-            }
-        }
-    };
-
-    // Handle time change
-    const handleTimeChange = (event) => {
-        setSelectedTime(event.target.value);
-
-        setProgress(57.16);
-        setAgreementChecked(false);
-        paperColor(57.16);
-    };
-
-    // Handle appointment mode change
-    const handleAppointmentModeChange = (event) => {
-        setSelectedDate('');
-        setSelectedTime(''); // Reset selectedTime when the date changes'
-        setAvailableTimes([]);
-        console.log(`appointmentModes:${appointmentModes}`);
-        const selectedMode = event.target.value;
-        setSelectedAppointmentMode(selectedMode);
-        console.log(`${selectedMode} : ${JSON.stringify(Object(responseData.appointment_bookCode.Phone))}`);
-
         if (selectedMode === 'Phone') {
-            setPhoneNumber(responseData.patient_phone);
+            setPhoneNumber(responseData.patient_phone || "");
             setSelectedOption('phone');
         } else if (selectedMode === 'Video') {
             setSelectedOption('email');
@@ -249,500 +268,1114 @@ const WalkinAppointmentPage = () => {
             setSelectedOption('clinic');
         }
 
-        setProgress(71.44);
-        paperColor(71.44);
-        setAgreementChecked(false);
-
-        // // Filter available dates based on the selected appointment mode
-        // const appointmentType = responseData.appointment_bookCode[selectedMode];
-        // console.log(`appointmentType:${appointmentType}`);
-        // const availableDates = Object.keys(responseData.location[selectedLocation]?.provider_number[selectedProvider]?.letestappointmentslots || {})
-        //     .filter(date => responseData.location[selectedLocation]?.provider_number[selectedProvider]?.letestappointmentslots[date]
-        //         .some(slot => slot.type === appointmentType));
-
-        const appointmentTypes = responseData.appointment_bookCode[selectedMode];
-
-        const availableDates = Object.keys(
-            responseData.location[selectedLocation]?.provider_number[selectedProvider]?.letestappointmentslots || {}
-        ).filter((date) =>
-            responseData.location[selectedLocation]?.provider_number[selectedProvider]?.letestappointmentslots[date].some(
+        if (selectedLocation && selectedProvider && selectedProvider !== "Select Doctor" && selectedMode) {
+            const appointmentTypes = responseData.appointment_bookCode[selectedMode];
+            const dates = Object.keys(
+              responseData.location[selectedLocation]?.provider_number[selectedProvider]?.letestappointmentslots || {}
+            ).filter((date) =>
+              responseData.location[selectedLocation]?.provider_number[selectedProvider]?.letestappointmentslots[date].some(
                 (slot) => appointmentTypes.includes(slot.type)
-            )
-        );
-
-        setAvailableDates(availableDates);
-    };
-
-    const handleCloseApp = () => {
-        setOpenApp(false);
-        redirectHome();
-    };
-
-    // Handle booking appointment
-    const handleBookAppointment = async () => {
-        setSubmitbutton(false);
-        const time = selectedTime.split(',')[0];
-        const duration = selectedTime.split(',')[1];
-
-
-        //   call api to book appointment "api/book-appointment/" make post request
-
-        try {
-            const response = await fetch(`${API_BASE_PATH}/book-appointment/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    clinicSlug: clinicSlug,
-                    location: selectedLocation,
-                    provider: selectedProvider,
-                    date: selectedDate,
-                    time: time,
-                    duration: duration,
-                    appointmentMode: selectedAppointmentMode,
-                    reason: reason,
-                    xps: responseData.xps,
-                    phoneNumber: phoneNumber,
-                    email: email,
-
-                }),
-            });
-            const data = await response.json();
-            if (data.status === 'success') {
-                // Redirect to the confirmation page
-                // navigate(`/confirmation/${clinicSlug}`);
-                setSubmitbutton(true);
-                setAppointmentBookContent(data.message);
-                setButtonRedirect('Home');
-                setOpenApp(true);
-            } else {
-                setSubmitbutton(true);
-                setAppointmentBookContent(data.message);
-                setButtonRedirect('Try Again');
-                setOpenApp(true);
-            }
-        } catch (error) {
-            setSubmitbutton(true);
-            setAppointmentBookContent("Something went wrong.");
-            setButtonRedirect('Try Again');
-            setOpenApp(true);
+              )
+            );
+            setAvailableDates(dates);
+        } else {
+            setAvailableDates([]);
         }
     };
-    // Handle reason change
-    const handleReasonChange = (event) => {
-        setReason(event.target.value);
-        setProgress(85.72);
-        paperColor(85.72);
+
+    // Handle date change from DatePicker (uses dayjs)
+    const handleDatePickerChange = (newDate) => { // newDate is a dayjs object or null
+        setDateObject(newDate); // Always update dateObject to reflect picker's state
+        if (newDate && newDate.isValid()) {
+            const formattedDate = newDate.format('YYYY-MM-DD'); // dayjs format
+            if (availableDates.includes(formattedDate)) {
+                setSelectedDate(formattedDate);
+                setSelectedTime('');
+                setAgreementChecked(false);
+                let conflict = false;
+                if (!app_list_dilog) {
+                    setApp_list_dilog(true);
+                }
+                if (responseData.letest_appointments) {
+                    for (let i = 0; i < responseData.letest_appointments.length; i++) {
+                        if (responseData.letest_appointments[i].appointmentDate === formattedDate) {
+                            conflict = true;
+                            break;
+                        }
+                    }
+                }
+                setSame_date_app(!conflict);
+                if (selectedLocation && selectedProvider && selectedProvider !== "Select Doctor" && appointmentMode) {
+                    const appointmentTypes = responseData.appointment_bookCode[appointmentMode];
+                    const times = responseData.location[selectedLocation]?.provider_number[selectedProvider]?.letestappointmentslots[formattedDate]
+                      .filter(slot => appointmentTypes.includes(slot.type)) || [];
+                    setAvailableTimes(times);
+                } else {
+                    setAvailableTimes([]);
+                }
+            } else {
+                // Date is valid dayjs object but not in the availableDates list
+                setSelectedDate('');
+                setAvailableTimes([]);
+                setSelectedTime('');
+                setAgreementChecked(false);
+                setSame_date_app(true); // No selected date, so no conflict
+            }
+        } else {
+            // newDate is null (cleared) or an invalid dayjs object
+            setSelectedDate('');
+            setAvailableTimes([]);
+            setSelectedTime('');
+            setAgreementChecked(false);
+            setSame_date_app(true); // No selected date, so no conflict
+        }
     };
 
-    const formatTime = (timeString) => {
-        const formattedTime = new Date(`2000-01-01T${timeString}`);
-        return formattedTime.toLocaleString("en-US", {
-            hour: "numeric",
-            minute: "numeric",
-            hour12: true,
-        });
+    // For dropdown date selection (fallback, uses dayjs for parsing to dateObject)
+    const handleDateChange = (event) => {
+        const dateValue = event.target.value; // dateValue is 'YYYY-MM-DD' string
+        setSelectedDate(dateValue);
+
+        const parsedDate = dayjs(dateValue, 'YYYY-MM-DD'); // dayjs parse
+        if (parsedDate.isValid()) {
+            setDateObject(parsedDate); // Store dayjs object
+        } else {
+            // console.error("Error parsing date string with dayjs:", dateValue);
+            setDateObject(null);
+        }
+
+        setSelectedTime('');
+        setAgreementChecked(false);
+
+        let conflict = false;
+        if (responseData.letest_appointments && dateValue) {
+            for (let i = 0; i < responseData.letest_appointments.length; i++) {
+                if (responseData.letest_appointments[i].appointmentDate === dateValue) {
+                    conflict = true;
+                    break;
+                }
+            }
+        }
+        setSame_date_app(!conflict);
+
+
+        if (selectedLocation && selectedProvider && selectedProvider !== "Select Doctor" && appointmentMode && dateValue) {
+            const appointmentTypes = responseData.appointment_bookCode[appointmentMode];
+            const times = responseData.location[selectedLocation]?.provider_number[selectedProvider]?.letestappointmentslots[dateValue]
+              .filter(slot => appointmentTypes.includes(slot.type)) || [];
+            setAvailableTimes(times);
+        } else {
+            setAvailableTimes([]);
+        }
+    };
+
+    const handleTimeChange = (event) => {
+        setSelectedTime(event.target.value);
+        setAgreementChecked(false);
+    };
+
+    const handleReasonChange = (event) => {
+        setReason(event.target.value);
     };
 
     const handleAgreementChange = () => {
         setAgreementChecked(!agreementChecked);
-
-        if (agreementChecked === false) {
-            setProgress(100);
-            paperColor(100);
-        } else if (agreementChecked === true) {
-            setProgress(85.72);
-            paperColor(85.72);
-        }
     };
 
-    const handleAgreementClick = () => {
-        const fetchClinicPolicy = async () => {
-            if (!termsInfo) {
-                try {
-                    const response = await fetch(`${API_BASE_PATH}/terms/${clinicSlug}/Appointment Booking/`);
-
-                    const data = await response.json();
+    const handleAgreementClick = async () => {
+        if (!termsInfo) {
+            try {
+                const response = await fetch(`${API_BASE_PATH}/terms/${clinicSlug}/Appointment Booking/`);
+                const data = await response.json();
+                if (data.message && data.message.text) {
                     settermsInfo(data.message.text);
-                } catch (error) {
-                    console.error("Error fetching clinic information:", error);
+                } else {
+                    settermsInfo("<p>Terms and conditions not available at the moment.</p>");
                 }
+            } catch (error) {
+                // console.error("Error fetching clinic terms:", error);
+                settermsInfo("<p>Could not load terms and conditions. Please try again later.</p>");
             }
-        };
-        fetchClinicPolicy();
+        }
         setOpenAgreementPopup(true);
     };
 
-    const handleCloseAgreementPopup = () => {
-        setOpenAgreementPopup(false);
-    };
+    const handleCloseAgreementPopup = () => setOpenAgreementPopup(false);
+    const handle_app_list = () => setApp_list_dilog(false);
 
-    const handle_app_list = () => {
-        setApp_list_dilog(false);
-    };
     const handleEmailChange = (value) => {
-        setEmail(value.toLowerCase());
-        // Validate email format
-        const isValid = isValidEmail(value.toLowerCase());
-        setIsEmailValid(isValid);
+        const lowercasedEmail = value.toLowerCase();
+        setEmail(lowercasedEmail);
+        setIsEmailValid(isValidEmail(lowercasedEmail));
     };
 
-    // NotificationDialog
-    // const handleSuccess = (message) => {
-    //   setModalContent(message);
-    //   setIsError(false);
-    //   setOpenModal(true);
-    // };
-    const handleFailure = (message) => {
-        setModalContent(message);
-        setIsError(true);
-        setOpenModal(true);
+    const handleCloseApp = () => {
+        setOpenApp(false);
+        if (buttonRedirect === 'Home' || buttonRedirect === 'Try Again') {
+            redirectHome();
+        }
     };
 
-    if (!responseData) {
-        // redirect to clinic page
-        redirectHome();
-    } else {
+    const handleBookAppointment = async () => {
+        setSubmitbutton(false);
+        const timeParts = selectedTime.split(',');
+        const time = timeParts[0];
+        const duration = timeParts[1];
+
+        try {
+            const response = await fetch(`${API_BASE_PATH}/book-appointment/`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    clinicSlug, selectedLocation, provider: selectedProvider,
+                    date: selectedDate, time, duration, appointmentMode,
+                    reason, xps: responseData.xps, phoneNumber: phoneNumber, email: email, appointmentNumber: slotIndex
+                }),
+            });
+            const data = await response.json();
+            setAppointmentBookContent(data.message || "Received an empty response from the server.");
+            if (data.status === 'success') {
+                setButtonRedirect('Home');
+            } else {
+                setButtonRedirect('Try Again');
+            }
+        } catch (error) {
+            // console.error("Booking error:", error);
+            setAppointmentBookContent("An error occurred while booking. Please try again.");
+            setButtonRedirect('Try Again');
+        } finally {
+            setSubmitbutton(true);
+            setOpenApp(true);
+        }
+    };
+
+    const handleNext = () => {
+        if (currentStep < TOTAL_STEPS) {
+            const nextStep = currentStep + 1;
+            setCurrentStep(nextStep);
+            updateProgressAndColor(nextStep);
+        }
+    };
+
+    const handlePrevious = () => {
+        if (currentStep > 1) {
+            const prevStep = currentStep - 1;
+            setCurrentStep(prevStep);
+            updateProgressAndColor(prevStep);
+        }
+    };
+
+    const isNextDisabled = () => {
+        switch (currentStep) {
+            case 1: return !selectedLocation;
+            case 2: return !selectedProvider || selectedProvider === "Select Doctor";
+            case 3: return !appointmentMode;
+            case 4: return !selectedDate; // selectedDate is string 'YYYY-MM-DD'
+            case 5: return !selectedTime;
+            case 6: return !reason.trim() || (responseData?.email_valid === "no" && email.trim() && !isEmailValid);
+            default: return false;
+        }
+    };
+
+    // Function to check if a date is available (date param is a dayjs object)
+    const isDateAvailable = (date) => {
+        if (!date || !date.isValid()) return false; // dayjs isValid
+        const formattedDate = date.format('YYYY-MM-DD'); // dayjs format
+        return availableDates.includes(formattedDate);
+    };
+
+    const renderTimeSlots = () => {
+        if (!availableTimes.length) return null;
+
         return (
-            <Layout clinicInfo={clinicInfo}>
-                <Paper
-                    style={{
-                        position: "sticky",
-                        top: "5rem",
-                        zIndex: 1000,
-                        padding: "1rem",
-                        marginBottom: "0.3rem",
-                        boxShadow: `0 0 10px 2px ${titlePaperColor}`,
-                    }}
-                >
-                    <MKTypography
-                        variant="h6"
-                        gutterBottom
-                        style={{fontSize: "0.81rem", fontWeight: "bold"}}
+          <Box
+            sx={{
+                display: 'flex', // Arrange items in a row
+                flexDirection: 'row',
+                overflowX: 'auto', // Enable horizontal scrolling
+                whiteSpace: 'nowrap', // Prevent items from wrapping to the next line (optional, flex usually handles this)
+                mt: 1,
+                pb: 1.5, // Add some padding at the bottom to ensure scrollbar doesn't overlap content
+                '&::-webkit-scrollbar': { // Optional: Style the scrollbar for a cleaner look
+                    height: '8px',
+                },
+                '&::-webkit-scrollbar-thumb': { // Optional: Style the scrollbar thumb
+                    background: theme.palette.mode === 'light' ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.2)',
+                    borderRadius: '4px',
+                },
+                '&::-webkit-scrollbar-track': { // Optional: Style the scrollbar track
+                    background: 'transparent',
+                }
+            }}
+          >
+              {availableTimes.map((timeSlot, index) => {
+                  const isSelected = selectedTime === `${timeSlot.time},${timeSlot.duration}`;
+                  return (
+                    <Card
+                      key={`${timeSlot.date}_${index}_${timeSlot.time}`} // Key moved to the direct child of map
+                      variant={isSelected ? "elevation" : "outlined"}
+                      elevation={isSelected ? 4 : 0}
+                      onClick={() => {setSelectedTime(`${timeSlot.time},${timeSlot.duration}`);setSlotIndex(timeSlot.appointmentNumber);}}
+                      sx={{
+                          p: 1.5,
+                          cursor: 'pointer',
+                          borderColor: isSelected ? primaryColor : 'divider',
+                          borderWidth: isSelected ? 2 : 1,
+                          bgcolor: isSelected ? `${primaryColor}10` : 'background.paper',
+                          transition: 'all 0.2s ease',
+                          '&:hover': {
+                              borderColor: primaryColor,
+                              boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                          },
+                          display: 'inline-flex', // Or 'flex' if you prefer, for internal alignment
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          minWidth: { xs: '110px', sm: '130px' }, // Ensure cards have a minimum width
+                          height: 'auto', // Let content define height, or set a fixed one if preferred
+                          mr: index < availableTimes.length - 1 ? 1.5 : 0, // Margin to the right for spacing, except for the last item
+                          flexShrink: 0, // Prevent cards from shrinking
+                      }}
                     >
-                        Book Walk-in Appointment
-                        {/* at {clinicInfo?.name} */}
-                    </MKTypography>
-
-                    {/*<Grid item xs={12} md={12}>*/}
-                    {/*    <MKProgress value={progress}/>*/}
-                    {/*</Grid>*/}
-                </Paper>
-
-                <Paper sx={{p: 2}}>
-                    <Grid container spacing={2}>
-                        {/* <Grid item xs={12}>
-                                <div>
-                                <label>Location:</label>
-                                <Select value={selectedLocation} onChange={handleLocationChange}>
-                                    {locations.map((location) => (
-                                    <MenuItem key={location} value={location}>
-                                        {location}
-                                    </MenuItem>
-                                    ))}
-                                </Select>
-                                </div>
-                            </Grid> */}
-                        <GoHome clinicSlug={clinicSlug}/>
-
-                        {/*<Grid item xs={12} md={12}>*/}
-                        {/*    <Typography style={{color: "red", fontSize: "1rem", padding: "0.8rem"}}>*/}
-                        {/*        <MKButton*/}
-                        {/*            style={{padding: "0.8rem"}}*/}
-                        {/*            onClick={() => redirectHomeM(clinicSlug)}*/}
-                        {/*            color="info"*/}
-                        {/*            variant={"contained"}*/}
-                        {/*        >*/}
-                        {/*            Back*/}
-                        {/*        </MKButton>*/}
-                        {/*    </Typography>*/}
-                        {/*</Grid>*/}
-
-                        <Grid item xs={12} md={12} style={{border: "1px"}}>
-                            <InputLabel>Select Location</InputLabel>
-                            <FormControl>
-                                <RadioGroup value={selectedLocation} onChange={handleLocationChange}>
-                                    {locations.map((location, index) => (
-                                        <FormControlLabel
-                                            key={location}
-                                            value={location}
-                                            control={<Radio/>}
-                                            label={clinicLocation[index].address}
-                                        />
-                                    ))}
-                                </RadioGroup>
-                            </FormControl>
-                        </Grid>
-
-                        {/*{clinicAddress && (*/}
-                        {/*  <Grid item xs={12} md={6}>*/}
-                        {/*    <div style={{ padding: "10px" }}>*/}
-                        {/*      <Typography style={stylefade}>Clinic Address:</Typography>*/}
-                        {/*      <Typography style={stylefade}>{clinicAddress}</Typography>*/}
-                        {/*      <Typography style={stylefade}>{clinicpostalCode}</Typography>*/}
-                        {/*    </div>*/}
-                        {/*  </Grid>*/}
-                        {/*)}*/}
-
-                        <Grid item xs={12} md={12}>
-                            <MKBox width="100%" component="section">
-                                <InputLabel id="provider-label">Select Doctor</InputLabel>
-                                <Select
-                                    labelId="provider-label"
-                                    id="provider"
-                                    label="Select Doctor"
-                                    value={selectedProvider}
-                                    onChange={handleProviderChange}
-                                    style={{minWidth: "15rem", minHeight: "2rem", color: 'black'}}
-                                >
-
-                                    {responseData.location[selectedLocation]?.provider_number && Object.keys(responseData.location[selectedLocation]?.provider_number).map((providerNumber, index) => (
-                                        <MenuItem key={providerNumber} value={providerNumber}>
-                                            {responseData.location[selectedLocation].provider_number[providerNumber]?.name}
-                                        </MenuItem>
-
-
-                                    ))}
-                                </Select>
-                            </MKBox>
-                        </Grid>
-                        <Grid item xs={12}>
-                            {appointmentModes.length > 0 && (<>
-                                    <InputLabel>Appointment Mode: </InputLabel>
-                                    <MKBox width="100%" component="section">
-                                        <RadioGroup
-                                            row
-                                            value={selectedAppointmentMode}
-                                            onChange={handleAppointmentModeChange}
+                        <Typography variant="body1" fontWeight={isSelected ? 600 : 400} align="center">
+                            {formatTime(timeSlot.time)}
+                        </Typography>
+                        <Chip
+                          size="small"
+                          label={`${timeSlot.duration} min`}
+                          sx={{
+                              mt: 0.5,
+                              bgcolor: isSelected ? primaryColor : 'rgba(0,0,0,0.05)',
+                              color: isSelected ? (theme.palette.getContrastText(primaryColor)) : theme.palette.text.secondary,
+                              fontSize: '0.7rem',
+                              height: '20px'
+                          }}
+                        />
+                    </Card>
+                  );
+              })}
+          </Box>
+        );
+    };
+    const renderStepContent = () => {
+        switch (currentStep) {
+            case 1: // Select Location
+                return (
+                  <Grid item xs={12}>
+                      <Card variant="outlined" sx={{ p: {xs: 1.5, sm: 2}, borderColor: 'divider', borderRadius: 2 }}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                              <LocationOnIcon sx={{ color: primaryColor, mr: 1 }} />
+                              <Typography variant="h6" sx={{ color: primaryColor, fontWeight: 500 }}>
+                                  Select Location
+                              </Typography>
+                          </Box>
+                          <FormControl component="fieldset" fullWidth>
+                              <RadioGroup value={selectedLocation} onChange={handleLocationChange}>
+                                  {locations.map((locationName) => {
+                                      const locDetail = clinicLocation?.find(loc => loc.name === locationName);
+                                      return (
+                                        <Card
+                                          key={locationName}
+                                          variant="outlined"
+                                          sx={{
+                                              mb: 1,
+                                              borderColor: selectedLocation === locationName ? primaryColor : 'divider',
+                                              borderWidth: selectedLocation === locationName ? 2 : 1,
+                                              bgcolor: selectedLocation === locationName ? `${primaryColor}10` : 'background.paper',
+                                              transition: 'all 0.2s ease',
+                                              '&:hover': {
+                                                  borderColor: primaryColor,
+                                                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                                              }
+                                          }}
                                         >
-                                            {appointmentModes.map((mode, index) => (
-                                                <FormControlLabel
-                                                    key={mode}
-                                                    value={mode}
-                                                    control={
-                                                        <Radio
-                                                            disabled={
-                                                                responseData.location[selectedLocation]?.provider_number[
-                                                                    selectedProvider
-                                                                    ]?.AppointmentMode[mode] === 0
-                                                            }
-                                                        />
-                                                    }
-                                                    label={mode}
-                                                />
-                                            ))}
-                                        </RadioGroup>
-                                    </MKBox>
-                                </>
-                            )}
-                        </Grid>
-                        {/* {isAppointmentAvailable && ( */}
-                        <>
-                            <Grid item xs={12} md={6}>
-                                <MKBox width="100%" component="section">
-                                    <InputLabel id="date-label">Select date</InputLabel>
-                                    <Select
-                                        labelId="date-label"
-                                        id="date"
-                                        label="Select date"
-                                        value={selectedDate}
-                                        onChange={handleDateChange}
-                                        style={{minWidth: "15rem", minHeight: "2rem"}}
-                                        disabled={!isAppointmentAvailable}
-                                    >
-                                        {/* {Object.keys(responseData.location[selectedLocation]?.provider_number[selectedProvider]?.letestappointmentslots).map((date, index) => (
-                                            <MenuItem key={`${date}_${index}`} value={date}>
-                                                {date}
-                                            </MenuItem>
-                                        ))} */}
+                                            <FormControlLabel
+                                              value={locationName}
+                                              control={<Radio sx={{ color: primaryColor, '&.Mui-checked': { color: primaryColor } }} />}
+                                              label={
+                                                  <Box sx={{ py: 0.5 }}>
+                                                      <Typography variant="h6" fontWeight={500}>{locDetail?.name || locationName}</Typography>
+                                                      {locDetail?.address && (
+                                                        <Typography variant="caption" color="text.secondary">{locDetail.address}</Typography>
+                                                      )}
+                                                  </Box>
+                                              }
+                                              sx={{
+                                                  m: 0,
+                                                  width: '100%',
+                                                  alignItems: 'flex-start',
+                                                  '.MuiFormControlLabel-label': { width: '100%' }
+                                              }}
+                                            />
+                                        </Card>
+                                      );
+                                  })}
+                              </RadioGroup>
+                          </FormControl>
+                      </Card>
+                  </Grid>
+                );
+            case 2: // Select Doctor
+                return (
+                  <Grid item xs={12}>
+                      <Card variant="outlined" sx={{ p: {xs: 1.5, sm: 2}, borderColor: 'divider', borderRadius: 2 }}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                              <PersonIcon sx={{ color: primaryColor, mr: 1 }} />
+                              <Typography variant="h6" sx={{ color: primaryColor, fontWeight: 500 }}>
+                                  Select Doctor
+                              </Typography>
+                          </Box>
 
-                                        {availableDates.map((date, index) => (
-                                            <MenuItem key={`${date}_${index}`} value={date}>
-                                                {date}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                </MKBox>
+                          {selectedLocation && responseData.location[selectedLocation]?.provider_number ? (
+                            <Grid container spacing={2}>
+                                {Object.keys(responseData.location[selectedLocation].provider_number).map((providerNumber) => {
+                                    const isSelected = selectedProvider === providerNumber;
+                                    const providerName = responseData.location[selectedLocation].provider_number[providerNumber]?.name;
+
+                                    return (
+                                      <Grid item xs={12} sm={6} md={4} key={providerNumber}>
+                                          <Card
+                                            variant={isSelected ? "elevation" : "outlined"}
+                                            elevation={isSelected ? 4 : 0}
+                                            onClick={() => handleProviderChange({ target: { value: providerNumber }})} // Ensure event structure for handler
+                                            sx={{
+                                                p: 2,
+                                                cursor: 'pointer',
+                                                borderColor: isSelected ? primaryColor : 'divider',
+                                                borderWidth: isSelected ? 2 : 1,
+                                                bgcolor: isSelected ? `${primaryColor}10` : 'background.paper',
+                                                transition: 'all 0.2s ease',
+                                                '&:hover': {
+                                                    borderColor: primaryColor,
+                                                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                                                },
+                                                height: '100%',
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                justifyContent: 'center'
+                                            }}
+                                          >
+                                              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                                  <PersonIcon sx={{ color: isSelected ? primaryColor : 'text.secondary', mr: 1 }} />
+                                                  <Typography
+                                                    variant="body1"
+                                                    fontWeight={isSelected ? 600 : 400}
+                                                    sx={{ color: isSelected ? primaryColor : 'text.primary' }}
+                                                  >
+                                                      {providerName}
+                                                  </Typography>
+                                              </Box>
+                                          </Card>
+                                      </Grid>
+                                    );
+                                })}
                             </Grid>
-                            <Grid item xs={12} md={12}>
-                                <MKBox width="100%" component="section">
-                                    <InputLabel id="time-label">Select time</InputLabel>
-                                    <Select
-                                        labelId="time-label"
-                                        id="time"
-                                        label="Select time"
-                                        value={selectedTime}
-                                        onChange={handleTimeChange}
-                                        style={{minWidth: "15rem", minHeight: "2rem"}}
-                                        disabled={!isAppointmentAvailable}
-                                    >
-                                        {availableTimes.map((time, index) => (
-                                            <MenuItem key={`${time.date}_${index}`}
-                                                      value={time.time + ',' + time.duration}>
-                                                {formatTime(time.time)}, {time.duration} Minutes
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                </MKBox>
+                          ) : (
+                            <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+                                <Typography variant="body2" color="textSecondary">
+                                    {selectedLocation ? "No doctors available at this location." : "Please select a location first."}
+                                </Typography>
+                            </Box>
+                          )}
+                      </Card>
+                  </Grid>
+                );
+            case 3: // Select Appointment Mode
+                return (
+                  <Grid item xs={12}>
+                      <Card variant="outlined" sx={{ p: {xs: 1.5, sm: 1}, borderColor: 'divider', borderRadius: 2 }}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                              <Box sx={{ mr: 1, color: primaryColor }}>
+                                  {appointmentMode === 'Clinic' && <LocalHospitalIcon />}
+                                  {appointmentMode === 'Phone' && <PhoneIcon />}
+                                  {appointmentMode === 'Video' && <VideocamIcon />}
+                                  {!appointmentMode && <VideocamIcon />} {/* Default icon */}
+                              </Box>
+                              <Typography variant="h6" sx={{ color: primaryColor, fontWeight: 500 }}>
+                                  Appointment Mode
+                              </Typography>
+                          </Box>
+
+                          {appointmentModes.length > 0 ? (
+                            <Grid container spacing={1}>
+                                {appointmentModes.map((mode) => {
+                                    const isDisabled = responseData.location[selectedLocation]?.provider_number[selectedProvider]?.AppointmentMode[mode] === 0;
+                                    const isSelected = appointmentMode === mode;
+
+                                    return (
+                                      <Grid item xs={4} sm={4} key={mode}>
+                                          <Card
+                                            variant={isSelected ? "elevation" : "outlined"}
+                                            elevation={isSelected ? 4 : 0}
+                                            onClick={() => !isDisabled && handleAppointmentModeChange({ target: { value: mode }})}
+                                            sx={{
+                                                p: { xs: 1, sm: 1.5 }, // Reduced padding for xs, slightly reduced for sm
+                                                cursor: isDisabled ? 'not-allowed' : 'pointer',
+                                                borderColor: isSelected ? primaryColor : 'divider',
+                                                borderWidth: isSelected ? 2 : 1,
+                                                bgcolor: isDisabled
+                                                  ? 'action.disabledBackground'
+                                                  : isSelected
+                                                    ? `${primaryColor}10` // Consider alpha(primaryColor, 0.1) if you have alpha imported
+                                                    : 'background.paper',
+                                                transition: 'all 0.2s ease',
+                                                '&:hover': {
+                                                    borderColor: isDisabled ? 'divider' : primaryColor,
+                                                    boxShadow: isDisabled ? 'none' : '0 2px 8px rgba(0,0,0,0.1)'
+                                                },
+                                                opacity: isDisabled ? 0.6 : 1,
+                                                height: '100%',
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                alignItems: 'center',
+                                                justifyContent: 'center'
+                                            }}
+                                          >
+                                              <Box sx={{
+                                                  display: 'flex',
+                                                  flexDirection: 'column',
+                                                  alignItems: 'center',
+                                                  textAlign: 'center', // Ensure text inside box is centered if it wraps
+                                                  color: isDisabled ? 'text.disabled' : isSelected ? primaryColor : 'text.primary'
+                                              }}>
+                                                  {mode === 'Clinic' && <LocalHospitalIcon sx={{ fontSize: { xs: 26, sm: 32 }, mb: { xs: 0.5, sm: 1 } }} />}
+                                                  {mode === 'Phone' && <PhoneIcon sx={{ fontSize: { xs: 26, sm: 32 }, mb: { xs: 0.5, sm: 1 } }} />}
+                                                  {mode === 'Video' && <VideocamIcon sx={{ fontSize: { xs: 26, sm: 32 }, mb: { xs: 0.5, sm: 1 } }} />}
+                                                  <Typography
+                                                    // Use isMobile to change variant
+                                                    variant={isMobile ? "body2" : "body1"}
+                                                    fontWeight={isSelected ? 600 : 400}
+                                                    align="center"
+                                                  >
+                                                      {mode}
+                                                  </Typography>
+                                                  {isDisabled && (
+                                                    <Typography variant="caption" color="text.disabled" align="center" sx={{ mt: 0.5 }}>
+                                                        Not available
+                                                    </Typography>
+                                                  )}
+                                              </Box>
+                                          </Card>
+                                      </Grid>                                    );
+                                })}
                             </Grid>
+                          ) : (
+                            <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+                                <Typography variant="body2" color="textSecondary">
+                                    {selectedProvider && selectedProvider !== "Select Doctor"
+                                      ? "No appointment modes available for the selected doctor."
+                                      : "Please select a doctor to see appointment modes."}
+                                </Typography>
+                            </Box>
+                          )}
+                      </Card>
+                  </Grid>
+                );
+            case 4: // Select Date
+                return (
+                  <Grid item xs={12}>
+                      <Card variant="outlined" sx={{ p: {xs: 1.5, sm: 2}, borderColor: 'divider', borderRadius: 2 }}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                              <EventIcon sx={{ color: primaryColor, mr: 1 }} />
+                              <Typography variant="h6" sx={{ color: primaryColor, fontWeight: 500 }}>
+                                  Select Date
+                              </Typography>
+                          </Box>
 
-                            {/* {if responceData.email_valid == noask patient if he want to update email } */}
-                            {responseData.email_valid === "no" && (
-                                <Grid item xs={12}>
-                                    <Typography style={{color: "red", padding: "1rem"}}>
-                                        Kindly update your email for receiving appointment updates and clinic
-                                        communications. Rest assured, we do not share your information with any third
-                                        parties.
-                                    </Typography>
-                                    <TextField
-                                        id="outlined-basic"
-                                        label="Email Address ( optional )"
-                                        variant="outlined"
-                                        onChange={(e) => handleEmailChange(e.target.value)}
-                                        value={email}
-                                        fullWidth
-                                        error={!isEmailValid}
-                                        type="email"
-                                        helperText={!isEmailValid ? "Invalid email address" : ""}
-                                    />
-                                </Grid>
-                            )}
+                          {availableDates.length > 0 ? (
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker
+                                  label={"Select Date"}
+                                  value={dateObject} // Expects dayjs object or null
+                                  onChange={handleDatePickerChange}
+                                  shouldDisableDate={(dateParam) => !isDateAvailable(dateParam)} // dateParam is dayjs object
+                                  renderInput={(params) => <TextField {...params} fullWidth />}
+                                  disablePast
+                                  sx={{ // Styles for the TextField input
+                                      width: '100%',
+                                      '& .MuiOutlinedInput-notchedOutline': { borderColor: 'divider' },
+                                      '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: primaryColor },
+                                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: primaryColor }
+                                  }}
+                                  componentsProps={{
+                                      day: {
+                                          sx: (theme) => ({
+                                              fontWeight: '500 !important',  // Force the weight
+                                              // General hover for enabled, non-selected, non-today days
+                                              '&:not(.Mui-selected):not(.MuiPickersDay-today):not(.Mui-disabled):hover': {
+                                                  backgroundColor: alpha(primaryColor, 0.12), // Subtle hover
+                                              },
+                                              // Styles for DISABLED days
+                                              '&.Mui-disabled': {
+                                                  opacity: 0.35, // Significantly more faded
+                                                  color: theme.palette.text.disabled,
+                                                  backgroundColor: 'transparent', // No background
+                                                  pointerEvents: 'none', // No interaction cues
+                                                  '&:hover': {
+                                                      backgroundColor: 'transparent', // No hover effect
+                                                  },
+                                              },
+                                              // Styles for SELECTED days
+                                              '&.Mui-selected': {
+                                                  fontWeight:500,
+                                                  backgroundColor: primaryColor,
+                                                  color: theme.palette.getContrastText(primaryColor),
+                                                  '&:hover, &.Mui-focusVisible': { // Hover and keyboard focus
+                                                      backgroundColor: alpha(primaryColor, 0.85), // Slightly adjust on hover/focus
+                                                  },
+                                              },
+                                              // Styles for TODAY's date (if not selected and not disabled)
+                                              '&.MuiPickersDay-today:not(.Mui-selected):not(.Mui-disabled)': {
+                                                  border: `1px solid ${alpha(primaryColor, 0.6)}`, // Border for today
+                                                  color: primaryColor, // Make today's date number use primaryColor
+                                                  '&:hover': {
+                                                      backgroundColor: alpha(primaryColor, 0.12), // Consistent hover
+                                                  }
+                                              },
+                                          }),
+                                      },
+                                      // Optional: Style the calendar header (day names like S, M, T, W, T, F, S)
+                                      dayOfWeek: {
+                                          sx: {
+                                              color: theme.palette.text.primary,
+                                              fontWeight: 'medium',
+                                          }
+                                      },
+                                      // Optional: Style the arrow buttons for month navigation
+                                      leftArrowIcon: { sx: { color: primaryColor, fontWeight:500 } },
+                                      rightArrowIcon: { sx: { color: primaryColor, fontWeight:500 } },
+                                  }}
+                                />
+                            </LocalizationProvider>
+                          ) : (
+                            <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+                                <Typography variant="body2" color="textSecondary">
+                                    {appointmentMode
+                                      ? "No dates available for the selected criteria."
+                                      : "Please select an appointment mode first."}
+                                </Typography>
+                            </Box>
+                          )}
 
-                            <Grid item xs={12}>
-                                {selectedOption === "phone" && (
-                                    <TextField
-                                        type="tel"
-                                        label="Phone Number"
-                                        value={formatPhone(phoneNumber)}
-                                        onChange={(e) => setPhoneNumber(e.target.value)}
-                                    />
+                          {/*{availableDates.length > 0 && (*/}
+                          {/*  <Box sx={{ mt: 2, display: { xs: 'block', sm: 'none' } }}> /!* Fallback for mobile *!/*/}
+                          {/*      <Typography variant="subtitle2" sx={{ mb: 1 }}>*/}
+                          {/*          Or select from list:*/}
+                          {/*      </Typography>*/}
+                          {/*      <Select*/}
+                          {/*        value={selectedDate} // selectedDate is 'YYYY-MM-DD' string*/}
+                          {/*        onChange={handleDateChange}*/}
+                          {/*        fullWidth*/}
+                          {/*        displayEmpty*/}
+                          {/*        sx={{*/}
+                          {/*            '& .MuiOutlinedInput-notchedOutline': { borderColor: 'divider' },*/}
+                          {/*            '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: primaryColor },*/}
+                          {/*            '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: primaryColor }*/}
+                          {/*        }}*/}
+                          {/*      >*/}
+                          {/*          <MenuItem value="" disabled><em>Select Date</em></MenuItem>*/}
+                          {/*          {availableDates.map((dateStr, index) => (*/}
+                          {/*            <MenuItem key={`${dateStr}_${index}`} value={dateStr}>{dateStr}</MenuItem>*/}
+                          {/*          ))}*/}
+                          {/*      </Select>*/}
+                          {/*  </Box>*/}
+                          {/*)}*/}
+                      </Card>
+                  </Grid>
+                );
+            case 5: // Select Time
+                return (
+                  <Grid item xs={12}>
+                      <Card variant="outlined" sx={{ p: {xs: 1.5, sm: 2}, borderColor: 'divider', borderRadius: 2 }}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                              <AccessTimeIcon sx={{ color: primaryColor, mr: 1 }} />
+                              <Typography variant="h6" sx={{ color: primaryColor, fontWeight: 500 }}>
+                                  Select Time
+                              </Typography>
+                          </Box>
+
+                          {selectedDate ? (
+                            <>
+                                {availableTimes.length > 0 ? (
+                                  renderTimeSlots()
+                                ) : (
+                                  <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+                                      <Typography variant="body2" color="textSecondary">
+                                          No times available for the selected date.
+                                      </Typography>
+                                  </Box>
                                 )}
+                            </>
+                          ) : (
+                            <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+                                <Typography variant="body2" color="textSecondary">
+                                    Please select a date first.
+                                </Typography>
+                            </Box>
+                          )}
+                      </Card>
+                  </Grid>
+                );
+            case 6: // Contact Info & Reason
+                return (
+                  <Grid item xs={12}>
+                      <Card variant="outlined" sx={{ p: {xs: 1.5, sm: 2}, borderColor: 'divider', borderRadius: 2 }}>
+                          {/*<Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>*/}
+                          {/*    <NoteIcon sx={{ color: primaryColor, mr: 1 }} />*/}
+                          {/*    <Typography variant="h6" sx={{ color: primaryColor, fontWeight: 500 }}>*/}
+                          {/*        Appointment Details*/}
+                          {/*    </Typography>*/}
+                          {/*</Box>*/}
 
-                                {selectedOption === "email" && (
-                                    <Typography style={{cursor: "pointer"}}>
-                                        If you have provided valid email, You will receive a email with link of the
-                                        video meeting.
-                                    </Typography>
-                                )}
-                            </Grid>
-
-                            <Grid item xs={12}>
+                          {responseData?.email_valid === "no" && (
+                            <Box sx={{ mb: 3 }}>
+                                <Typography variant="subtitle2" color="error" sx={{ mb: 1, display: 'flex', alignItems: 'center' }}>
+                                    <EmailIcon sx={{ mr: 1, fontSize: 18 }} /> Update Email Address
+                                </Typography>
                                 <TextField
-                                    label="Reason for Appointment"
-                                    value={reason}
-                                    onChange={handleReasonChange}
-                                    fullWidth
-                                    multiline
-                                    required
+                                  label="Email Address"
+                                  variant="outlined"
+                                  onChange={(e) => handleEmailChange(e.target.value)}
+                                  value={email}
+                                  fullWidth
+                                  error={!!email.trim() && !isEmailValid}
+                                  type="email"
+                                  helperText={!!email.trim() && !isEmailValid ? "Invalid email address" : ""}
+                                  sx={{
+                                      '& .MuiOutlinedInput-notchedOutline': { borderColor: 'divider' },
+                                      '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: primaryColor },
+                                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: primaryColor }
+                                  }}
                                 />
-                            </Grid>
+                            </Box>
+                          )}
 
-                            <Grid item xs={12}>
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            checked={agreementChecked}
-                                            onChange={handleAgreementChange}
-                                            name="agreement"
-                                            color="primary"
-                                        />
-                                    }
-                                    label="I agree to the terms and conditions."
+                          {appointmentMode === "Phone" && (
+                            <Box sx={{ mb: 3 }}>
+                                <Typography variant="subtitle2" sx={{ mb: 1, display: 'flex', alignItems: 'center' }}>
+                                    <PhoneIcon sx={{ mr: 1, fontSize: 18 }} /> Phone Number for Call
+                                </Typography>
+                                <TextField
+                                  type="tel"
+                                  value={formatPhone(phoneNumber)}
+                                  onChange={(e) => setPhoneNumber(e.target.value)}
+                                  fullWidth
+                                  required
+                                  sx={{
+                                      '& .MuiOutlinedInput-notchedOutline': { borderColor: 'divider' },
+                                      '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: primaryColor },
+                                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: primaryColor }
+                                  }}
                                 />
-                                <Typography onClick={handleAgreementClick} style={{cursor: "pointer"}}>
-                                    View Terms and Conditions
+                            </Box>
+                          )}
+
+                          {appointmentMode === "Video" && (
+                            <Box sx={{ mb: 3, p: 2, bgcolor: 'info.50', borderRadius: 1, display: 'flex', alignItems: 'flex-start' }}>
+                                <InfoIcon sx={{ color: 'info.main', mr: 1, mt: 0.3 }} />
+                                <Typography variant="body2">
+                                    You will receive an email with the video meeting link. Please ensure your email is up to date.
                                 </Typography>
-                            </Grid>
-                            {/* if same_date_app is true false */}
-                            {!same_date_app && (
-                                <Grid item xs={12}>
-                                    <Typography style={{color: "red"}}>
-                                        You already have an appointment on this date. Still, if you want to book
-                                        appointment, Please select another date.
-                                    </Typography>
-                                </Grid>
-                            )}
-                            <Grid item xs={12}>
-                                <Button
-                                    variant="contained"
-                                    color="info"
-                                    disabled={
-                                        !agreementChecked ||
-                                        !selectedDate ||
-                                        !selectedTime ||
-                                        !reason ||
-                                        !selectedAppointmentMode ||
-                                        !same_date_app ||
-                                        !submitbutton
-                                    }
-                                    onClick={handleBookAppointment}
-                                >
-                                    Book Appointment
-                                </Button>
-                            </Grid>
-                        </>
-                        {/* )} */}
-                    </Grid>
-                </Paper>
-                <Dialog open={openAgreementPopup} onClose={handleCloseAgreementPopup}>
-                    <DialogTitle>Terms and Conditions</DialogTitle>
-                    <DialogContent>
-                        <MKBox m={2}>
-                            <div dangerouslySetInnerHTML={{__html: termsInfo}}/>
-                        </MKBox>
-                    </DialogContent>
-                </Dialog>
+                            </Box>
+                          )}
 
-                {/* Modal */}
-                <Dialog open={openApp} onClose={handleCloseApp}>
-                    <DialogTitle>Notification</DialogTitle>
-                    <DialogContent>{appointmentBookContent}</DialogContent>
-                    <DialogActions>
-                        <Button onClick={redirectHome}>{buttonRedirect}</Button>
-                    </DialogActions>
-                    {/* <DialogActions>
-                            <Button onClick={handleCloseApp}>Close</Button>
-                        </DialogActions> */}
-                </Dialog>
+                          <Box>
+                              <Typography variant="subtitle2" sx={{ mb: 1, display: 'flex', alignItems: 'center' }}>
+                                  <NoteIcon sx={{ mr: 1, fontSize: 18 }} /> Reason for Appointment
+                              </Typography>
+                              <TextField
+                                value={reason}
+                                onChange={handleReasonChange}
+                                fullWidth
+                                multiline
+                                required
+                                rows={3}
+                                placeholder="Briefly describe the reason for your visit."
+                                sx={{
+                                    '& .MuiOutlinedInput-notchedOutline': { borderColor: 'divider' },
+                                    '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: primaryColor },
+                                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: primaryColor }
+                                }}
+                              />
+                          </Box>
+                      </Card>
+                  </Grid>
+                );
+            case 7: // Agreement & Book
+                return (
+                  <AppointmentConfirmationCard selectedLocation={selectedLocation} selectedProvider={selectedProvider}
+                                               responseData={responseData} selectedDate={selectedDate}
+                                               selectedTime={selectedTime}
+                                               appointmentMode={appointmentMode}
+                                               reason={reason}
+                                               agreementChecked={agreementChecked}
+                                               handleAgreementChange={handleAgreementChange}
+                                               handleAgreementClick={handleAgreementClick}
+                                               same_date_app={same_date_app}
+                                               formatTime={formatTime}
+                                               primaryColor={primaryColor}
+                  ></AppointmentConfirmationCard>
+                )
+                // return (
+                //   <Grid item xs={6}>
+                //       <Card variant="outlined" sx={{ p: {xs: 1.5, sm: 2}, borderColor: 'divider', borderRadius: 2 }}>
+                //           <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                //               <CheckCircleIcon sx={{ color: primaryColor, mr: 1 }} />
+                //               <Typography variant="h6" sx={{ color: primaryColor, fontWeight: 500 }}>
+                //                   Confirm Appointment Details
+                //               </Typography>
+                //           </Box>
+                //
+                //           <Box sx={{ mb: 2, p: 1, bgcolor: 'grey.50', borderRadius: 1 }}>
+                //               <Grid container spacing={2}>
+                //                   <Grid item xs={12} sm={6}>
+                //                       <Typography variant="subtitle2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center' }}>
+                //                           <LocationOnIcon sx={{ fontSize: 16, mr: 0.5 }} /> Location
+                //                       </Typography>
+                //                       <Typography variant="body1">{selectedLocation}</Typography>
+                //                   </Grid>
+                //                   <Grid item xs={12} sm={6}>
+                //                       <Typography variant="subtitle2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center' }}>
+                //                           <PersonIcon sx={{ fontSize: 16, mr: 0.5 }} /> Doctor
+                //                       </Typography>
+                //                       <Typography variant="body1">
+                //                           {selectedProvider && selectedProvider !== "Select Doctor" && responseData.location[selectedLocation]?.provider_number[selectedProvider]?.name}
+                //                       </Typography>
+                //                   </Grid>
+                //                   <Grid item xs={12} sm={6}>
+                //                       <Typography variant="subtitle2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center' }}>
+                //                           <EventIcon sx={{ fontSize: 16, mr: 0.5 }} /> Date
+                //                       </Typography>
+                //                       <Typography variant="body1">{selectedDate}</Typography>
+                //                   </Grid>
+                //                   <Grid item xs={12} sm={6}>
+                //                       <Typography variant="subtitle2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center' }}>
+                //                           <AccessTimeIcon sx={{ fontSize: 16, mr: 0.5 }} /> Time
+                //                       </Typography>
+                //                       <Typography variant="body1">
+                //                           {selectedTime && formatTime(selectedTime.split(',')[0])}
+                //                       </Typography>
+                //                   </Grid>
+                //                   <Grid item xs={12}>
+                //                       <Typography variant="subtitle2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center' }}>
+                //                           {appointmentMode === 'Clinic' && <LocalHospitalIcon sx={{ fontSize: 16, mr: 0.5 }} />}
+                //                           {appointmentMode === 'Phone' && <PhoneIcon sx={{ fontSize: 16, mr: 0.5 }} />}
+                //                           {appointmentMode === 'Video' && <VideocamIcon sx={{ fontSize: 16, mr: 0.5 }} />}
+                //                           Appointment Type
+                //                       </Typography>
+                //                       <Typography variant="body1">{appointmentMode}</Typography>
+                //                   </Grid>
+                //                   <Grid item xs={12}>
+                //                       <Typography variant="subtitle2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center' }}>
+                //                           <NoteIcon sx={{ fontSize: 16, mr: 0.5 }} /> Reason
+                //                       </Typography>
+                //                       <Typography variant="body1" sx={{
+                //                           maxHeight: '80px',
+                //                           overflow: 'auto',
+                //                           bgcolor: 'background.paper',
+                //                           p: 1,
+                //                           borderRadius: 1,
+                //                           border: '1px solid',
+                //                           borderColor: 'divider'
+                //                       }}>
+                //                           {reason}
+                //                       </Typography>
+                //                   </Grid>
+                //               </Grid>
+                //           </Box>
+                //
+                //           <Box sx={{ mb: 2 }}>
+                //               <FormControlLabel
+                //                 control={
+                //                     <Switch
+                //                       checked={agreementChecked}
+                //                       onChange={handleAgreementChange}
+                //                       name="agreement"
+                //                       color="primary"
+                //                       sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: primaryColor }, '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { backgroundColor: primaryColor } }}
+                //                     />
+                //                 }
+                //                 label={
+                //                     <Typography variant="body2">
+                //                         I agree to the terms and conditions.
+                //                     </Typography>
+                //                 }
+                //               />
+                //               <Typography
+                //                 onClick={handleAgreementClick}
+                //                 sx={{
+                //                     cursor: "pointer",
+                //                     color: primaryColor,
+                //                     textDecoration: 'underline',
+                //                     display: 'inline-block',
+                //                     ml: isMobile ? 0 : 4,
+                //                     mt: isMobile ? 1 : 0,
+                //                     fontSize: '0.875rem'
+                //                 }}
+                //               >
+                //                   View Terms and Conditions
+                //               </Typography>
+                //           </Box>
+                //
+                //           {!same_date_app && selectedDate && (
+                //             <Box sx={{ p: 2, mt: 1, bgcolor: 'error.50', borderRadius: 1, display: 'flex', alignItems: 'flex-start' }}>
+                //                 <WarningIcon sx={{ color: 'error.main', mr: 1, mt: 0.3 }} />
+                //                 <Typography color="error.main">
+                //                     You already have an appointment on this date. Booking another may lead to conflicts.
+                //                 </Typography>
+                //             </Box>
+                //           )}
+                //       </Card>
+                //   </Grid>
+                // );
+            default: return null;
+        }
+    };
 
-                <Dialog open={app_list_dilog} onClose={handle_app_list}>
-                    <DialogTitle>Your Upcoming Appointment List</DialogTitle>
-                    <DialogContent>
-                        <Card sx={{border: "2px solid green"}}>
-                            <CardContent>
-                                <Typography sx={{mb: 1.5}} color="text.primary">
-                                    {appointmentlist}
-                                </Typography>
-                            </CardContent>
-                        </Card>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handle_app_list}>Close</Button>
-                    </DialogActions>
-                </Dialog>
-
-                {!submitbutton && (
-                    <div
-                        style={{
-                            position: "absolute",
-                            top: "50%",
-                            left: "50%",
-                            transform: "translate(-50%, -50%)",
-                        }}
-                    >
-                        <NdLoader size="lg" variant="solid" value={70} color="primary"/>
-                    </div>
-                )}
-                <NotificationDialog
-                    open={openModal}
-                    onClose={setOpenModal}
-                    content={modalContent}
-                    isError={isError}
-                />
-            </Layout>
+    if (!responseData || !clinicInfo || !clinicLocation) {
+        return (
+          <Layout clinicInfo={clinicInfo}>
+              <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
+                  <CircularProgress sx={{ color: primaryColor }} />
+                  <Typography sx={{ml: 2}}>Loading appointment data...</Typography>
+              </Box>
+          </Layout>
         );
     }
+
+    return (
+      <Layout clinicInfo={clinicInfo}>
+          <Container maxWidth="md" sx={{ py: {xs: 0, sm: 3}, px: {xs: 1, sm: 1, md: 3} }}>
+              <Paper
+                style={{
+                    position: "sticky",
+                    top: "1rem",
+                    zIndex: 1000,
+                    padding: "1rem",
+                    marginBottom: "0.3rem",
+                    boxShadow: "0 0 10px 2px #2196F3",
+                    alignItems: "center", // Vertically centers the content
+
+                }}
+              >
+                  <MKTypography
+                    variant="h6"
+                    gutterBottom
+                    style={{ fontSize: "0.81rem", fontWeight: "bold", textAlign: "center" }}
+                    color={"black"}
+                  >
+                      Book Walk-in Appointment
+                  </MKTypography>
+                  {/* Stepper for all steps */}
+
+                  <ProfessionalStepper
+                    currentStep={currentStep}
+                    totalSteps={TOTAL_STEPS}
+                    stepLabels={STEP_LABELS}
+                    primaryColor={primaryColor}
+                    secondaryColor={secondaryColor}
+                  />
+              </Paper>
+
+              {/*<GoHome clinicSlug={clinicSlug} />*/}
+
+              <Box sx={{ mt: {xs: 0, sm: 3} }}>
+                  {renderStepContent()}
+              </Box>
+
+              <Box sx={{
+                  mt: {xs: 1, sm: 3},
+                  display: 'flex',
+                  justifyContent: currentStep === 1 ? 'flex-end' : 'space-between',
+                  alignItems: 'center',
+                  position: 'sticky',
+                  bottom: 0,
+                  bgcolor: 'background.paper',
+                  p: {xs: 1.5, sm: 2},
+                  borderTop: '1px solid',
+                  borderColor: 'divider',
+                  zIndex: 10, // Ensure it's above content but below dialogs
+                  borderRadius: {xs: 0, sm: '0 0 8px 8px'}, // Match card radius if applicable
+                  boxShadow: '0 -2px 10px rgba(0,0,0,0.05)'
+              }}>
+                  {currentStep > 1 && (
+                    <Button
+                      variant="outlined"
+                      onClick={handlePrevious}
+                      disabled={!submitbutton}
+                      startIcon={<KeyboardArrowLeft />}
+                      sx={{
+                          borderColor: secondaryColor,
+                          color: secondaryColor,
+                          '&:hover': {
+                              borderColor: secondaryColor,
+                              backgroundColor: alpha(secondaryColor, 0.08)
+                          }
+                      }}
+                    >
+                        Previous
+                    </Button>
+                  )}
+                  {currentStep < TOTAL_STEPS && (
+                    <Button
+                      variant="contained"
+                      onClick={handleNext}
+                      disabled={isNextDisabled() || !submitbutton}
+                      endIcon={<KeyboardArrowRight />}
+                      sx={{
+                          bgcolor: primaryColor,
+                          color: theme.palette.getContrastText(primaryColor),
+                          '&:hover': {
+                              bgcolor: theme.palette.augmentColor({ color: { main: primaryColor } }).dark
+                          },
+                          ml: currentStep === 1 ? 'auto' : 0 // Push to right if only Next button
+                      }}
+                    >
+                        Next
+                    </Button>
+                  )}
+                  {currentStep === TOTAL_STEPS && (
+                    <Button
+                      variant="contained"
+                      disabled={
+                        !agreementChecked || !same_date_app || !submitbutton ||
+                        (responseData.email_valid === "no" && email.trim() && !isEmailValid) ||
+                        !selectedDate || !selectedTime || !reason.trim() || !appointmentMode
+                      }
+                      onClick={handleBookAppointment}
+                      startIcon={!submitbutton ? <CircularProgress size={10} color="inherit" /> : <CheckCircleIcon />}
+                      sx={{
+                          bgcolor: theme.palette.success.main,
+                          color: theme.palette.getContrastText(theme.palette.success.main),
+                          '&:hover': {
+                              bgcolor: theme.palette.success.dark
+                          },
+                          '&.Mui-disabled': {
+                              bgcolor: theme.palette.action.disabledBackground,
+                              color: theme.palette.action.disabled
+                          },
+                          // px: 3,
+                          // py: 1
+                      }}
+                    >
+                        {submitbutton ? "Book" : "Booking..."}
+                    </Button>
+                  )}
+              </Box>
+          </Container>
+
+          <Dialog
+            open={openAgreementPopup}
+            onClose={handleCloseAgreementPopup}
+            maxWidth="md"
+            fullWidth
+            PaperProps={{
+                sx: { borderRadius: 2 }
+            }}
+          >
+              <DialogTitle sx={{ bgcolor: primaryColor, color: theme.palette.getContrastText(primaryColor) }}>Terms and Conditions</DialogTitle>
+              <DialogContent dividers>
+                  <MKBox p={1}>
+                      {termsInfo ? <div dangerouslySetInnerHTML={{__html: termsInfo}}/> : <CircularProgress sx={{color: primaryColor}}/>}
+                  </MKBox>
+              </DialogContent>
+              <DialogActions>
+                  <Button
+                    onClick={handleCloseAgreementPopup}
+                    sx={{ color: primaryColor }}
+                  >
+                      Close
+                  </Button>
+              </DialogActions>
+          </Dialog>
+
+          <Dialog
+            open={openApp}
+            onClose={handleCloseApp}
+            PaperProps={{
+                sx: { borderRadius: 2 }
+            }}
+          >
+              <DialogTitle sx={{
+                  backgroundColor: buttonRedirect === 'Home' ? theme.palette.success.light : theme.palette.warning.light,
+                  color: buttonRedirect === 'Home' ? theme.palette.success.contrastText : theme.palette.warning.contrastText,
+              }}>
+                  {buttonRedirect === 'Home' ? 'Appointment Booked' : 'Notification'}
+              </DialogTitle>
+              <DialogContent dividers>
+                  <Typography>{appointmentBookContent}</Typography>
+              </DialogContent>
+              <DialogActions>
+                  <Button
+                    onClick={handleCloseApp}
+                    variant="contained"
+                    sx={{
+                        bgcolor: buttonRedirect === 'Home' ? theme.palette.success.main : theme.palette.warning.main,
+                        color: buttonRedirect === 'Home' ? theme.palette.getContrastText(theme.palette.success.main) : theme.palette.getContrastText(theme.palette.warning.main),
+                        '&:hover': {
+                            bgcolor: buttonRedirect === 'Home' ? theme.palette.success.dark : theme.palette.warning.dark,
+                        }
+                    }}
+                  >
+                      {buttonRedirect || "Close"}
+                  </Button>
+              </DialogActions>
+          </Dialog>
+
+          <Dialog
+            open={app_list_dilog}
+            onClose={handle_app_list}
+            maxWidth="sm"
+            fullWidth
+            PaperProps={{
+                sx: { borderRadius: 2 }
+            }}
+          >
+              <DialogTitle sx={{ bgcolor: primaryColor, color: theme.palette.getContrastText(primaryColor) }}>
+                  Your Upcoming Appointments
+              </DialogTitle>
+              <DialogContent dividers>
+                  {appointmentlist && appointmentlist.length > 0 ? (
+                    <Card variant="outlined" sx={{borderColor: 'success.main', borderRadius: 1}}>
+                        <CardContent>
+                            {appointmentlist}
+                        </CardContent>
+                    </Card>
+                  ) : (
+                    <Typography>You have no upcoming appointments.</Typography>
+                  )}
+              </DialogContent>
+              <DialogActions>
+                  <Button onClick={handle_app_list} sx={{ color: primaryColor }}>Close</Button>
+              </DialogActions>
+          </Dialog>
+
+          {!submitbutton && currentStep === TOTAL_STEPS && (
+            <Box sx={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                backgroundColor: alpha(theme.palette.background.paper, 0.7),
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                zIndex: 1301, // Higher than dialogs
+                backdropFilter: 'blur(3px)'
+            }}>
+                <NdLoader size="lg" variant="solid" value={70} color="primary"/>
+            </Box>
+          )}
+
+          <NotificationDialog
+            open={openModal}
+            onClose={() => setOpenModal(false)}
+            content={modalContent}
+            isError={isError}
+          />
+      </Layout>
+    );
 };
 
 export default WalkinAppointmentPage;

@@ -60,6 +60,9 @@ const AssignLocation = () => {
   const [videoApp, setVideoApp] = useState(0); //tyo set locum
   const [phoneApp, setPhoneApp] = useState(0); //tyo set locum
   const [clinicApp, setClinicApp] = useState(0); //tyo set locum
+  const [emailSent, setEmailSent] = useState(0); //tyo set locum
+  const [smsSent, setSmsSent] = useState(0); //tyo set locum
+  const [queueOfDoctor, setQueueOfDoctor] = useState(0); //tyo set locum
   const [color, setColor] = useState("#FFFF"); //tyo set locum
   const [locum, setLocum] = useState(0); //tyo set locum >> switch
   const [selectedDoctorID, setSelectedDoctorID] = useState("");
@@ -90,9 +93,7 @@ const AssignLocation = () => {
         Authorization: `Token ${localStorage.getItem("accessToken")}`,
       },
     });
-
     const data = await response.json();
-
     setListOfCurrentLinks(data);
   };
   const getCurrentLocationList = async () => {
@@ -103,9 +104,7 @@ const AssignLocation = () => {
         Authorization: `Token ${localStorage.getItem("accessToken")}`,
       },
     });
-
     const data = await response.json();
-
     setListOfCurrentLocations(data);
   };
   const addLocationwithDoctor = async () => {
@@ -123,10 +122,13 @@ const AssignLocation = () => {
           videoApp: videoApp, //0,
           phoneApp: phoneApp, // 0,
           clinicApp: clinicApp, //0,
+          smsSent: smsSent, //0,
+          emailSent: emailSent, //0,
           color: color, //"#4db6ac",
           switch: locum, // 0,
           doctor: selectedDoctorID, //2,
           location: selectedLocationID, //2
+          queueOfDoctor: queueOfDoctor, //2
         }),
       });
       const data = await response.json();
@@ -176,6 +178,15 @@ const AssignLocation = () => {
   const handleClinicAppointmentChange = (value) => {
     setClinicApp(value);
   };
+  const handleClinicEmailSentChange = (value) => {
+    setEmailSent(value);
+  };
+  const handleClinicSmsSentChange = (value) => {
+    setSmsSent(value);
+  };
+  const handleDoctorQueueChange = (value) => {
+    setQueueOfDoctor(value);
+  };
   const handleLocumNumberChange = (value) => {
     setLocum(value);
   };
@@ -191,6 +202,7 @@ const AssignLocation = () => {
 
     handleAccountStatusChange(0);
     handleClinicAppointmentChange(0);
+    handleClinicEmailSentChange(0);
     handleDocTypeChange("");
     handleDoctorChange("");
     handleLocationChange("");
@@ -215,6 +227,8 @@ const AssignLocation = () => {
     handleProviderNumberChange(row.providerNumber);
     handleLocumNumberChange(row.switch);
     handleVideoAppointmentChange(row.videoApp);
+    handleClinicEmailSentChange(row.emailSent);
+    handleClinicSmsSentChange(row.smsSent);
     setUpdate_or_add("Update Doctor With Location");
     setIsDialogOpen(true);
     setApiMethod("PUT");
@@ -275,9 +289,7 @@ const AssignLocation = () => {
               const doctorType = STATUS.find((status) => status.value === row.docType)?.label;
               const phonetype = STATUS_SIGN.find((status) => status.value === row.phoneApp)?.label;
               const videotype = STATUS_SIGN.find((status) => status.value === row.videoApp)?.label;
-              const clinictype = STATUS_SIGN.find(
-                (status) => status.value === row.clinicApp
-              )?.label;
+              const clinictype = STATUS_SIGN.find((status) => status.value === row.clinicApp)?.label;
 
               return location ? (
                 <StyledTableRow key={row.id}>
@@ -478,7 +490,6 @@ const AssignLocation = () => {
             </Grid>
             <Grid item xs={6} md={6} lg={6}>
               {/* Locum Provider Number */}
-
               <TextField
                 label="Locum number"
                 value={locum}
@@ -499,26 +510,65 @@ const AssignLocation = () => {
               </InputLabel>
             </Grid>
             <Grid item xs={6} md={6} lg={6}>
-              {/* Color App */}
-              {/* <TextField
-                            label="Doctor's Identification Color"
-                            value={color}
-                            inputMode="text"
-                            onChange={(e) => handleColorChange(e.target.value)}
-                            Placeholder="Doctor's Identification Color"
-                            fullWidth
-                            type="text"/>
-
-                        <ChromePicker
-                        id="color-input"
-                        color={color}
-                        onChange={(newColor) => handleColorChange(newColor.hex)}/>
-
-                        
-                        <InputLabel ><small>(This is for just to Identify the doctor.)</small></InputLabel>
-                        */}
+              {/* Clinic App */}
+              <FormControl fullWidth>
+                <InputLabel id="queue">Patient Queue</InputLabel>
+                <Select
+                  labelId="queue"
+                  id="queue"
+                  label="Patient Queue"
+                  fullWidth
+                  value={queueOfDoctor}
+                  onChange={(e) => handleDoctorQueueChange(e.target.value)}
+                >
+                  {STATUS.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
-
+            <Grid item xs={6} md={6} lg={6}>
+              {/* Email sent */}
+              <FormControl fullWidth>
+                <InputLabel id="queue">Email Sent</InputLabel>
+                <Select
+                  labelId="emailsent"
+                  id="emailsent"
+                  label="Email Sent"
+                  fullWidth
+                  value={emailSent}
+                  onChange={(e) => handleClinicEmailSentChange(e.target.value)}
+                >
+                  {STATUS.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={6} md={6} lg={6}>
+              {/* SMS sent */}
+              <FormControl fullWidth>
+                <InputLabel id="queue">SMS Sent</InputLabel>
+                <Select
+                  labelId="smssent"
+                  id="smssent"
+                  label="SMS Sent"
+                  fullWidth
+                  value={smsSent}
+                  onChange={(e) => handleClinicSmsSentChange(e.target.value)}
+                >
+                  {STATUS.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
             <Grid item xs={12} md={6} lg={6}>
               {/* Color App */}
               <Button

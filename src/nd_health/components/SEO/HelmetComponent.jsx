@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import ndHealthLogo from "nd_health/assets/images/nd-health-logo.png";
 
-const HelmetComponent = () => {
+const HelmetComponent = ({tabtitle}) => {
   const [canonicalUrl, setCanonicalUrl] = useState("");
 
   useEffect(() => {
@@ -14,7 +14,8 @@ const HelmetComponent = () => {
     <HelmetProvider>
       <Helmet>
         {/* Basic Meta Tags */}
-        <title>ND Health - Book Appointments with Physicians in Canada</title>
+        {/*<title>ND Health - Book Appointments with Physicians in Canada</title>*/}
+        <title>{tabtitle}</title>
         <meta
           name="description"
           content="ND Health simplifies healthcare operations in Canada by offering efficient
@@ -34,7 +35,7 @@ const HelmetComponent = () => {
         {/* Open Graph (OG) Meta Tags for Social Media */}
         <meta
           property="og:title"
-          content="ND Health - Book Appointments with Physicians in Canada"
+          content={tabtitle}
         />
         <meta
           property="og:description"

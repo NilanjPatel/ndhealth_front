@@ -13,7 +13,7 @@ import {
     DialogContent,
     DialogActions,
     TextField,
-    CardActionArea,
+    CardActionArea, Box, useTheme, useMediaQuery,
 } from "@mui/material";
 import {useParams, useNavigate} from "react-router-dom";
 
@@ -42,6 +42,9 @@ const ClinicInfo = () => {
     const [locationsData, setLocations] = useState(null);
     const [buttonpressed, setButtonPressed] = useState(true);
     const navigate = useNavigate();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const isTablet = useMediaQuery(theme.breakpoints.between('md', 'lg'));
 
     // const pathSegments = location.pathname.split('/');
     // const clinicSlugcurrent = clinicSlug || pathSegments[pathSegments.indexOf('clinic') + 1]
@@ -299,7 +302,7 @@ const ClinicInfo = () => {
                                 <Grid container spacing={2} paddingLeft={2} paddingRight={2} paddingTop={-1}>
                                     <Grid item xs={12}>
                                         <TextField
-                                            label="Health Card Number - 10 digits only"
+                                            label="Health Card Number"
                                             value={formatHin(hin)}
                                             onChange={handleHinChange}
                                             inputMode="numeric"
@@ -368,112 +371,36 @@ const ClinicInfo = () => {
                                 <Divider/>
                                 {/*<CardActionArea>*/}
                                 <CardContent>
-                                    <Button
-                                        variant="contained"
-                                        href="https://www.youtube.com/watch?v=N00wcFxDuRw"
-                                        target="_blank"
-                                        color="info"
-                                        style={{fontSize: "1rem", fontWeight: "bold", color: "white"}}
-                                    >
-                                        Learn how to book an appointment, click here.
-                                    </Button>
+                                    <Box sx={{
+                                        display: "flex",
+                                        flexDirection: isMobile ? "column" : "row",
+                                        gap: 2,
+                                        alignItems: isMobile ? "stretch" : "center",
+                                        justifyContent: "space-between",
+                                    }}>
+                                        <Button
+                                          variant="contained"
+                                          href="https://www.youtube.com/watch?v=N00wcFxDuRw"
+                                          target="_blank"
+                                          color="info"
+                                          size={isMobile ? "large" : "medium"}
+                                          sx={{
+                                              fontSize: isMobile ? "0.9rem" : "1rem",
+                                              fontWeight: "bold",
+                                              color: "white",
+                                              py: isMobile ? 1.5 : 1,
+                                              borderRadius: "0.5rem",
+                                              textTransform: "none",
+                                          }}
+                                        >
+                                            📹 Learn how to book an appointment
+                                        </Button>
+
+                                    </Box>
                                 </CardContent>
                                 {/*</CardActionArea>*/}
                             </Card>
 
-                            {/*<h3>{clinic_locations_multiple}</h3>*/}
-                            {/*<Grid container spacing={2}>*/}
-                            {/*    {locationsData &&*/}
-                            {/*        locationsData.map(*/}
-                            {/*            (location) =>*/}
-                            {/*                location.doctorsLocation.length > 0 && (*/}
-                            {/*                    <>*/}
-                            {/*                        <Grid item key={location.id} xs={12} md={6} lg={4}>*/}
-                            {/*                            <Card*/}
-                            {/*                                onClick={() => handleLocationClick(location)}*/}
-                            {/*                                style={{*/}
-                            {/*                                    cursor: "pointer",*/}
-                            {/*                                    backgroundColor: location.color,*/}
-                            {/*                                    marginBottom: "16px",*/}
-                            {/*                                }}*/}
-                            {/*                            >*/}
-                            {/*                                <CardContent>*/}
-                            {/*                                    <Typography variant="h6">{location.name}</Typography>*/}
-                            {/*                                    <Typography variant="body2">{location.address}</Typography>*/}
-                            {/*                                    <Typography variant="body2">*/}
-                            {/*                                        {location.city}, {location.province}, {location.postal}*/}
-                            {/*                                    </Typography>*/}
-                            {/*                                </CardContent>*/}
-                            {/*                            </Card>*/}
-                            {/*                        </Grid>*/}
-
-                            {/*                        <Dialog*/}
-                            {/*                            open={selectedLocation === location.id}*/}
-                            {/*                            onClose={handleClose}*/}
-                            {/*                            PaperProps={{style: {boxShadow: `0 0 65px 10px ${locationColor}`}}}*/}
-                            {/*                        >*/}
-                            {/*                            <Grid item key={location.id} xs={12} md={12} lg={12}>*/}
-                            {/*                                <DialogTitle style={{fontWeight: "bolder"}}>*/}
-                            {/*                                    {location.name}*/}
-                            {/*                                </DialogTitle>*/}
-                            {/*                                <DialogContent>*/}
-                            {/*                                    <Grid container spacing={1}>*/}
-                            {/*                                        {location.doctorsLocation &&*/}
-                            {/*                                            location.doctorsLocation.map((doctor) => (*/}
-                            {/*                                                <Grid*/}
-                            {/*                                                    item*/}
-                            {/*                                                    key={doctor.doctor__user__first_name}*/}
-                            {/*                                                    xs={12}*/}
-                            {/*                                                    md={12}*/}
-                            {/*                                                    lg={12}*/}
-                            {/*                                                >*/}
-                            {/*                                                    <Card*/}
-                            {/*                                                        variant="outlined"*/}
-                            {/*                                                        style={{*/}
-                            {/*                                                            minWidth: "fit-content",*/}
-                            {/*                                                            width: "100%",*/}
-                            {/*                                                            height: "100%",*/}
-                            {/*                                                            border: "1px solid dark",*/}
-                            {/*                                                        }}*/}
-                            {/*                                                    >*/}
-                            {/*                                                        /!* TODO change doctor__user to doctor.id *!/*/}
-                            {/*                                                        <CardContent>*/}
-                            {/*                                                            <Typography*/}
-                            {/*                                                                variant="subtitle1"*/}
-                            {/*                                                                style={{*/}
-                            {/*                                                                    fontSize: "1rem",*/}
-                            {/*                                                                    fontWeight: "bold",*/}
-                            {/*                                                                    whiteSpace: "nowrap",*/}
-                            {/*                                                                    overflow: "hidden",*/}
-                            {/*                                                                    textOverflow: "ellipsis",*/}
-                            {/*                                                                }}*/}
-                            {/*                                                            >*/}
-                            {/*                                                                Dr. {doctor.doctor__user__first_name}{" "}*/}
-                            {/*                                                                {doctor.doctor__user__last_name}*/}
-                            {/*                                                            </Typography>*/}
-                            {/*                                                            <Typography variant="body2">*/}
-                            {/*                                                                {doctor.docType}*/}
-                            {/*                                                            </Typography>*/}
-                            {/*                                                        </CardContent>*/}
-                            {/*                                                    </Card>*/}
-                            {/*                                                </Grid>*/}
-                            {/*                                            ))}*/}
-                            {/*                                    </Grid>*/}
-                            {/*                                </DialogContent>*/}
-                            {/*                                <DialogActions>*/}
-                            {/*                                    <Button onClick={handleClose} color="primary">*/}
-                            {/*                                        Close*/}
-                            {/*                                    </Button>*/}
-                            {/*                                </DialogActions>*/}
-                            {/*                            </Grid>*/}
-                            {/*                        </Dialog>*/}
-                            {/*                    </>*/}
-                            {/*                ),*/}
-                            {/*        )}*/}
-                            {/*</Grid>*/}
-                            {/* <Grid container spacing={2} > */}
-
-                            {/* </Grid> */}
                         </Grid>
                         <Grid item xs={12} md={8}></Grid>
                     </>
