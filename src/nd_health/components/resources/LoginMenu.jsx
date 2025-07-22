@@ -61,8 +61,7 @@ const LoginMenu = ({ username }) => {
   const handleLogout = () => {
     // Implement logout logic here
     setLoggedIn(false);
-    localStorage.removeItem("loggedIn");
-    localStorage.removeItem("accessToken");
+    localStorage.clear();
     navigate(`/clinic/${clinicSlug}`);
   };
   const handleLogin = async () => {

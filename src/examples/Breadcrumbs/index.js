@@ -24,13 +24,11 @@ import MuiBreadcrumbs from "@mui/material/Breadcrumbs";
 
 // Material Kit 2 PRO React components
 import MKBox from "components/MKBox";
-import MKTypography from "components/MKTypography";
 import MKButton from "../../components/MKButton";
 
 function Breadcrumbs({ routes, ...rest }) {
   return (
-    <MKBox bgColor="inreate"
-           // borderRadius="md" py={1} px={2} width="100%"
+    <MKBox bgColor="inreate" borderRadius="md" py={1} px={2}
     >
       <MuiBreadcrumbs {...rest}>
         {routes.map(({ label, route, icon }) =>
@@ -40,22 +38,21 @@ function Breadcrumbs({ routes, ...rest }) {
                 key={label}
                 component={Link}
                 to={route}
-                variant="button"
-                color="text"
+                variant="contained"
+                color="info"
                 fontWeight="regular"
                 opacity={0.8}
-
                 sx={{
                   "&:hover, &:focus": {
                     color: ({ palette: { info } }) => info.main,
                   },
                   fontSize:"1rem",
-                  padding: "0.8rem"
+                  padding: "0.8rem",
+                  // with:'100%'
                 }}
 
               >
                 {icon}&nbsp;&nbsp;{label}
-
               </MKButton>
 
             </>

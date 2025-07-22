@@ -126,10 +126,7 @@ const Layout = ({ clinicInfo, children }) => {
   const handleLogout = () => {
     // Implement logout logic here
     setLoggedIn(false);
-    localStorage.removeItem("loggedIn");
-    localStorage.removeItem("accessToken");
-
-
+    localStorage.clear();
   };
 
   const fetchUserInfo = async () => {
@@ -147,17 +144,13 @@ const Layout = ({ clinicInfo, children }) => {
           setLoggedIn(true);
         } catch (error) {
           setUsername("");
-          setLoggedIn(false);
-          localStorage.removeItem("loggedIn");
-          localStorage.removeItem("accessToken");
+          handleLogout();
         }
       }
     } catch (error) {
       console.error("Error fetching user information:", error.message);
       setUsername("");
-      setLoggedIn(false);
-      localStorage.removeItem("loggedIn");
-      localStorage.removeItem("accessToken");
+      handleLogout();
     }
   };
 

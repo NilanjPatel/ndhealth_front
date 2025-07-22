@@ -141,7 +141,8 @@ const renderInput = (item, handleInputChange, formValues) => {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <TimePicker
             // Remove label here to avoid duplication
-            value={formValues[item.question] ? dayjs(formValues[item.question]) : null}
+            // value={formValues[item.question] ? dayjs(formValues[item.question]) : null}
+            value={formValues[item.question] || null}
             onChange={(newValue) => handleInputChange(newValue, item.type, item.question)}
             renderInput={(params) => (
               <TextField {...params} style={{ minWidth: "100%" }} />
@@ -233,11 +234,20 @@ const DynamicForm = () => {
       }
     };
 
-    fetchEform();
-  }, []);
+    fetchEform().then(r => {});
+  });
+
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const formattedForm = {
+      ...formValues,
+      "Time of Accident": formValues["Time of Accident"]
+        ? dayjs(formValues["Time of Accident"]).format("hh:mm A")
+        : "",
+    };
+
     try {
       const response = await fetch(`${API_BASE_PATH}/eform/submit/`, {
         method: "POST",
@@ -247,7 +257,7 @@ const DynamicForm = () => {
         body: JSON.stringify({
           clinicid: clinicInfo.id,
           demo: demo,
-          form: formValues,
+          form: formattedForm,
           eformId: eformId,
           title: formData.title,
         }),
@@ -297,13 +307,15 @@ const DynamicForm = () => {
     } else if (type === "time") {
       // Handle time picker value
       if (event && event.$d) {
-        const date = new Date(event.$d);
-        const time = date.toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        });
-        setFormValues((prevFormValues) => ({ ...prevFormValues, [name]: time }));
+        // const date = new Date(event.$d);
+        // const time = date.toLocaleTimeString("en-US", {
+        //   hour: "2-digit",
+        //   minute: "2-digit",
+        //   hour12: true,
+        // });
+        // setFormValues((prevFormValues) => ({ ...prevFormValues, [name]: time }));
+        setFormValues((prevFormValues) => ({ ...prevFormValues, [name]: event }));
+
       }
     } else if (type === "checkbox") {
       // Handle checkbox options

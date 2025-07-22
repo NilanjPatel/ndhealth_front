@@ -208,7 +208,6 @@ export default function FileUploadForm() {
               value={fileType}
               onChange={handleFileTypeChange}
               sx={{ padding: "11px" }}
-
             >
               <MenuItem sx={{ padding: "0px" }} value="" disabled>
                 <em>Select a file type</em>

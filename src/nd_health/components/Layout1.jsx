@@ -127,10 +127,8 @@ const Layout1 = ({ clinicInfo, tabtitle, children, title }) => {
   const handleLogout = () => {
     // Implement logout logic here
     setLoggedIn(false);
-    localStorage.removeItem("loggedIn");
-    localStorage.removeItem("accessToken");
-
-
+    localStorage.clear();
+    gotoHome();
   };
 
   const fetchUserInfo = async () => {

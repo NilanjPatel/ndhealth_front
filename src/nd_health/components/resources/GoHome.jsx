@@ -5,7 +5,7 @@ import Breadcrumbs from "../../../examples/Breadcrumbs";
 
 const GoHome = ({clinicSlug}) => {
     return (
-        <Grid item xs={12} md={12}>
+        <Grid item xs={2} md={2}>
             <Breadcrumbs
                 routes={[
                     {label: "Go home", route: `/clinic/${clinicSlug}/`, icon: <Icon>home</Icon>},

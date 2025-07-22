@@ -1145,14 +1145,15 @@ const RequestDemographic = () => {
                     value={howknow}
                     onChange={(e) => setHowknow(e.target.value)}
                   >
-                    <FormControlLabel value="Online" control={<Radio />} label="Online" />
                     <FormControlLabel
                       value="Friends & Family"
                       control={<Radio />}
                       label="Friends & Family"
                     />
-                    <FormControlLabel value="Flyers" control={<Radio />} label="Flyers" />
-                    <FormControlLabel value="Newspaper" control={<Radio />} label="Newspaper" />
+                    <FormControlLabel value="Google" control={<Radio />} label="Google" />
+                    <FormControlLabel value="Facebook" control={<Radio />} label="Facebook" />
+                    <FormControlLabel value="Instagram" control={<Radio />} label="Instagram" />
+                    <FormControlLabel value="Advertisement board" control={<Radio />} label="Advertisement board" />
                     <FormControlLabel value="Other" control={<Radio />} label="Other" />
                   </RadioGroup>
                 </FormControl>

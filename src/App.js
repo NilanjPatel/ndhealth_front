@@ -48,6 +48,7 @@ import ClinicQueue from "./nd_health/components/Queue";
 import RADetails from "./nd_health/components/clinic/outsideuse/billing/RADetails";
 import RADx250 from "./nd_health/components/clinic/outsideuse/billing/RADx250";
 import RAServiceCodeAnalytics from "./nd_health/components/clinic/outsideuse/billing/RAAnalytics";
+import RAServiceCodeAnalytics1 from "./nd_health/components/clinic/outsideuse/billing/RAAnalytics1";
 
 export default function App() {
   const { pathname } = useLocation();
@@ -108,7 +109,7 @@ export default function App() {
         <Route path="/clinic/:clinicSlug/billing/radetails" element={<RADetails />} />
         <Route path="/clinic/:clinicSlug/billing/radx250" element={<RADx250 />} />
         <Route path="/clinic/:clinicSlug/billing/raanalytics" element={<RAServiceCodeAnalytics />} />
-
+        <Route path="/clinic/:clinicSlug/billing/raanalytics1" element={<RAServiceCodeAnalytics1 />} />
       </Routes>
     </ThemeProvider>
   );

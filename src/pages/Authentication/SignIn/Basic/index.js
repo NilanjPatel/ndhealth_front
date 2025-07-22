@@ -1,18 +1,11 @@
 import React, { useEffect, useState } from "react";
 
 // react-router-dom components
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
 import Switch from "@mui/material/Switch";
-// import Grid from "@mui/material/Grid";
-// import MuiLink from "@mui/material/Link";
-
-// @mui icons
-// import FacebookIcon from "@mui/icons-material/Facebook";
-// import GitHubIcon from "@mui/icons-material/GitHub";
-// import GoogleIcon from "@mui/icons-material/Google";
 
 // Material Kit 2 PRO React components
 import MKBox from "components/MKBox";
@@ -28,7 +21,6 @@ import BasicLayout from "pages/Authentication/components/BasicLayout";
 import bgImage from "assets/images/toronto_cn_tower_side.jpg";
 import axios from "axios";
 import API_BASE_PATH from "../../../../apiConfig";
-// import Notification from "../../../../nd_health/components/resources/Notification";
 import NotificationDialog from "../../../../nd_health/components/resources/Notification";
 
 function SignInBasic() {
@@ -79,15 +71,16 @@ function SignInBasic() {
       setClinicSlug(response.data.clinicSlug);
       // Redirect or update UI as needed
       localStorage.setItem("loggedIn", "true");
-      if (rememberMe) {
-        // Save credentials to localStorage
-        localStorage.setItem('username', username);
-        localStorage.setItem('password', password);
-      } else {
-        // Clear credentials from localStorage
-        localStorage.removeItem('username');
-        localStorage.removeItem('password');
-      }
+      localStorage.setItem("user_type", response.data.user_type);
+      // if (rememberMe) {
+      //   // Save credentials to localStorage
+      //   localStorage.setItem('username', username);
+      //   localStorage.setItem('password', password);
+      // } else {
+      //   // Clear credentials from localStorage
+      //   localStorage.removeItem('username');
+      //   localStorage.removeItem('password');
+      // }
 
       handleSuccess("You have logged in Successfully!");
       // window.location.reload();
