@@ -52,7 +52,10 @@ const MetricCard = ({
                       prefix = '',
                       suffix = '',
                       subtitle,
-                      size = 'medium'
+                      size = 'medium',
+                      onClick,
+                      isActive = false,
+                      clickable = false
                     }) => {
   const theme = useTheme();
   const IconComponent = iconMap[icon] || Assessment;
@@ -76,7 +79,8 @@ const MetricCard = ({
   const cardHeight = size === 'large' ? 200 : size === 'small' ? 120 : size === 'extraSmall' ? 100 : 160;
   const cardWidth = size === 'large' ? 300 : size === 'small' ? 200 : size === 'extraSmall' ? 150 : 250;
   const valueSize = size === 'large' ? 'h2' : size === 'small' ? 'h4' : size === 'extraSmall' ? 'h5' : 'h3';
-  const titleSize = size === 'large' ? 'h6' : size === 'small' ? 'body2' : size === 'extraSmall' ? 'caption' : 'body1';
+  const titleSize = size === 'large' ? 'h6' : size === 'small' ? 'body2' : size === 'extraSmall' ? '0.70rem' : 'body1';
+  const varient = size === 'large' ? 'h6' : size === 'small' ? 'body2' : size === 'extraSmall' ? 'caption' : 'body1';
   const avatarSize = size === 'large' ? 56 : size === 'small' ? 40 : size === 'extraSmall' ? 32 : 48;
 
   return (
@@ -87,13 +91,19 @@ const MetricCard = ({
         position: 'relative',
         overflow: 'hidden',
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        cursor: clickable ? 'pointer' : 'default',
         '&:hover': {
-          transform: 'translateY(-4px)',
+          transform: clickable ? 'translateY(-4px)' : 'translateY(-2px)',
           boxShadow: theme.shadows[8],
         },
-        background: `linear-gradient(135deg, ${alpha(theme.palette[color].main, 0.1)} 0%, ${alpha(theme.palette[color].main, 0.05)} 100%)`,
-        border: `1px solid ${alpha(theme.palette[color].main, 0.2)}`,
+        background: isActive
+          ? `linear-gradient(135deg, ${alpha(theme.palette[color].main, 0.3)} 0%, ${alpha(theme.palette[color].main, 0.2)} 100%)`
+          : `linear-gradient(135deg, ${alpha(theme.palette[color].main, 0.1)} 0%, ${alpha(theme.palette[color].main, 0.05)} 100%)`,
+        border: isActive
+          ? `2px solid ${theme.palette[color].main}`
+          : `1px solid ${alpha(theme.palette[color].main, 0.2)}`,
       }}
+      onClick={clickable ? onClick : undefined}
     >
       {/* Background Pattern */}
       <Box
@@ -123,13 +133,14 @@ const MetricCard = ({
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <Box>
             <Typography
-              variant={titleSize}
+              variant={varient}
               color="text.secondary"
               sx={{
                 fontWeight: 600,
-                textTransform: 'uppercase',
-                letterSpacing: 1,
+                // textTransform: 'uppercase',
+                letterSpacing: 0,
                 mb: 0.5,
+                fontSize:{titleSize}
               }}
             >
               {title}
@@ -138,7 +149,7 @@ const MetricCard = ({
           </Box>
           <Avatar
             sx={{
-              bgcolor: theme.palette[color].main,
+              bgcolor: isActive ? theme.palette[color].dark : theme.palette[color].main,
               width: avatarSize,
               height: avatarSize,
             }}
@@ -153,7 +164,7 @@ const MetricCard = ({
             variant={valueSize}
             sx={{
               fontWeight: 700,
-              color: theme.palette[color].main,
+              color: isActive ? theme.palette[color].dark : theme.palette[color].main,
               lineHeight: 1,
             }}
           >
@@ -207,6 +218,9 @@ MetricCard.propTypes = {
   suffix: PropTypes.string,
   subtitle: PropTypes.string,
   size: PropTypes.oneOf(['extraSmall', 'small', 'medium', 'large']),
+  onClick: PropTypes.func,
+  isActive: PropTypes.bool,
+  clickable: PropTypes.bool,
 };
 
 export default MetricCard;

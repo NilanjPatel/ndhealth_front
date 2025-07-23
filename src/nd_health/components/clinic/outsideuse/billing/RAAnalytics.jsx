@@ -57,6 +57,7 @@ import RingCentral from "@rc-ex/core";
 import WebPhone from "ringcentral-web-phone";
 import { Buffer } from "buffer";
 import { getCurrentDate } from "../../../resources/utils";
+import { makeStyles } from "@mui/styles";
 
 window.Buffer = Buffer;
 
@@ -95,6 +96,10 @@ const RAServiceCodeAnalytics = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(15);
   const [expandedRows, setExpandedRows] = useState(new Set());
+
+  const [activeFilter, setActiveFilter] = useState(null);
+  const [filteredData, setFilteredData] = useState(null);
+
   // NotificationDialog
   const [openModal, setOpenModal] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -137,7 +142,7 @@ const RAServiceCodeAnalytics = () => {
       window.location.href = `/clinic/${clinicSlug}/`;
     }
   };
-  const tabtitle = "ND Health - RA Analytics";
+  const tabtitle = "RA Analytics by ND Health";
   const fetchAnalytics = async () => {
     setLoading(true);
     setError(null);
@@ -245,25 +250,30 @@ const RAServiceCodeAnalytics = () => {
   }, [clinicSlug, clinicInfoFetched]);
   useEffect(() => {
     const localLatestRefDate = localStorage.getItem("latestRefDate");
-    const currentFilters = JSON.stringify(filters);
+    // const currentFilters = JSON.stringify(filters);
 
-    // Check if the local data is still valid
-    if (localLatestRefDate && localLatestRefDate === filters.service_date_to) {
-      const localData = JSON.parse(localStorage.getItem("analyticsData"));
-      if (localData) {
-        setAnalyticsData(localData);
-        handleSuccess("Using locally stored data.");
-        return;
-      }
-    }
-    fetchAnalytics();
+    // // Check if the local data is still valid
+    // if (localLatestRefDate && localLatestRefDate === filters.service_date_to) {
+    //   const localData = JSON.parse(localStorage.getItem("analyticsData"));
+    //   if (localData) {
+    //     setAnalyticsData(localData);
+    //     handleSuccess("Using locally stored data.");
+    //     return;
+    //   }
+    // }
+    fetchAnalytics().then(r => {});
   }, [filters]);
+  //set pages
+// Update your useEffect for pagination calculation
   useEffect(() => {
-    if (analyticsData?.detailed_analysis) {
-      const total = analyticsData.detailed_analysis.length;
+    const dataToUse = filteredData || analyticsData?.detailed_analysis;
+    if (dataToUse) {
+      const total = dataToUse.length;
+      setTotalItems(total);
       setTotalPages(Math.ceil(total / rowsPerPage));
     }
-  }, [analyticsData, rowsPerPage]);
+  }, [analyticsData, filteredData, rowsPerPage]);
+
   const handleInputChange = (field, value) => {
     setInputValues((prev) => ({ ...prev, [field]: value }));
   };
@@ -309,11 +319,52 @@ const RAServiceCodeAnalytics = () => {
 
     setExpandedRows(newExpanded);
   };
-  const paginatedData =
-    analyticsData?.detailed_analysis?.slice(
-      page * rowsPerPage,
-      page * rowsPerPage + rowsPerPage,
-    ) || [];
+  const applyFilter = (filterType) => {
+    if (!analyticsData?.detailed_analysis) return;
+
+    let filtered = [...analyticsData.detailed_analysis];
+
+    if (activeFilter === filterType) {
+      // If clicking the same filter, clear it
+      setPage(0);
+      setActiveFilter(null);
+      setFilteredData(null);
+      return;
+    }
+
+    switch (filterType) {
+      case 'eligible_q040':
+        filtered = filtered.filter(item => item.eligable_for_q040 > 0);
+        break;
+      case 'billing_error':
+        filtered = filtered.filter(item => item.error > 0);
+        break;
+      case 'q040_error':
+        filtered = filtered.filter(item => item.q040Error > 0);
+        break;
+      case 'twotimes_k030':
+        filtered = filtered.filter(item => item.twotimes_k030 > 0);
+        break;
+      case 'billed':
+        // Clear all filters - show all data
+        setActiveFilter(null);
+        setFilteredData(null);
+        setPage(0); // Reset to first page
+        return;
+      default:
+        filtered = analyticsData.detailed_analysis;
+    }
+
+    setActiveFilter(filterType);
+    setFilteredData(filtered);
+    setPage(0); // Reset to first page
+  };
+
+  // Update your paginatedData calculation
+  const paginatedData = (filteredData || analyticsData?.detailed_analysis)?.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage,
+  ) || [];
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
@@ -407,7 +458,6 @@ const RAServiceCodeAnalytics = () => {
         clientId: RINGCENTRAL_CONFIG.clientId,
         clientSecret: RINGCENTRAL_CONFIG.clientSecret,
       });
-      console.log(`RC:${rc}`);
       await rc.authorize({ jwt: RINGCENTRAL_CONFIG.jwt });
 
       const res = await rc.restapi()
@@ -485,7 +535,6 @@ const RAServiceCodeAnalytics = () => {
     });
 
     session.on("accepted", () => {
-      console.log("📞 Call connected");
       const pc = session.sessionDescriptionHandler.peerConnection;
 
       pc.getReceivers().forEach(receiver => {
@@ -534,7 +583,17 @@ const RAServiceCodeAnalytics = () => {
     setCurrentPatientPhone("");
     setCurrentPatientName("");
   };
+  const useStyles = makeStyles(() => ({
+    narrowCell: {
+      padding:'0.3rem 1rem'
+      // whiteSpace: 'nowrap',
+      // overflow: 'hidden',
+      // textOverflow: 'ellipsis',
+    },
+  }));
 
+// In your component:
+  const classes = useStyles();
   return (
     <Layout1 clinicInfo={clinicInfo} tabtitle={tabtitle} title={title}>
       <div>
@@ -607,8 +666,8 @@ const RAServiceCodeAnalytics = () => {
                 ) : analyticsData ? (
                   <>
                     {/* Summary Cards */}
-                    <Grid container spacing={1} sx={{ mb: 4 }} justifyContent="center">
-                      <Grid item xs={6} md={1.5}>
+                    <Grid container spacing={0} sx={{ mb: 4 }} justifyContent="center">
+                      <Grid item xs={6} md={1}>
                         <MetricCard
                           title="Patients"
                           value={analyticsData.summary.total_hins_with_multiple_codes}
@@ -617,10 +676,10 @@ const RAServiceCodeAnalytics = () => {
                           // trend="up"
                           // trendValue="+0.3%"
                           color="success"
-                          size="small"
+                          size="extraSmall"
                         />
                       </Grid>
-                      <Grid item xs={6} md={1.5}>
+                      <Grid item xs={6} md={1}>
                         <MetricCard
                           title="Billed"
                           value={analyticsData.summary.total_service_code_instances}
@@ -629,10 +688,13 @@ const RAServiceCodeAnalytics = () => {
                           // trend="up"
                           // trendValue="+0.3%"
                           color="warning"
-                          size="small"
+                          size="extraSmall"
+                          clickable={true}
+                          isActive={activeFilter === 'billed'}
+                          onClick={() => applyFilter('billed')}
                         />
                       </Grid>
-                      <Grid item xs={6} md={1.5}>
+                      <Grid item xs={6} md={1}>
                         <MetricCard
                           title="Errors"
                           value={analyticsData.summary.total_erros}
@@ -641,76 +703,90 @@ const RAServiceCodeAnalytics = () => {
                           // trend="up"
                           // trendValue="+0.3%"
                           color="error"
-                          size="small"
+                          size="extraSmall"
+                          clickable={true}
+                          isActive={activeFilter === 'billing_error'}
+                          onClick={() => applyFilter('billing_error')}
                         />
                       </Grid>
-                      <Grid item xs={6} md={1.5}>
+                      <Grid item xs={6} md={1}>
                         <MetricCard
-                          title="Eligible for Q040A"
+                          title="Two K030As"
+                          value={analyticsData.summary.total_twotimes_k030}
+                          suffix=""
+                          icon="yes"
+                          // trend="up"
+                          // trendValue="+0.3%"
+                          color="success"
+                          size="extraSmall"
+                          clickable={true}
+                          isActive={activeFilter === 'twotimes_k030'}
+                          onClick={() => applyFilter('twotimes_k030')}
+                        />
+                      </Grid>
+                      <Grid item xs={6} md={1}>
+                        <MetricCard
+                          title="Eligible Q040A"
                           value={analyticsData.summary.total_eligable_for_q040}
                           suffix=""
                           icon="yes"
                           // trend="up"
                           // trendValue="+0.3%"
                           color="success"
-                          size="small"
+                          size="extraSmall"
+                          clickable={true}
+                          isActive={activeFilter === 'eligible_q040'}
+                          onClick={() => applyFilter('eligible_q040')}
                         />
                       </Grid>
-                      <Grid item xs={6} md={1.5}>
+                      <Grid item xs={6} md={1}>
                         <MetricCard
                           title="Claimed"
-                          value={formatCurrency(
-                            analyticsData.summary.total_amount_claimed,
-                          )}
+                          value={`${formatCurrency(analyticsData.summary.total_amount_claimed)}K`}
                           suffix=""
                           icon="invoice"
                           // trend="up"
                           // trendValue="+0.3%"
                           color="secondary"
-                          size="small"
+                          size="extraSmall"
                         />
                       </Grid>
-                      <Grid item xs={6} md={1.5}>
+                      <Grid item xs={6} md={1}>
                         <MetricCard
                           title="Total Paid"
-                          value={formatCurrency(
-                            analyticsData.summary.total_amount_paid,
-                          )}
+                          value={`${formatCurrency(analyticsData.summary.total_amount_paid)}K`}
                           suffix=""
                           icon="paid"
                           // trend="up"
                           // trendValue="+0.3%"
                           color="success"
-                          size="small"
+                          size="extraSmall"
                         />
                       </Grid>
-                      <Grid item xs={6} md={1.5}>
+                      <Grid item xs={6} md={1}>
                         <MetricCard
                           title="Potential"
-                          value={formatCurrency(
-                            analyticsData.summary.total_potential,
-                          )}
+                          value={`${formatCurrency(analyticsData.summary.total_potential)}K`}
+
                           suffix=""
                           icon="unpaid"
                           // trend="up"
                           // trendValue="+0.3%"
                           color="info"
-                          size="small"
-                          subtitle={`+ ${formatCurrency(analyticsData.summary.total_amount_claimed - analyticsData.summary.total_amount_paid)}`}
+                          size="extraSmall"
+                          subtitle={`+ ${formatCurrency(analyticsData.summary.total_amount_claimed - analyticsData.summary.total_amount_paid)}k`}
                         />
                       </Grid>
-                      <Grid item xs={6} md={1.5}>
+                      <Grid item xs={6} md={1}>
                         <MetricCard
                           title="Total"
-                          value={formatCurrency(
-                            analyticsData.summary.total_potential + analyticsData.summary.total_amount_claimed,
-                          )}
+                          value={`${formatCurrency(analyticsData.summary.total_potential + analyticsData.summary.total_amount_claimed)}K`}
                           suffix=""
                           icon="revenue"
                           // trend="up"
                           // trendValue="+0.3%"
                           color="primary"
-                          size="small"
+                          size="extraSmall"
                         />
                       </Grid>
                     </Grid>
@@ -828,8 +904,9 @@ const RAServiceCodeAnalytics = () => {
                     </Box>
                   </Box>
                   <Box>
+                    {/*Distribution of K030 Invoice Counts by Number of Times Billed per Patient,Frequency of K030 Billing Instances per Patient */}
                     <ProfessionalGraph
-                      title="Bill Breakdown"
+                      title="Frequency of K030A Billing Instances per Patient ( with errors )"
                       data={analyticsData.summary.occurrence_distribution}
                       size="large"
                       xAxisTitle="x Times"
@@ -1105,28 +1182,34 @@ const RAServiceCodeAnalytics = () => {
                               </TableCell>
                               <TableCell>
                                 <TableCell>
-                                  {(item.total_occurrences - item.error < 3 && (item.q040 - item.q040Error) < 1) ? (<>Call
+                                  {item.systemq040 ? (<>
+                                    Q040 billed <br />
+                                    for {item.systemq040.service_date} <br />
+                                    on {item.systemq040.createdDate}
+                                  </>):(
+                                    (item.total_occurrences - item.error < 3 && (item.q040 - item.q040Error) < 1) ? (<>Call
                                       Patient and Bill K030</>) :
-                                    (item.total_occurrences - item.error < 3 && (item.q040 - item.q040Error) === 1) ? (<>Call
-                                        Patient and Bill K030</>) :
-                                      (item.total_occurrences - item.error === 0 && (item.q040 - item.q040Error) === 0) ? (<>Call
-                                          Patient and Bill K030</>) :
+                                        (item.total_occurrences - item.error < 3 && (item.q040 - item.q040Error) === 1) ? (<>Call
+                                      Patient and Bill K030</>) :
+                                        (item.total_occurrences - item.error === 0 && (item.q040 - item.q040Error) === 0) ? (<>Call
+                                      Patient and Bill K030</>) :
                                         (item.total_occurrences - item.error === 0 && (item.q040 - item.q040Error) > 1) ? (<>Call
-                                            Patient and Bill K030</>) :
-                                          (item.total_occurrences - item.error === 3 && (item.q040 - item.q040Error) < 1) ? (
-                                            <Link
-                                              target="_blank"
-                                              to={`${analyticsData.url}oscar/billing/CA/ON/billingOB.jsp?billRegion=ON&billForm=MFP&hotclick=&appointment_no=0&demographic_name=${item.details.name}&demographic_no=${item.details.demo}&providerview=${analyticsData.apptProvider_no}&user_no=${analyticsData.user_no}&apptProvider_no=${analyticsData.apptProvider_no}&AppointmentDate=${getCurrentDate()}&deroster=Q040A&hin=${item.hin}`}>
-                                              Bill Q040A
-                                            </Link>) :
-                                            (item.total_occurrences - item.error > 3 && (item.q040 - item.q040Error) < 1) ? (
-                                              <Link
-                                                target="_blank"
-                                                to={`${analyticsData.url}oscar/billing/CA/ON/billingOB.jsp?billRegion=ON&billForm=MFP&hotclick=&appointment_no=0&demographic_name=${item.details.name}&demographic_no=${item.details.demo}&providerview=${analyticsData.apptProvider_no}&user_no=${analyticsData.user_no}&apptProvider_no=${analyticsData.apptProvider_no}&AppointmentDate=${getCurrentDate()}&deroster=Q040A&hin=${item.hin}`}>
-                                                Bill Q040A
-                                              </Link>) :
-                                            (<><OfflinePinIcon></OfflinePinIcon></>)
-                                  }
+                                      Patient and Bill K030</>) :
+                                        (item.total_occurrences - item.error === 3 && (item.q040 - item.q040Error) < 1) ? (
+                                      <Link
+                                      target="_blank"
+                                      to={`${analyticsData.url}oscar/billing/CA/ON/billingOB.jsp?billRegion=ON&billForm=MFP&hotclick=&appointment_no=0&demographic_name=${item.details.name}&demographic_no=${item.details.demo}&providerview=${analyticsData.apptProvider_no}&user_no=${analyticsData.user_no}&apptProvider_no=${analyticsData.apptProvider_no}&AppointmentDate=${getCurrentDate()}&deroster=Q040A&hin=${item.hin}`}>
+                                  Bill Q040A
+                                </Link>) :
+                                (item.total_occurrences - item.error > 3 && (item.q040 - item.q040Error) < 1) ? (
+                                <Link
+                                  target="_blank"
+                                  to={`${analyticsData.url}oscar/billing/CA/ON/billingOB.jsp?billRegion=ON&billForm=MFP&hotclick=&appointment_no=0&demographic_name=${item.details.name}&demographic_no=${item.details.demo}&providerview=${analyticsData.apptProvider_no}&user_no=${analyticsData.user_no}&apptProvider_no=${analyticsData.apptProvider_no}&AppointmentDate=${getCurrentDate()}&deroster=Q040A&hin=${item.hin}`}>
+                                  Bill Q040A
+                                </Link>) :
+                                (<><OfflinePinIcon></OfflinePinIcon></>)
+
+                                    )}
                                 </TableCell>
 
                               </TableCell>
