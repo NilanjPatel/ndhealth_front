@@ -13,7 +13,7 @@ import {
     DialogContent,
     DialogActions,
     TextField,
-    CardActionArea, Box, useTheme, useMediaQuery,
+     Box, useTheme, useMediaQuery,
 } from "@mui/material";
 import {useParams, useNavigate} from "react-router-dom";
 
@@ -21,7 +21,7 @@ import {Grid, Card, CardContent, Typography, CardHeader} from "@mui/material";
 import Layout from "./Layout";
 import "./css/Marquee.css";
 
-import {formatDob, formatHin, redirectHomeM} from "./resources/utils";
+import {formatDob, formatHin} from "./resources/utils";
 import HelmetComponent from "./SEO/HelmetComponent";
 // import CircularProgress from "@mui/joy";
 import NdLoader from "nd_health/components/resources/Ndloader";
@@ -34,17 +34,18 @@ import MKTypography from "components/MKTypography";
 // import Icon from "@mui/material/Icon";
 import GoHome from "./resources/GoHome";
 import Divider from "@mui/material/Divider";
+import {useClinicInfo} from "./resources/useClinicInfo.js";
 
 const ClinicInfo = () => {
     // const location = useLocation();
     const {clinicSlug} = useParams();
-    const [clinicInfo, setClinicInfo] = useState(null);
-    const [locationsData, setLocations] = useState(null);
+    // const [clinicInfo, setClinicInfo] = useState(null);
+    // const [locationsData, setLocations] = useState(null);
     const [buttonpressed, setButtonPressed] = useState(true);
     const navigate = useNavigate();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-    const isTablet = useMediaQuery(theme.breakpoints.between('md', 'lg'));
+    // const isTablet = useMediaQuery(theme.breakpoints.between('md', 'lg'));
 
     // const pathSegments = location.pathname.split('/');
     // const clinicSlugcurrent = clinicSlug || pathSegments[pathSegments.indexOf('clinic') + 1]
@@ -54,53 +55,20 @@ const ClinicInfo = () => {
     const [openModal, setOpenModal] = useState(false);
     const [modalContent, setModalContent] = useState("");
     const [selectedLocation, setSelectedLocation] = useState(null);
-    const [notice, setNotice] = useState(null);
+    // const [notice, setNotice] = useState(null);
     // const [appointmentData, setAppointmentData] = useState(null);
     // const [clinic_locations_multiple] = useState("We provide services at the following location(s):");
-    const [clinicInfoFetched, setClinicInfoFetched] = useState(false);
+    // const [clinicInfoFetched, setClinicInfoFetched] = useState(false);
     // const [locationColor, setLocationColor] = useState(null);
+    const { clinicInfo, locationsData, notice, loading } = useClinicInfo(clinicSlug);
 
     const dobRef = useRef(null);
 
     const [hcvValidate, setHcvValidate] = useState(false);
     const [inputValue, setInputValue] = useState("");
-    const [submitbutton, setSubmitbutton] = useState(true);
+    const [submitButton, setSubmitButton] = useState(true);
 
-    useEffect(() => {
-        const fetchClinicInfo = async () => {
-            try {
-                const response = await fetch(`${API_BASE_PATH}/clinic/${clinicSlug}/`);
-                // const response = await fetch(`http://192.168.88.164:8000/api/clinic/${clinicSlug}/`);
 
-                const data = await response.json();
-                setClinicInfo(data.clinic);
-                setLocations(data.locations);
-                if (data.notices) {
-                    const notices = [];
-                    for (let i = 0; i < data.notices.length; i++) {
-                        if (data.notices[i]) {
-                            // append the notice to the notice state
-                            notices.push(data.notices[i]);
-                            // set the notice state
-                            setNotice(notices.join(" | "));
-                        }
-                    }
-                }
-            } catch (error) {
-                console.error("Error fetching clinic information:", error);
-            }
-        };
-
-        if (!clinicInfoFetched) {
-            fetchClinicInfo().then(r => {
-            });
-            setClinicInfoFetched(true);
-        }
-        // change clinic_locations_multiple if there are multiple locations
-        // if (locationsData && locationsData.length > 1) {
-        //     set_clinic_locations_multiple("Serving at Multiple Locations.");
-        // }
-    }, [clinicSlug, hin, locationsData, clinicInfoFetched]);
 
     const handleHinChange = (e) => {
         const formattedHin = formatHin(e.target.value);
@@ -119,9 +87,9 @@ const ClinicInfo = () => {
     const handleRequest = async () => {
         try {
             // Make a request with clinicSlug, hin, and dob
-            setSubmitbutton(false);
+            setSubmitButton(false);
             if (hin.length < 12 || dob.length < 10) {
-                setSubmitbutton(true);
+                setSubmitButton(true);
                 setModalContent("Please enter your health-card number and date of birth.");
                 setOpenModal(true);
                 setButtonPressed(true);
@@ -171,7 +139,7 @@ const ClinicInfo = () => {
                 setOpenModal(true);
                 setButtonPressed(true);
             }
-            setSubmitbutton(true);
+            setSubmitButton(true);
         } catch (error) {
             setButtonPressed(true);
         }
@@ -458,7 +426,7 @@ const ClinicInfo = () => {
                     </DialogActions>
                 </Dialog>
 
-                {!submitbutton && (
+                {!submitButton && (
                     <div
                         style={{
                             position: "absolute",

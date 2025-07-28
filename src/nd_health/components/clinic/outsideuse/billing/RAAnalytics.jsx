@@ -58,6 +58,7 @@ import WebPhone from "ringcentral-web-phone";
 import { Buffer } from "buffer";
 import { getCurrentDate } from "../../../resources/utils";
 import { makeStyles } from "@mui/styles";
+import {useClinicInfo} from "../../../resources/useClinicInfo.js";
 
 window.Buffer = Buffer;
 
@@ -77,8 +78,8 @@ const RAServiceCodeAnalytics = () => {
     service_date_to: new Date().toISOString().split("T")[0],
     // min_occurrences: 2,
   });
-  const [clinicInfo, setClinicInfo] = useState(null);
-  const [clinicInfoFetched, setClinicInfoFetched] = useState(false);
+  // const [clinicInfo, setClinicInfo] = useState(null);
+  // const [clinicInfoFetched, setClinicInfoFetched] = useState(false);
   const { clinicSlug } = useParams();
 
   const [inputValues, setInputValues] = useState({
@@ -143,6 +144,9 @@ const RAServiceCodeAnalytics = () => {
     }
   };
   const tabtitle = "RA Analytics by ND Health";
+  const { clinicInfo, locationsData, notice, loading1 } = useClinicInfo(clinicSlug);
+
+
   const fetchAnalytics = async () => {
     setLoading(true);
     setError(null);
@@ -227,27 +231,6 @@ const RAServiceCodeAnalytics = () => {
       }
     }
   }, [analyticsData]);
-  useEffect(() => {
-    const fetchClinicInfo = async () => {
-      try {
-        const response = await fetch(`${API_BASE_PATH}/clinic/${clinicSlug}/`);
-        const data = await response.json();
-        setClinicInfo(data.clinic);
-      } catch (error) {
-        console.error("Error fetching clinic information:", error);
-      }
-    };
-
-    if (!clinicInfoFetched) {
-      fetchClinicInfo().then(r => {
-      });
-      setClinicInfoFetched(true);
-    }
-    // change clinic_locations_multiple if there are multiple locations
-    // if (locationsData && locationsData.length > 1) {
-    //     set_clinic_locations_multiple("Serving at Multiple Locations.");
-    // }
-  }, [clinicSlug, clinicInfoFetched]);
   useEffect(() => {
     const localLatestRefDate = localStorage.getItem("latestRefDate");
     // const currentFilters = JSON.stringify(filters);

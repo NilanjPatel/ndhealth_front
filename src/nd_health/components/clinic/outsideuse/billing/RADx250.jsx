@@ -23,6 +23,7 @@ import CardHeader from "@mui/material/CardHeader";
 import CircularProgress from "@mui/material/CircularProgress";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
+import { useClinicInfo } from "../../../resources/useClinicInfo.js";
 
 const RADx250 = () => {
   const tabtitle = "ND Health - RA Dx 250 Analysis";
@@ -49,8 +50,8 @@ const RADx250 = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
-  const [clinicInfo, setClinicInfo] = useState(null);
-  const [clinicInfoFetched, setClinicInfoFetched] = useState(false);
+  // const [clinicInfo, setClinicInfo] = useState(null);
+  // const [clinicInfoFetched, setClinicInfoFetched] = useState(false);
   const [page, setPage] = useState(0); // Current page
   const [rowsPerPage, setRowsPerPage] = useState(10); // Rows per page
   const [totalCount, setTotalCount] = useState(0); // Total number of items
@@ -58,28 +59,7 @@ const RADx250 = () => {
   const [analysisCode, setAnalysisCode] = useState("");
   const [frequencyData, setFrequencyData] = useState(null);
   const [loadingAnalysis, setLoadingAnalysis] = useState(false);
-
-  useEffect(() => {
-    const fetchClinicInfo = async () => {
-      try {
-        const response = await fetch(`${API_BASE_PATH}/clinic/${clinicSlug}/`);
-        const data = await response.json();
-        setClinicInfo(data.clinic);
-      } catch (error) {
-        console.error("Error fetching clinic information:", error);
-      }
-    };
-
-    if (!clinicInfoFetched) {
-      fetchClinicInfo().then(r => {
-      });
-      setClinicInfoFetched(true);
-    }
-    // change clinic_locations_multiple if there are multiple locations
-    // if (locationsData && locationsData.length > 1) {
-    //     set_clinic_locations_multiple("Serving at Multiple Locations.");
-    // }
-  }, [clinicSlug, clinicInfoFetched]);
+  const { clinicInfo, locationsData, notice, clinicInfoFetched, clinicInfoError } = useClinicInfo(clinicSlug);
 
   useEffect(() => {
     const fetchProducts = async () => {

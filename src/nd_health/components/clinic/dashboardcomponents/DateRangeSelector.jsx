@@ -60,7 +60,7 @@ function DateRangeSelector({ onDateChange }) {
                 {...params}
                 variant="outlined"
                 fullWidth
-                helperText="Select start month"
+                // helperText="Select start month"
               />
             )}
           />
@@ -81,7 +81,7 @@ function DateRangeSelector({ onDateChange }) {
                 {...params}
                 variant="outlined"
                 fullWidth
-                helperText="Select end month"
+                // helperText="Select end month"
               />
             )}
           />

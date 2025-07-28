@@ -39,13 +39,14 @@ import GoHome from "./resources/GoHome";
 import CircularProgress from "@mui/joy/CircularProgress";
 import { alpha } from "@mui/material/styles";
 import NdLoader from "./resources/Ndloader";
+import { useClinicInfo } from "./resources/useClinicInfo.js";
 
 const RequestDemographic = () => {
   const { clinicSlug } = useParams();
   const location = useLocation();
   // const [openApp, setOpenApp] = useState(false);
   const clinicInfo1 = location.state && location.state.clinicInfo;
-  const [clinicInfo, setClinicInfo] = useState(clinicInfo1);
+  // const [clinicInfo, setClinicInfo] = useState(clinicInfo1);
   const [termsInfo, settermsInfo] = useState(null);
   const [agreementChecked, setAgreementChecked] = useState(false);
   const [openAgreementPopup, setOpenAgreementPopup] = useState(false);
@@ -115,19 +116,16 @@ const RequestDemographic = () => {
     other: false,
     otherText: "",
   });
-  const [hinVersioncodeerror, setHinVersioncodeerror] = useState(false);
+  // const [hinVersioncodeerror, setHinVersioncodeerror] = useState(false);
+  const { clinicInfo, locationsData, notice1, loading1 } = useClinicInfo(clinicSlug);
 
   useEffect(() => {
     const fetchClinicInfo = async () => {
       try {
-        const response = await fetch(`${API_BASE_PATH}/clinic/${clinicSlug}/`);
 
-        const data = await response.json();
-        setClinicInfo(data.clinic);
-        // setClinic_id(data.clinic.id);
         try {
           const response1 = await fetch(
-            `${API_BASE_PATH}/clinic/notice/${data.clinic.id}/new_patient_registration/`,
+            `${API_BASE_PATH}/clinic/notice/${clinicInfo.id}/new_patient_registration/`,
           );
           const data1 = await response1.json();
           setnotice(data1.notice);
@@ -140,11 +138,9 @@ const RequestDemographic = () => {
     };
 
     if (!clinicInfo1) {
-      fetchClinicInfo();
-    } else {
-      setClinicInfo(clinicInfo1);
+      fetchClinicInfo().then(r => {});
     }
-  }, [clinicInfo1]);
+  }, [clinicInfo1,clinicInfo]);
 
   // get patient details
   useEffect(() => {

@@ -18,6 +18,7 @@ import '../css/Marquee.css';
 import ClinicDashboard from './ClinicDashboard';
 import ApprovePatients from './ApprovePatients';
 import HelmetComponent from '../SEO/HelmetComponent';
+import { useClinicInfo } from "../resources/useClinicInfo.js";
 
 interface TabPanelProps {
     children?: ReactNode;
@@ -55,8 +56,8 @@ function a11yProps(index: number) {
 const ClinicHome = () => {
     const location = useLocation();
     const { clinicSlug } = useParams();
-    const [clinicInfo, setClinicInfo] = useState(null);
-    const [locationsData, setLocations] = useState(null);
+    // const [clinicInfo, setClinicInfo] = useState(null);
+    // const [locationsData, setLocations] = useState(null);
     const [buttonpressed, setButtonPressed] = useState(true);
     const navigate = useNavigate();
 
@@ -69,6 +70,7 @@ const ClinicHome = () => {
 
     const [value, setValue] = React.useState(0);
 
+    const { clinicInfo, locationsData, notice, loading1 } = useClinicInfo(clinicSlug);
 
 
 
@@ -77,24 +79,6 @@ const ClinicHome = () => {
     };
 
 
-    useEffect(() => {
-        const fetchClinicInfo = async () => {
-            try {
-                const response = await fetch(`${API_BASE_PATH}/clinic/${clinicSlug}/`);
-                // const response = await fetch(`http://192.168.88.164:8000/api/clinic/${clinicSlug}/`);
-
-                const data = await response.json();
-                setClinicInfo(data.clinic);
-                setLocations(data.locations);
-
-            } catch (error) {
-                console.error('Error fetching clinic information:', error);
-            }
-        };
-
-
-        fetchClinicInfo();
-    }, [clinicSlug]);
 
     const handleCloseModal = () => {
         setOpenModal(false);

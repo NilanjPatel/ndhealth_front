@@ -452,7 +452,6 @@ export const SavedByDerostering = () => {
       }
     };
     if (!clinicInfoFetched && clinicSlug) {
-      console.log(`clinicInfo:${clinicInfoFetched}, ${clinicSlug}`);
       fetchClinicInfo().then(r => {
       });
       setClinicInfoFetched(true);

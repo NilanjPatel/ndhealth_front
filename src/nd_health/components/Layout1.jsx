@@ -172,11 +172,7 @@ const Layout1 = ({ clinicInfo, tabtitle, children, title }) => {
     const fetchClinicInfo = async () => {
       setHome(`https://nd-health.ca`);
       try {
-        // const response = await fetch(`${API_BASE_PATH}/clinic/${clinicSlug}/`);
 
-        // const data = await response.json();
-        // setClinicInfo(clinicInfo);
-        // setLocations(clinicInfo.locations);
 
         if (clinicInfo) {
           setClinicWebsite(clinicInfo.website);

@@ -36,6 +36,7 @@ import Link from "@mui/material/Link";
 import NotificationDialog from "../../resources/Notification";
 import { getCurrentDate, TokenLogin } from "../../resources/utils";
 import AdvancedDashboardLoading from "../../processes/AdvancedDashboardLoading";
+import { useClinicInfo } from "../../resources/useClinicInfo.js";
 
 // Row component for expandable table
 // Enhanced SummaryRow with roster fetching
@@ -44,11 +45,11 @@ import AdvancedDashboardLoading from "../../processes/AdvancedDashboardLoading";
 const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpdate }) => {
   const tabtitle = "ND Health - Outside Use"
   // Original state variables
-  const [clinicInfo, setClinicInfo] = useState(null);
-  const [clinicInfoError, setClinicInfoError] = useState(null);
-  const [clinicInfoFetched, setClinicInfoFetched] = useState(false);
+  // const [clinicInfo, setClinicInfo] = useState(null);
+  // const [clinicInfoError, setClinicInfoError] = useState(null);
+  // const [clinicInfoFetched, setClinicInfoFetched] = useState(false);
   const [selectedRoster, setSelectedRoster] = useState("all");
-  const [updateSuccess, setUpdateSuccess] = useState(false);
+  // const [updateSuccess, setUpdateSuccess] = useState(false);
   // NotificationDialog
   const [openModal, setOpenModal] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -63,8 +64,9 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
   // State for individual roster updates
   const [individualRosterUpdating, setIndividualRosterUpdating] = useState(false);
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
-  const [totalSaved, setTotalSaved] = useState(0);
-  const [totalOthers, setTotalOthers] = useState(0);
+  // const [totalSaved, setTotalSaved] = useState(0);
+  // const [totalOthers, setTotalOthers] = useState(0);
+  const { clinicInfo, locationsData, notice, clinicInfoFetched, clinicInfoError } = useClinicInfo(clinicSlug);
 
 
   // Batch fetch roster information for current page patients only
@@ -322,33 +324,14 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
   useEffect(() => {
     handleAuthData();
   }, []);
-  useEffect(() => {
-    const fetchClinicInfo = async () => {
-      try {
-        const response = await fetch(`${API_BASE_PATH}/clinic/${clinicSlug}/`);
-        if (!response.ok) throw new Error("Failed to fetch clinic info");
-        const data = await response.json();
-        setClinicInfo(data.clinic || null);
-      } catch (error) {
-        setClinicInfoError(error.message);
-      } finally {
-        setClinicInfoFetched(true);
-      }
-    };
 
-    if (!clinicInfoFetched && clinicSlug) {
-      fetchClinicInfo().then(r => {
-      });
-      setClinicInfoFetched(true);
-    }
-  }, [clinicInfoFetched, clinicSlug]);
-  useEffect(() => {
-    if (data) {
-      const { totalForCode44, totalForOthers } = calculateTotals(data.summary);
-      setTotalSaved(totalForCode44);
-      setTotalOthers(totalForOthers);
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data) {
+  //     const { totalForCode44, totalForOthers } = calculateTotals(data.summary);
+  //     setTotalSaved(totalForCode44);
+  //     setTotalOthers(totalForOthers);
+  //   }
+  // }, [data]);
 
   // Extract unique roster values
   const rosterOptions = useMemo(() => {

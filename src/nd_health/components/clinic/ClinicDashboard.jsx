@@ -13,24 +13,21 @@ import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Badge from "@mui/material/Badge";
 import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
-import Link from "@mui/material/Link";
+import Paper from "@mui/material/Paper";
+import Avatar from "@mui/material/Avatar";
+import Chip from "@mui/material/Chip";
 import MenuIcon from "@mui/icons-material/Menu";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import PropTypes from "prop-types";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PeopleIcon from "@mui/icons-material/People";
 import MailIcon from "@mui/icons-material/Mail";
-import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ListAltIcon from "@mui/icons-material/ListAlt";
-import ListAltOutlined from "@mui/icons-material/ListAltOutlined";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
-import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import HelmetComponent from "../SEO/HelmetComponent";
 import API_BASE_PATH from "../../../apiConfig";
 
@@ -43,20 +40,7 @@ import EFormList from "./EFormList";
 import EmailStatus from "./EmailStatus";
 import CreateNewStaff from "./CreateNewStaff";
 
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
-
-const drawerWidth = 240;
+const drawerWidth = 280;
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
@@ -66,6 +50,8 @@ const AppBar = styled(MuiAppBar, {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
+  backgroundColor: theme.palette.primary.main,
+  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
   ...(open && {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
@@ -87,6 +73,8 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== "open" 
         duration: theme.transitions.duration.enteringScreen,
       }),
       boxSizing: "border-box",
+      backgroundColor: theme.palette.background.paper,
+      borderRight: `1px solid ${theme.palette.divider}`,
       ...(!open && {
         overflowX: "hidden",
         transition: theme.transitions.create("width", {
@@ -102,246 +90,296 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== "open" 
   })
 );
 
-// TODO remove, this demo shouldn't need to reset the theme.
-const defaultTheme = createTheme();
+const StyledListItem = styled(ListItemButton)(({ theme, active }) => ({
+  borderRadius: theme.spacing(1),
+  margin: theme.spacing(0.5, 1),
+  backgroundColor: active ? theme.palette.primary.main : 'transparent',
+  color: active ? theme.palette.primary.contrastText : theme.palette.text.primary,
+  '&:hover': {
+    backgroundColor: active ? theme.palette.primary.dark : theme.palette.action.hover,
+  },
+  '& .MuiListItemIcon-root': {
+    color: active ? theme.palette.primary.contrastText : theme.palette.text.secondary,
+    minWidth: 40,
+  },
+}));
 
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+const ContentArea = styled(Box)(({ theme }) => ({
+  backgroundColor: theme.palette.grey[50],
+  minHeight: 'calc(100vh - 64px)', // Subtract toolbar height
+  padding: 0,
+  display: 'flex',
+  flexDirection: 'column',
+}));
 
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`vertical-tabpanel-${index}`}
-      aria-labelledby={`vertical-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ paddingTop: "1rem", width: "100%" }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
+const ContentHeader = styled(Box)(({ theme }) => ({
+  backgroundColor: theme.palette.background.paper,
+  borderBottom: `1px solid ${theme.palette.divider}`,
+  padding: theme.spacing(2, 3),
+  boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+}));
 
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired,
+const ContentBody = styled(Box)(({ theme }) => ({
+  flex: 1,
+  padding: 0,
+  overflow: 'hidden', // Keep container from scrolling
+  display: 'flex',
+  flexDirection: 'column',
+}));
+
+// Professional theme
+const professionalTheme = createTheme({
+  palette: {
+    primary: {
+      main: '#1976d2',
+      dark: '#115293',
+      light: '#42a5f5',
+    },
+    secondary: {
+      main: '#dc004e',
+    },
+    background: {
+      default: '#f5f5f5',
+      paper: '#ffffff',
+    },
+    grey: {
+      50: '#fafafa',
+      100: '#f5f5f5',
+    }
+  },
+  typography: {
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    h6: {
+      fontWeight: 600,
+    },
+  },
+  components: {
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+          borderRadius: 8,
+        },
+      },
+    },
+  },
+});
+
+// Navigation items configuration
+const getNavigationItems = (userType) => {
+  const baseItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: DashboardIcon, component: 'Dashboard' },
+  ];
+
+  const adminItems = [
+    ...baseItems,
+    { id: 'patients', label: 'Patients', icon: PeopleIcon, component: 'ApprovePatients', hasBadge: true },
+    { id: 'email', label: 'Email Status', icon: MailIcon, component: 'EmailStatus' },
+    { id: 'eforms', label: 'E-Forms', icon: ListAltIcon, component: 'EFormList' },
+    { id: 'settings', label: 'Settings', icon: SettingsIcon, component: 'Settings1' },
+    { id: 'staff', label: 'New Staff', icon: PersonAddIcon, component: 'CreateNewStaff' },
+  ];
+
+  const staffItems = [
+    ...baseItems,
+    { id: 'patients', label: 'Patients', icon: PeopleIcon, component: 'ApprovePatients', hasBadge: true },
+    { id: 'email', label: 'Email Status', icon: MailIcon, component: 'EmailStatus' },
+    { id: 'eforms', label: 'E-Forms', icon: ListAltIcon, component: 'EFormList' },
+  ];
+
+  const doctorItems = [
+    ...baseItems,
+    { id: 'email', label: 'Email Status', icon: MailIcon, component: 'EmailStatus' },
+  ];
+
+  switch (userType) {
+    case 'clinic': return adminItems;
+    case 'staff': return staffItems;
+    case 'doctor': return doctorItems;
+    default: return baseItems;
+  }
 };
 
-function a11yProps(index) {
-  return {
-    id: `vertical-tab-${index}`,
-    "aria-controls": `vertical-tabpanel-${index}`,
-  };
-}
-
 export default function ClinicHome() {
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(true);
+  const [activeTab, setActiveTab] = useState('dashboard');
   const location = useLocation();
-  const [clinicInfo, setClinicInfo] = useState(null);
-  const clinicInfo1 = location.state && location.state.clinicInfo;
-  const [clinicName, setClinicName] = useState(null);
-  const [clinicSlug, setClinicSlug] = useState(null);
-  const [clinicUsername, setClinicUsername] = useState(null);
-  const [clinicId, setClinicId] = useState(null);
   const navigate = useNavigate();
-  const [newDemographic, setNewDemographic] = useState(0);
-  const [value, setValue] = React.useState(0);
-  const [dplyDashbord, setDplyDashbord] = useState(false);
-  const [dplyPatientAprv, setDplyPatientAprv] = useState(false);
-  const [dplyEmailStatus, setDplyEmailStatus] = useState(false);
-  const [dplyEforms, setDplyEforms] = useState(false);
-  const [dplySettings, setDplySettings] = useState(false);
-  const [dplyNewStaff, setDplyNewStaff] = useState(false);
 
-  const [indexDash, setIndexDash] = useState(99);
-  const [indexEmail, setIndexEmail] = useState(99);
-  const [indexPtientAprv, setIndexPtientAprv] = useState(99);
-  const [indexEform, setIndexEform] = useState(99);
-  const [indexSettings, setIndexsettings] = useState(99);
-  const [indexNewStaff, setIndexNewStaff] = useState(99);
-  const [direct_login, setDirect_login] = useState(false);
-  useEffect(() => {
-    const getClinicInfo = async (accessToken) => {
-      try {
-        const response = await fetch(`${API_BASE_PATH}/user-info/`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Token ${accessToken}`,
-          },
-        });
-        const data = await response.json();
-        if (data.detail === "Invalid token.") {
-          navigate("/");
-        }
-        if (data.user_type === "clinic") {
-          setClinicName(data.clinic.name);
-          setClinicSlug(data.clinic.slug);
-          setClinicUsername(data.username);
-          setClinicId(data.clinic.id);
-          displayForAdmin();
-        } else if (data.user_type === "doctor") {
-          setClinicName(data.doctor.name);
-          setClinicSlug(data.doctor.slug);
-          setClinicUsername(data.username);
-          setClinicId(data.doctor.id);
-          displayForDoctor();
-        } else if (data.user_type === "staff") {
-          setClinicName(data.staff.name);
-          setClinicSlug(data.staff.slug);
-          setClinicUsername(data.username);
-          setClinicId(data.staff.id);
-          displayForStaff();
-        }
-
-        // setClinicInfo(data);
-      } catch (error) {
-        console.log("Error:", error);
-      }
-    };
-
-    if (!localStorage.getItem("accessToken")) {
-      const urlParams = new URLSearchParams(window.location.search);
-      const accessToken = urlParams.get("token");
-      const username = urlParams.get("username");
-      const loggedIn = urlParams.get("loggedIn");
-      if (accessToken && username && loggedIn) {
-        localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("username", username);
-        localStorage.setItem("loggedIn", loggedIn);
-        // Proceed with authenticated actions
-        getClinicInfo(accessToken);
-        window.location.reload();
-      } else {
-        navigate("/"); // Redirect to login if no token
-      }
-    }
-  }, [direct_login]);
-
-  useEffect(() => {
-    // get user clinic info using access token
-    const accessToken = localStorage.getItem("accessToken");
-    const getClinicInfo = async () => {
-      try {
-        const response = await fetch(`${API_BASE_PATH}/user-info/`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Token ${accessToken}`,
-          },
-        });
-        const data = await response.json();
-        if (data.detail === "Invalid token.") {
-          setDirect_login(true);
-        }
-        if (data.user_type === "clinic") {
-          setClinicName(data.clinic.name);
-          setClinicSlug(data.clinic.slug);
-          setClinicUsername(data.username);
-          setClinicId(data.clinic.id);
-          displayForAdmin();
-        } else if (data.user_type === "doctor") {
-          setClinicName(data.doctor.name);
-          setClinicSlug(data.doctor.slug);
-          setClinicUsername(data.username);
-          setClinicId(data.doctor.id);
-          displayForDoctor();
-        } else if (data.user_type === "staff") {
-          setClinicName(data.staff.name);
-          setClinicSlug(data.staff.slug);
-          setClinicUsername(data.username);
-          setClinicId(data.staff.id);
-          displayForStaff();
-        }
-
-        // setClinicInfo(data);
-      } catch (error) {
-        console.log("Error:", error);
-      }
-    };
-    const isNewDemographic = async () => {
-      try {
-        const response = await fetch(`${API_BASE_PATH}/demographic-count/`, {
-          method: "POST",
-          headers: {
-            Authorization: `Token ${localStorage.getItem("accessToken")}`,
-          },
-          body: JSON.stringify({
-            clinic_slug: clinicSlug,
-          }),
-        });
-        const data = await response.json();
-        setNewDemographic(data.demographic_count);
-      } catch (error) {
-        console.log("Error:", error);
-      }
-    };
-    getClinicInfo();
-    // isNewDemographic();
+  // User and clinic state
+  const [clinicInfo, setClinicInfo] = useState({
+    name: '',
+    slug: '',
+    username: '',
+    id: null,
+    userType: '',
   });
+  const [newDemographic, setNewDemographic] = useState(0);
+  const [loading, setLoading] = useState(true);
 
-  const displayForAdmin = () => {
-    setDplyDashbord(true);
-    setDplyPatientAprv(true);
-    setDplyEmailStatus(true);
-    setDplyEforms(true);
-    setDplySettings(true);
-    setDplyNewStaff(true);
+  // Fetch user info
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const accessToken = localStorage.getItem("accessToken");
 
-    setIndexDash(0);
-    setIndexPtientAprv(1);
-    setIndexEmail(2);
-    setIndexEform(3);
-    setIndexsettings(4);
-    setIndexNewStaff(5);
+      if (!accessToken) {
+        handleTokenFromURL();
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE_PATH}/user-info/`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${accessToken}`,
+          },
+        });
+
+        const data = await response.json();
+
+        if (data.detail === "Invalid token.") {
+          handleTokenFromURL();
+          return;
+        }
+
+        const userInfo = getUserInfo(data);
+        setClinicInfo(userInfo);
+        setLoading(false);
+
+        // Fetch demographic count for admin/staff
+        if (data.user_type !== 'doctor') {
+          fetchDemographicCount(userInfo.slug);
+        }
+      } catch (error) {
+        console.error("Error fetching user info:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
+
+  const handleTokenFromURL = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const accessToken = urlParams.get("token");
+    const username = urlParams.get("username");
+    const loggedIn = urlParams.get("loggedIn");
+
+    if (accessToken && username && loggedIn) {
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("username", username);
+      localStorage.setItem("loggedIn", loggedIn);
+      window.location.reload();
+    } else {
+      navigate("/");
+    }
   };
 
-  const displayForStaff = () => {
-    setDplyDashbord(true);
-    setDplyPatientAprv(true);
-    setDplyEmailStatus(true);
-    setDplyEforms(true);
-    setDplySettings(false);
-    setDplyNewStaff(false);
-    setIndexDash(0);
-    setIndexPtientAprv(1);
-    setIndexEmail(2);
-    setIndexEform(3);
+  const getUserInfo = (data) => {
+    const userTypeMap = {
+      clinic: data.clinic,
+      doctor: data.doctor,
+      staff: data.staff,
+    };
+
+    const userEntity = userTypeMap[data.user_type];
+
+    return {
+      name: userEntity?.name || '',
+      slug: userEntity?.slug || '',
+      username: data.username || '',
+      id: userEntity?.id || null,
+      userType: data.user_type || '',
+    };
   };
 
-  const displayForDoctor = () => {
-    setDplyDashbord(true);
-    setDplyPatientAprv(false);
-    setDplyEmailStatus(true);
-    setDplyEforms(false);
-    setDplySettings(false);
-    setDplyNewStaff(false);
-    setIndexDash(0);
-    setIndexEmail(1);
+  const fetchDemographicCount = async (slug) => {
+    try {
+      const response = await fetch(`${API_BASE_PATH}/demographic-count/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${localStorage.getItem("accessToken")}`,
+        },
+        body: JSON.stringify({ clinic_slug: slug }),
+      });
+      const data = await response.json();
+      setNewDemographic(data.demographic_count || 0);
+    } catch (error) {
+      console.error("Error fetching demographic count:", error);
+    }
   };
 
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
+  const handleTabChange = (tabId) => {
+    setActiveTab(tabId);
   };
 
+  const renderContent = () => {
+    const navigationItems = getNavigationItems(clinicInfo.userType);
+    const activeItem = navigationItems.find(item => item.id === activeTab);
+
+    if (!activeItem) return null;
+
+    const props = {
+      clinicSlug: clinicInfo.slug,
+      clinicId: clinicInfo.id,
+    };
+
+    const contentMap = {
+      'Dashboard': () => <Dashboard {...props} />,
+      'ApprovePatients': () => <ApprovePatients {...props} />,
+      'EmailStatus': () => <EmailStatus {...props} />,
+      'EFormList': () => <EFormList {...props} />,
+      'Settings1': () => <Settings1 {...props} />,
+      'CreateNewStaff': () => <CreateNewStaff {...props} />,
+    };
+
+    const ContentComponent = contentMap[activeItem.component];
+
+    return {
+      title: activeItem.label,
+      description: getPageDescription(activeItem.id),
+      component: ContentComponent ? <ContentComponent /> : <div>Content not found</div>
+    };
+  };
+
+  const getPageDescription = (pageId) => {
+    const descriptions = {
+      dashboard: 'Overview of your clinic activities and statistics',
+      patients: 'Manage patient approvals and demographic information',
+      email: 'Monitor email delivery status and communication logs',
+      eforms: 'Manage electronic forms and templates',
+      settings: 'Configure clinic settings and preferences',
+      staff: 'Add and manage staff members',
+    };
+    return descriptions[pageId] || '';
+  };
+
+  if (loading) {
+    return (
+      <ThemeProvider theme={professionalTheme}>
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+          <Typography>Loading...</Typography>
+        </Box>
+      </ThemeProvider>
+    );
+  }
+
+  const navigationItems = getNavigationItems(clinicInfo.userType);
+
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <ThemeProvider theme={professionalTheme}>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
+
+        {/* App Bar */}
         <AppBar position="absolute" open={open}>
-          <Toolbar
-            sx={{
-              pr: "24px", // keep right padding when drawer closed
-            }}
-          >
+          <Toolbar sx={{ pr: "24px" }}>
             <IconButton
               edge="start"
               color="inherit"
@@ -354,16 +392,28 @@ export default function ClinicHome() {
             >
               <MenuIcon />
             </IconButton>
-            <Typography component="h1" variant="h6" color="inherit" noWrap sx={{ flexGrow: 1 }}>
-              Dashboard
-              {/* {clinicInfo.website} */}
-            </Typography>
-            <IconButton color="inherit">
-              {/* Replace the IconButton for login/logout with LoginMenu */}
-              <LoginMenu username={clinicUsername} />
-            </IconButton>
+
+            <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
+              <Typography component="h1" variant="h6" color="inherit" noWrap>
+                {clinicInfo.userType ==='doctor' &&(
+                  'Dr. '
+                )}
+                {clinicInfo.name || 'Dashboard'}
+              </Typography>
+              {clinicInfo.userType && (
+                <Chip
+                  label={clinicInfo.userType.charAt(0).toUpperCase() + clinicInfo.userType.slice(1)}
+                  size="small"
+                  sx={{ ml: 2, backgroundColor: 'rgba(255,255,255,0.2)', color: 'white' }}
+                />
+              )}
+            </Box>
+
+            <LoginMenu username={clinicInfo.username} />
           </Toolbar>
         </AppBar>
+
+        {/* Sidebar Drawer */}
         <Drawer variant="permanent" open={open}>
           <Toolbar
             sx={{
@@ -371,134 +421,143 @@ export default function ClinicHome() {
               alignItems: "center",
               justifyContent: "flex-end",
               px: [1],
+              backgroundColor: (theme) => theme.palette.grey[50],
             }}
           >
+            {open && (
+              <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', pl: 2 }}>
+                <Avatar sx={{ width: 32, height: 32, mr: 1, backgroundColor: 'primary.main' }}>
+                  {clinicInfo.name.charAt(0).toUpperCase()}
+                </Avatar>
+                <Typography variant="subtitle2" noWrap>
+                  {clinicInfo.username}
+                </Typography>
+              </Box>
+            )}
             <IconButton onClick={toggleDrawer}>
-              {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+              <ChevronLeftIcon />
             </IconButton>
           </Toolbar>
+
           <Divider />
-          <List component="nav" sx={{ marginLeft: "-0.5rem" }}>
-            <Tabs
-              orientation="vertical"
-              // variant="scrollable"
-              value={value}
-              onChange={handleChange}
-              aria-label="Vertical tabs example"
-              sx={{ borderRight: 1, borderColor: "divider" }}
-            >
-              {dplyDashbord && (
-                <Tab
-                  label={open ? "Dashboard" : ""}
-                  icon={open ? <DashboardIcon /> : <DashboardOutlinedIcon />}
-                  {...a11yProps(indexDash)}
-                />
-              )}
-              {dplyPatientAprv && (
-                <Tab
-                  label={
-                    <Badge
-                      badgeContent={newDemographic}
-                      color="error"
-                      sx={{ paddingRight: "8px" }} // Adjust spacing as needed
-                    >
-                      {open ? "Patients" : ""}
-                    </Badge>
-                  }
-                  // label={open ? 'Patients' : ''}
-                  icon={open ? <PeopleIcon /> : <PeopleOutlinedIcon />}
-                  {...a11yProps(indexPtientAprv)}
-                />
-              )}
 
-              {dplyEmailStatus && (
-                <Tab
-                  label={open ? "emailStatus" : ""}
-                  icon={open ? <MailIcon /> : <MailOutlineIcon />}
-                  {...a11yProps(indexEmail)}
-                />
-              )}
-              {dplyEforms && (
-                <Tab
-                  label={open ? "eForms" : ""}
-                  icon={open ? <ListAltIcon /> : <ListAltOutlined />}
-                  {...a11yProps(indexEform)}
-                />
-              )}
-              {dplySettings && (
-                <Tab
-                  label={open ? "Settings" : ""}
-                  icon={open ? <SettingsIcon /> : <SettingsOutlinedIcon />}
-                  {...a11yProps(indexSettings)}
-                />
-              )}
+          <List component="nav" sx={{ pt: 1 }}>
+            {navigationItems.map((item) => {
+              const IconComponent = item.icon;
+              const isActive = activeTab === item.id;
 
-              {dplyNewStaff && (
-                <Tab
-                  label={open ? "NewStaff" : ""}
-                  icon={open ? <MailIcon /> : <MailOutlineIcon />}
-                  {...a11yProps(indexNewStaff)}
-                />
-              )}
-            </Tabs>
+              return (
+                <ListItem key={item.id} disablePadding>
+                  <StyledListItem
+                    active={isActive}
+                    onClick={() => handleTabChange(item.id)}
+                  >
+                    <ListItemIcon>
+                      {item.hasBadge && newDemographic > 0 ? (
+                        <Badge badgeContent={newDemographic} color="error">
+                          <IconComponent />
+                        </Badge>
+                      ) : (
+                        <IconComponent />
+                      )}
+                    </ListItemIcon>
+                    {open && <ListItemText primary={item.label} />}
+                  </StyledListItem>
+                </ListItem>
+              );
+            })}
           </List>
         </Drawer>
 
+        {/* Main Content */}
         <Box
           component="main"
           sx={{
-            backgroundColor: (theme) =>
-              theme.palette.mode === "light" ? theme.palette.grey[100] : theme.palette.grey[900],
+            backgroundColor: (theme) => theme.palette.grey[50],
             flexGrow: 1,
             height: "100vh",
-            overflow: "auto",
+            overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
           }}
         >
           <Toolbar />
-          <Container maxWidth="xl" sx={{ mt: 2, mb: 1 }}>
-            <Grid container spacing={3}>
-              {dplyDashbord && (
-                <TabPanel value={value} index={indexDash}>
-                  <Dashboard clinicSlug={clinicSlug} />
-                </TabPanel>
-              )}
-              {dplyPatientAprv && (
-                <TabPanel value={value} index={indexPtientAprv}>
-                  <ApprovePatients clinicSlug={clinicSlug} />
-                </TabPanel>
-              )}
-              {dplyEmailStatus && (
-                <TabPanel value={value} index={indexEmail}>
-                  <EmailStatus clinicSlug={clinicSlug} />
-                </TabPanel>
-              )}
-              {dplyEforms && (
-                <TabPanel value={value} index={indexEform}>
-                  <EFormList />
-                </TabPanel>
-              )}
-              {dplySettings && (
-                <TabPanel value={value} index={indexSettings}>
-                  <Settings1 clinicSlug={clinicSlug} clinicId={clinicId} />
-                </TabPanel>
-              )}
+          <ContentArea>
+            {(() => {
+              const content = renderContent();
+              return (
+                <>
+                  {/* Content Header */}
+                  {/*<ContentHeader>*/}
+                  {/*  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>*/}
+                  {/*    <Box>*/}
+                  {/*      <Typography variant="h5" component="h1" sx={{ fontWeight: 600, mb: 0.5 }}>*/}
+                  {/*        {content.title}*/}
+                  {/*      </Typography>*/}
+                  {/*      <Typography variant="body2" color="text.secondary">*/}
+                  {/*        {content.description}*/}
+                  {/*      </Typography>*/}
+                  {/*    </Box>*/}
+                  {/*    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>*/}
+                  {/*      <Chip*/}
+                  {/*        label={new Date().toLocaleDateString()}*/}
+                  {/*        size="small"*/}
+                  {/*        variant="outlined"*/}
+                  {/*        sx={{ backgroundColor: 'background.paper' }}*/}
+                  {/*      />*/}
+                  {/*      {activeTab === 'patients' && newDemographic > 0 && (*/}
+                  {/*        <Chip*/}
+                  {/*          label={`${newDemographic} New`}*/}
+                  {/*          size="small"*/}
+                  {/*          color="error"*/}
+                  {/*          sx={{ backgroundColor: 'error.main', color: 'white' }}*/}
+                  {/*        />*/}
+                  {/*      )}*/}
+                  {/*    </Box>*/}
+                  {/*  </Box>*/}
+                  {/*</ContentHeader>*/}
 
-              <TabPanel value={value} index={indexNewStaff}>
-                <TabPanel value={value} index={indexNewStaff}>
-                  <CreateNewStaff clinicSlug={clinicSlug} clinicId={clinicId} />
-                </TabPanel>
-              </TabPanel>
-              <TabPanel value={value} index={6}>
-                Item Six
-              </TabPanel>
-              <TabPanel value={value} index={7}>
-                Item Seven
-              </TabPanel>
-            </Grid>
-          </Container>
+                  {/* Content Body */}
+                  <ContentBody>
+                    <Box
+                      sx={{
+                        height: '100%',
+                        width: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      {/* Scrollable content container */}
+                      <Box
+                        sx={{
+                          flex: 1,
+                          overflow: 'auto', // Enable scrolling here
+                          width: '100%',
+                          minHeight: 0, // Important for flex scrolling
+                        }}
+                      >
+                        {/* Content wrapper with optional padding */}
+                        <Box
+                          sx={{
+                            minHeight: '100%',
+                            width: '100%',
+                            // Add minimal padding for content that needs it
+                            padding: { xs: 1, sm: 2 },
+                          }}
+                        >
+                          {content.component}
+                        </Box>
+                      </Box>
+                    </Box>
+                  </ContentBody>
+                </>
+              );
+            })()}
+          </ContentArea>
         </Box>
       </Box>
-      <Footer />
+
       <HelmetComponent />
     </ThemeProvider>
   );

@@ -26,11 +26,12 @@ import NotificationDialog from "../resources/Notification";
 // import MKBox from "../../../components/MKBox";
 import MKButton from "../../../components/MKButton";
 import GoHome from "../resources/GoHome";
+import { useClinicInfo } from "../resources/useClinicInfo.js";
 
 const EformOauth = () => {
   // const location = useLocation();
   const { clinicSlug } = useParams();
-  const [clinicInfo, setClinicInfo] = useState(null);
+  // const [clinicInfo, setClinicInfo] = useState(null);
   const [buttonpressed, setButtonPressed] = useState(true);
   const navigate = useNavigate();
 
@@ -40,31 +41,16 @@ const EformOauth = () => {
   const [dob, setDob] = useState("");
 
   // const [appointmentData, setAppointmentData] = useState(null);
-  const [clinicInfoFetched, setClinicInfoFetched] = useState(false);
+  // const [clinicInfoFetched, setClinicInfoFetched] = useState(false);
 
   // NotificationDialog
   const [openModal, setOpenModal] = useState(false);
   const [isError, setIsError] = useState(false);
   const [modalContent, setModalContent] = useState("");
+  const { clinicInfo, locationsData, notice, clinicInfoFetched, clinicInfoError } = useClinicInfo(clinicSlug);
 
   const dobRef = useRef(null);
-  useEffect(() => {
-    const fetchClinicInfo = async () => {
-      try {
-        const response = await fetch(`${API_BASE_PATH}/clinic/${clinicSlug}/`);
 
-        const data = await response.json();
-        setClinicInfo(data.clinic);
-      } catch (error) {
-        console.error("Error fetching clinic information:", error);
-      }
-    };
-
-    if (!clinicInfoFetched) {
-      fetchClinicInfo();
-      setClinicInfoFetched(true);
-    }
-  }, [clinicSlug, hin, clinicInfoFetched]);
 
   const handleHinChange = (e) => {
     const formattedHin = formatHin(e.target.value);

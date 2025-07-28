@@ -12,11 +12,13 @@ import MKBox from "../../components/MKBox";
 import MKTypography from "../../components/MKTypography";
 import Breadcrumbs from "../../examples/Breadcrumbs";
 import Icon from "@mui/material/Icon";
+import { useClinicInfo } from "./resources/useClinicInfo.js";
 
 const ClinicPolicy = () => {
   const { clinicSlug } = useParams();
-  const [clinicInfo, setClinicInfo] = useState(null);
+  // const [clinicInfo, setClinicInfo] = useState(null);
   const [termsInfo, settermsInfo] = useState(null);
+  const { clinicInfo, locationsData, notice, loading } = useClinicInfo(clinicSlug);
 
   useEffect(() => {
     const fetchClinicPolicy = async () => {
@@ -31,19 +33,6 @@ const ClinicPolicy = () => {
         }
       }
     };
-    const fetchClinicInfo = async () => {
-      try {
-        const response = await fetch(`${API_BASE_PATH}/clinic/${clinicSlug}/`);
-        // const response = await fetch(`http://192.168.88.164:8000/api/clinic/${clinicSlug}/`);
-
-        const data = await response.json();
-        setClinicInfo(data.clinic);
-      } catch (error) {
-        console.error("Error fetching clinic information:", error);
-      }
-    };
-
-    fetchClinicInfo();
 
     fetchClinicPolicy();
   }, [clinicSlug]);

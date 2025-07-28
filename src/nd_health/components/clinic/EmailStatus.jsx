@@ -1,10 +1,9 @@
 import API_BASE_PATH from "../../../apiConfig";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {
   Card,
   CardContent,
   TextField,
-  CardHeader,
   Paper,
   Table,
   TableContainer,
@@ -12,106 +11,224 @@ import {
   TableRow,
   TableCell,
   TableBody,
-
   Button,
-
   Pagination,
-
+  Typography,
+  Box,
+  Chip,
+  IconButton,
+  Tooltip,
+  Alert,
+  Skeleton,
+  Stack,
+  Grid,
+  AppBar,
+  Toolbar,
+  Divider,
+  Badge,
 } from "@mui/material";
-import { makeStyles } from "@mui/styles";
-import {
-
-  sendCheckEmailSms,
-} from "../resources/utils";
-import {  useNavigate } from "react-router-dom";
+import { styled } from "@mui/material/styles";
+import { sendCheckEmailSms } from "../resources/utils";
+import { useNavigate } from "react-router-dom";
 import HelmetComponent from "../SEO/HelmetComponent";
-import { Grid } from "@mui/material";
-import { styled } from "@mui/system";
 import NdLoader from "../resources/Ndloader";
 import NotificationDialog from "../resources/Notification";
 import SmsIcon from "@mui/icons-material/Sms";
-import Stack from "@mui/material/Stack";
+import SearchIcon from "@mui/icons-material/Search";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import EmailIcon from "@mui/icons-material/Email";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import PendingIcon from "@mui/icons-material/Pending";
+import ClearIcon from "@mui/icons-material/Clear";
+import SendIcon from "@mui/icons-material/Send";
 
-const useStyles = makeStyles((theme) => ({
-  tableContainer: {
-    maxWidth: "100%",
+// Enhanced styled components
+const StyledCard = styled(Card)(({ theme }) => ({
+  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
+  borderRadius: theme.spacing(2),
+  overflow: 'visible',
+  border: `1px solid ${theme.palette.divider}`,
+}));
+
+const StickyFilterSection = styled(AppBar)(({ theme }) => ({
+  position: 'sticky',
+  top: 0,
+  zIndex: 1100,
+  backgroundColor: theme.palette.background.paper,
+  color: theme.palette.text.primary,
+  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+  borderBottom: `1px solid ${theme.palette.divider}`,
+}));
+
+const FilterContainer = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(2),
+  backgroundColor: theme.palette.background.paper,
+}));
+
+// Improved smaller stats card
+const StatsCard = styled(Card)(({ theme }) => ({
+  padding: theme.spacing(1.5),
+  textAlign: 'center',
+  background: `linear-gradient(135deg, ${theme.palette.primary.main}10, ${theme.palette.primary.main}05)`,
+  border: `1px solid ${theme.palette.primary.main}20`,
+  borderRadius: theme.spacing(1.5),
+  transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+  minHeight: 80,
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  '&:hover': {
+    transform: 'translateY(-2px)',
+    boxShadow: '0 8px 25px rgba(0, 0, 0, 0.15)',
   },
 }));
 
-// Define styles for the table
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  fontWeight: "bold",
-  backgroundColor: "#333",
-  color: "#f5f5f5",
+  fontWeight: 600,
+  backgroundColor: theme.palette.primary.main,
+  color: theme.palette.primary.contrastText,
+  fontSize: '0.875rem',
+  padding: theme.spacing(2),
+  whiteSpace: 'nowrap',
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme, isOdd }) => ({
-  backgroundColor: isOdd ? "#d5d4d4" : "#ffffff",
+  backgroundColor: isOdd ? theme.palette.grey[25] : theme.palette.background.paper,
+  '&:hover': {
+    backgroundColor: theme.palette.action.hover,
+    transform: 'scale(1.001)',
+  },
+  transition: 'all 0.2s ease',
+}));
+
+const StatusChip = styled(Chip)(({ theme, status }) => ({
+  fontWeight: 600,
+  minWidth: 90,
+  ...(status === 'opened' && {
+    backgroundColor: theme.palette.success.main,
+    color: theme.palette.success.contrastText,
+  }),
+  ...(status === 'pending' && {
+    backgroundColor: theme.palette.warning.main,
+    color: theme.palette.warning.contrastText,
+  }),
+  ...(status === 'notified' && {
+    backgroundColor: theme.palette.info.main,
+    color: theme.palette.info.contrastText,
+  }),
+}));
+
+const ActionButton = styled(Button)(({ theme }) => ({
+  minWidth: 80,
+  padding: theme.spacing(0.75, 1.5),
+  fontSize: '0.75rem',
+  borderRadius: theme.spacing(1),
+  textTransform: 'none',
+  fontWeight: 600,
+}));
+
+const LoadingOverlay = styled(Box)({
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  backgroundColor: 'rgba(255, 255, 255, 0.9)',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  zIndex: 9999,
+  backdropFilter: 'blur(4px)',
+});
+
+// Fixed sticky pagination at bottom with no space after
+const StickyPagination = styled(Box)(({ theme }) => ({
+  position: 'fixed',
+  bottom: 0,
+  left: 0,
+  right: 0,
+  backgroundColor: theme.palette.background.paper,
+  borderTop: `1px solid ${theme.palette.divider}`,
+  padding: theme.spacing(3),
+  zIndex: 1000,
+  boxShadow: '0 -2px 8px rgba(0, 0, 0, 0.1)',
 }));
 
 const formatDateString = (isoString) => {
+  if (!isoString) return 'N/A';
   const date = new Date(isoString);
-  const options = { year: "numeric", month: "long", day: "numeric" };
-  return new Intl.DateTimeFormat("en-US", options).format(date);
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  }).format(date);
+};
+
+const formatDateTimeString = (isoString) => {
+  if (!isoString) return 'N/A';
+  const date = new Date(isoString);
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
 };
 
 const EmailStatus = ({ clinicSlug }) => {
-  const [isDataLoaded, setIsDataLoaded] = React.useState(false);
-  const [clinic, setClinic] = React.useState(null);
-  const [demographicList, setDemographicList] = React.useState([]);
-  const classes = useStyles();
-
-  const [selectedRow, setSelectedRow] = useState(null);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const navigate = useNavigate();
 
+  // State management
+  const [pageSize] = useState(20);
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
   const [filters, setFilters] = useState({
     firstName: "",
     birthday: "",
     healthcard: "",
     sender: "",
   });
-  const [submitbutton, setSubmitbutton] = useState(false);
 
-  // NotificationDialog
+  // Modal state
   const [openModal, setOpenModal] = useState(false);
   const [isError, setIsError] = useState(false);
   const [modalContent, setModalContent] = useState("");
-  const [sent_to_bulk, set_Sent_to_bulk] = useState("");
-  const [sent_not_to_bulk, set_not_Sent_to_bulk] = useState("");
-  const [total_sent_sms, set_total_sent_sms] = useState(0);
-  const [total_failed_sms, set_total_failed_sms] = useState(0);
 
-  //pagination
-  const [files, setFiles] = useState([]);
-  const [nextPage, setNextPage] = useState(null);
-  const [previousPage, setPreviousPage] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [pagetofetch, setPagetoFetch] = useState(`?page=${currentPage}`);
-  const [emailStatusURL, setEmailStatusURL] = useState(`${API_BASE_PATH}/email-status/`);
-  const [currentEmailStatusURL, setCurrentEmailStatusURL] = useState(emailStatusURL);
-
-  useEffect(() => {
-    // fetch list of demographics using access token and clinic slug
-    if (!localStorage.getItem("accessToken")) {
-      navigate("/");
-    }
-
-    fetchData().then((r) => {});
+  // Notification handlers
+  const handleSuccess = useCallback((message) => {
+    setModalContent(message);
+    setIsError(false);
+    setOpenModal(true);
   }, []);
 
-  const fetchData = async () => {
-    setSubmitbutton(true);
+  const handleFailure = useCallback((message) => {
+    setModalContent(message);
+    setIsError(true);
+    setOpenModal(true);
+  }, []);
+
+  // Actual API fetch function
+  const fetchData = useCallback(async (page, searchFilters) => {
+    if (!localStorage.getItem("accessToken")) {
+      navigate("/");
+      return;
+    }
+
+    setLoading(page === 1);
+    setSubmitting(true);
+
     try {
       const params = {
-        page: currentPage,
-        ...filters,
+        page,
+        ...searchFilters,
       };
 
-      const response = await fetch(currentEmailStatusURL, {
+      const response = await fetch(`${API_BASE_PATH}/email-status/`, {
         method: "POST",
         headers: {
           Authorization: `Token ${localStorage.getItem("accessToken")}`,
@@ -119,352 +236,497 @@ const EmailStatus = ({ clinicSlug }) => {
         },
         body: JSON.stringify(params),
       });
-      const data = await response.json();
-      console.log(`data:${JSON.stringify(data)}`);
-      setData(data.results);
-      setTotalPages(Math.ceil(data.count / 20));
-      setNextPage(data.next);
-      setPreviousPage(data.previous);
-      setIsDataLoaded(true);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setSubmitbutton(false);
-      // setCurrentEmailStatusURL(emailStatusURL);
-    }
-  };
 
-  useEffect(() => {
-    fetchData().then((r) => {});
-  }, [currentPage]);
-
-  useEffect(() => {
-    setCurrentEmailStatusURL(`${emailStatusURL}?page=${currentPage}`);
-  }, [currentPage]);
-
-  const handlePageChange = (event, page) => {
-    setCurrentPage(page);
-  };
-
-  const handleFilterChange = (event) => {
-    const { name, value } = event.target;
-    setFilters({
-      ...filters,
-      [name]: value,
-    });
-    setCurrentPage(1); // Reset to first page on filter change
-  };
-
-  function formatDateString(isoString) {
-    const date = new Date(isoString);
-    const options = { year: "numeric", month: "long", day: "numeric" };
-    return new Intl.DateTimeFormat("en-US", options).format(date);
-  }
-
-  function formatDateTimeString(isoString) {
-    const date = new Date(isoString);
-    const options = {
-      year: "numeric",
-      month: "numeric",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-    };
-    return new Intl.DateTimeFormat("en-US", options).format(date);
-  }
-
-  const updateRecordSmsSent = (index) => {
-    const updatedRecords = [...data];
-    updatedRecords[index].smsSent = true;
-    setData(updatedRecords);
-  };
-
-  async function send_check_email_sms_bulk() {
-    setSubmitbutton(true);
-    let successfulSends = [];
-    let failedSends = [];
-    let totalSent = 0;
-    let totalFailed = 0;
-
-    for (let i = 0; i < data.length; i++) {
-      if (data[i].is_accessible === false) {
-        try {
-          const response = await sendCheckEmailSms(data[i].newid);
-          const data1 = await response.json();
-
-          if (data1 && data1.message === "success") {
-            successfulSends.push(data[i].firstName);
-            totalSent++;
-          } else {
-            failedSends.push(data[i].firstName);
-            totalFailed++;
-          }
-        } catch (error) {
-          console.error(`Error sending SMS to ${data[i].firstName}:`, error);
-          failedSends.push(data[i].firstName);
-          totalFailed++;
-        }
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
       }
+
+      const responseData = await response.json();
+
+      setData(responseData.results || []);
+      setTotalPages(Math.ceil((responseData.count || 0) / pageSize));
+      setTotalCount(responseData.count || 0);
+
+    } catch (error) {
+      console.error('Error fetching email status:', error);
+      handleFailure('Failed to load email status data. Please try again.');
+    } finally {
+      setLoading(false);
+      setSubmitting(false);
     }
+  }, [pageSize, navigate, handleFailure]);
 
-    setSubmitbutton(false);
+  // Effect for initial load and page changes
+  useEffect(() => {
+    fetchData(currentPage, filters);
+  }, [currentPage]); // Remove filters from dependency to fix pagination
 
-    const successMessage =
-      successfulSends.length > 0
-        ? `Total ${totalSent} SMS sent successfully, list of patients: ${successfulSends.join(", ")}\n`
-        : "";
-    const failureMessage =
-      failedSends.length > 0
-        ? `Total ${totalFailed} SMS failed to send, list of patients: ${failedSends.join(", ")}\n`
-        : "";
+  // Handle page changes
+  const handlePageChange = useCallback((event, page) => {
+    setCurrentPage(page);
+  }, []);
 
-    if (totalSent > 0 && totalFailed > 0) {
-      handleSuccess(`${successMessage}${failureMessage}`);
-    } else if (totalSent > 0) {
-      handleSuccess(`${successMessage}0 SMS failed.`);
-    } else if (totalFailed > 0) {
-      handleFailure(`${failureMessage}0 SMS sent.`);
-    } else {
-      handleSuccess("No SMS were sent. All patients might be accessible.");
-    }
+  // Handle filter changes
+  const handleFilterChange = useCallback((event) => {
+    const { name, value } = event.target;
+    setFilters(prev => ({
+      ...prev,
+      [name]: value,
+    }));
+  }, []);
 
-    // Reset state variables
-    set_Sent_to_bulk("");
-    set_not_Sent_to_bulk("");
-    set_total_sent_sms(0);
-    set_total_failed_sms(0);
-  }
+  // Handle search
+  const handleSearch = useCallback(() => {
+    setCurrentPage(1);
+    fetchData(1, filters);
+  }, [fetchData, filters]);
 
-  async function send_Check_Email_Sms(number, index) {
-    setSubmitbutton(true);
-    const response = await sendCheckEmailSms(number);
-    const data = await response.json();
-    if (data) {
-      setSubmitbutton(false);
-      if (data.message === "success") {
+  // Handle clear filters
+  const handleClearFilters = useCallback(() => {
+    const clearedFilters = {
+      firstName: "",
+      birthday: "",
+      healthcard: "",
+      sender: "",
+    };
+    setFilters(clearedFilters);
+    setCurrentPage(1);
+    fetchData(1, clearedFilters);
+  }, [fetchData]);
+
+  // Update record SMS sent status
+  const updateRecordSmsSent = useCallback((index) => {
+    setData(prevData => {
+      const updatedRecords = [...prevData];
+      updatedRecords[index] = { ...updatedRecords[index], smsSent: true };
+      return updatedRecords;
+    });
+  }, []);
+
+  // Send SMS to individual patient
+  const sendPatientSMS = useCallback(async (patientId, index) => {
+    setSubmitting(true);
+    try {
+      const response = await sendCheckEmailSms(patientId);
+      const responseData = await response.json();
+
+      if (responseData?.message === "success") {
         handleSuccess("SMS sent successfully.");
         updateRecordSmsSent(index);
       } else {
-        handleFailure("SMS did not sent successfully. Something went wrong.");
+        handleFailure("Failed to send SMS. Please try again.");
       }
-    } else {
-      setSubmitbutton(false);
-      handleFailure("SMS did not sent successfully. Something went wrong.");
+    } catch (error) {
+      console.error('Error sending SMS:', error);
+      handleFailure("Failed to send SMS. Please try again.");
+    } finally {
+      setSubmitting(false);
     }
+  }, [updateRecordSmsSent, handleSuccess, handleFailure]);
+
+  // Send bulk SMS
+  const sendBulkSMS = useCallback(async () => {
+    const eligiblePatients = data.filter(patient => !patient.is_accessible);
+
+    if (eligiblePatients.length === 0) {
+      handleSuccess("No patients require SMS notifications.");
+      return;
+    }
+
+    setSubmitting(true);
+    let successCount = 0;
+    let failedPatients = [];
+
+    try {
+      for (const patient of eligiblePatients) {
+        try {
+          const response = await sendCheckEmailSms(patient.newid);
+          const responseData = await response.json();
+
+          if (responseData?.message === "success") {
+            successCount++;
+          } else {
+            failedPatients.push(patient.firstName);
+          }
+        } catch (error) {
+          console.error(`Error sending SMS to ${patient.firstName}:`, error);
+          failedPatients.push(patient.firstName);
+        }
+      }
+
+      const totalAttempted = eligiblePatients.length;
+      const failedCount = failedPatients.length;
+
+      if (successCount > 0 && failedCount > 0) {
+        handleSuccess(
+          `${successCount}/${totalAttempted} SMS sent successfully. Failed: ${failedPatients.join(", ")}`
+        );
+      } else if (successCount > 0) {
+        handleSuccess(`All ${successCount} SMS sent successfully.`);
+      } else {
+        handleFailure(`Failed to send all SMS. Failed patients: ${failedPatients.join(", ")}`);
+      }
+
+      // Refresh data after bulk send
+      await fetchData(currentPage, filters);
+
+    } catch (error) {
+      console.error('Error in bulk SMS sending:', error);
+      handleFailure("Failed to send bulk SMS. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  }, [data, handleSuccess, handleFailure, fetchData, currentPage, filters]);
+
+  // Memoized statistics
+  const statistics = useMemo(() => ({
+    total: totalCount,
+    opened: data.filter(d => d.is_accessible).length,
+    pending: data.filter(d => !d.is_accessible).length,
+    notified: data.filter(d => d.smsSent && !d.is_accessible).length,
+  }), [data, totalCount]);
+
+  // Render status chip
+  const renderStatusChip = (record, index) => {
+    if (record.is_accessible) {
+      return (
+        <StatusChip
+          status="opened"
+          icon={<CheckCircleIcon />}
+          label="Opened"
+          size="small"
+        />
+      );
+    } else if (record.smsSent) {
+      return (
+        <StatusChip
+          status="notified"
+          icon={<SmsIcon />}
+          label="Notified"
+          size="small"
+
+        />
+      );
+    } else {
+      return (
+        // {!record.is_accessible && !record.smsSent && (
+        <Tooltip title="Send SMS notification">
+          <Button
+            variant="contained"
+            size="small"
+            startIcon={<SmsIcon />}
+            onClick={() => sendPatientSMS(record.newid, index)}
+            disabled={submitting}
+            color="primary"
+          >
+            SMS
+          </Button>
+        </Tooltip>
+      // )}
+      );
+    }
+  };
+
+  if (loading && data.length === 0) {
+    return (
+      <Box sx={{ p: 3 }}>
+        <HelmetComponent />
+        <Skeleton variant="rectangular" height={200} sx={{ mb: 2 }} />
+        <Skeleton variant="rectangular" height={400} />
+      </Box>
+    );
   }
 
-  const handleSuccess = (message) => {
-    setModalContent(message);
-    setIsError(false);
-    setOpenModal(true);
-  };
-  const handleFailure = (message) => {
-    setModalContent(message);
-    setIsError(true);
-    setOpenModal(true);
-  };
-
   return (
-    <div>
-      {(() => {
-        if (isDataLoaded) {
-          // let smsSent;
-          return [
-            <div>
-              <HelmetComponent />
-              {/* <Grid item xs={12} md={12}> */}
-              <Card style={{ width: "130%" }}>
-                <CardHeader title="Secure Files" />
-                <CardContent sx={{ overflowX: "scroll" }}>
-                  <Grid container spacing={2} mb={4}>
-                    {/*<Grid item xs={12} sm={6} md={3}>*/}
-                    {/*    <Select*/}
-                    {/*// TODO dropdown is opned or not*/}
-                    {/*        labelId="doctor-select-label"*/}
-                    {/*        id="doctor-select"*/}
-                    {/*        value={selectedDoctor?.doctor__id || ''}*/}
-                    {/*        onChange={(e) => {*/}
-                    {/*            const selectedDoctorId = e.target.value;*/}
-                    {/*            const selectedDoctor = doctors.find(doctor => doctor.doctor__id === selectedDoctorId);*/}
-                    {/*            handleDoctorSelect(selectedDoctor);*/}
-                    {/*        }}*/}
-                    {/*        label="Select Doctor"*/}
-                    {/*    >*/}
-                    {/*        <MenuItem key={true}>*/}
-                    {/*            Opened*/}
-                    {/*        </MenuItem>*/}
-                    {/*        <MenuItem key={false}>*/}
-                    {/*            Not Opened*/}
-                    {/*        </MenuItem>*/}
+    <Box sx={{ width: '100%', minHeight: '100vh', backgroundColor: 'grey.50', pb: 8 }}>
+      <HelmetComponent />
 
-                    {/*    </Select>*/}
-                    {/*</Grid>*/}
-                    <Grid item xs={12} sm={6} md={3}>
-                      <TextField
-                        fullWidth
-                        label="Patient's Name"
-                        name="firstName"
-                        value={filters.firstName}
-                        onChange={handleFilterChange}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={3}>
-                      <TextField
-                        fullWidth
-                        label="Birthday"
-                        name="birthday"
-                        type="date"
-                        InputLabelProps={{ shrink: true }}
-                        value={filters.birthday}
-                        onChange={handleFilterChange}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={3}>
-                      <TextField
-                        fullWidth
-                        label="Healthcard"
-                        name="healthcard"
-                        value={filters.healthcard}
-                        onChange={handleFilterChange}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={3}>
-                      <TextField
-                        fullWidth
-                        label="Sender"
-                        name="sender"
-                        value={filters.sender}
-                        onChange={handleFilterChange}
-                      />
-                    </Grid>
+      <Box sx={{ width: '100%', }}>
+        <Grid container spacing={0} sx={{ py: 0 }}>
 
-                    <Grid container item xs={6} sm={6} md={6} spacing={2}>
-                      <Grid item xs={6} sm={6} md={3}>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={fetchData}
-                          fullWidth
-                          disabled={submitbutton}
-                        >
-                          Search
-                        </Button>
-                      </Grid>
-                      <Grid item xs={6} sm={6} md={4}>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={send_check_email_sms_bulk}
-                          fullWidth
-                          disabled={submitbutton}
-                        >
-                          Notify via SMS <SmsIcon sx={{ paddingLeft: 1 }}></SmsIcon>
-                        </Button>
-                      </Grid>
-                    </Grid>
+          {/* Statistics Section */}
+          {/*<Grid item xs={12}>*/}
+          {/*  <Grid container spacing={2}>*/}
+          {/*    <Grid item xs={12} sm={6} md={3}>*/}
+          {/*      <StatsCard>*/}
+          {/*        <Typography variant="h5" color="primary" sx={{ fontWeight: 700, mb: 0.5 }}>*/}
+          {/*          {statistics.total}*/}
+          {/*        </Typography>*/}
+          {/*        <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 500 }}>*/}
+          {/*          Total Emails*/}
+          {/*        </Typography>*/}
+          {/*      </StatsCard>*/}
+          {/*    </Grid>*/}
+          {/*    <Grid item xs={12} sm={6} md={3}>*/}
+          {/*      <StatsCard>*/}
+          {/*        <Typography variant="h5" color="success.main" sx={{ fontWeight: 700, mb: 0.5 }}>*/}
+          {/*          {statistics.opened}*/}
+          {/*        </Typography>*/}
+          {/*        <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 500 }}>*/}
+          {/*          Opened*/}
+          {/*        </Typography>*/}
+          {/*      </StatsCard>*/}
+          {/*    </Grid>*/}
+          {/*    <Grid item xs={12} sm={6} md={3}>*/}
+          {/*      <StatsCard>*/}
+          {/*        <Typography variant="h5" color="warning.main" sx={{ fontWeight: 700, mb: 0.5 }}>*/}
+          {/*          {statistics.pending}*/}
+          {/*        </Typography>*/}
+          {/*        <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 500 }}>*/}
+          {/*          Pending*/}
+          {/*        </Typography>*/}
+          {/*      </StatsCard>*/}
+          {/*    </Grid>*/}
+          {/*    <Grid item xs={12} sm={6} md={3}>*/}
+          {/*      <StatsCard>*/}
+          {/*        <Typography variant="h5" color="info.main" sx={{ fontWeight: 700, mb: 0.5 }}>*/}
+          {/*          {statistics.notified}*/}
+          {/*        </Typography>*/}
+          {/*        <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 500 }}>*/}
+          {/*          Notified*/}
+          {/*        </Typography>*/}
+          {/*      </StatsCard>*/}
+          {/*    </Grid>*/}
+          {/*  </Grid>*/}
+          {/*</Grid>*/}
+
+          {/* Sticky Filters Section */}
+          <Grid item xs={12}>
+            <StickyFilterSection position="sticky" elevation={0}>
+              <FilterContainer>
+                <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, color: 'primary.main', mb: 1 }}>
+                  🔍 Search & Filter
+                </Typography>
+                <Grid container spacing={2} alignItems="center">
+                  <Grid item xs={12} sm={6} md={2}>
+                    <TextField
+                      fullWidth
+                      label="Patient's Name"
+                      name="firstName"
+                      value={filters.firstName}
+                      onChange={handleFilterChange}
+                      size="small"
+                      variant="outlined"
+                    />
                   </Grid>
+                  <Grid item xs={12} sm={6} md={2}>
+                    <TextField
+                      fullWidth
+                      label="Birthday"
+                      name="birthday"
+                      type="date"
+                      InputLabelProps={{ shrink: true }}
+                      value={filters.birthday}
+                      onChange={handleFilterChange}
+                      size="small"
+                      variant="outlined"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={2}>
+                    <TextField
+                      fullWidth
+                      label="Health Card"
+                      name="healthcard"
+                      value={filters.healthcard}
+                      onChange={handleFilterChange}
+                      size="small"
+                      variant="outlined"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={2}>
+                    <TextField
+                      fullWidth
+                      label="Sender"
+                      name="sender"
+                      value={filters.sender}
+                      onChange={handleFilterChange}
+                      size="small"
+                      variant="outlined"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={2}>
+                    <Stack direction="row" spacing={1}>
+                      <Button
+                        variant="contained"
+                        startIcon={<SearchIcon />}
+                        onClick={handleSearch}
+                        disabled={submitting}
+                        size="small"
+                        sx={{ minWidth: 100, fontWeight: 600 }}
+                      >
+                        Search
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        startIcon={<ClearIcon />}
+                        onClick={handleClearFilters}
+                        disabled={submitting}
+                        size="small"
+                        sx={{ minWidth: 80 }}
+                      >
+                        Clear
+                      </Button>
+                    </Stack>
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={2}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      startIcon={<SmsIcon />}
+                      onClick={sendBulkSMS}
+                      disabled={submitting || statistics.pending === 0}
+                      size="medium"
+                      fullWidth
+                      sx={{ fontWeight: 600 }}
+                    >
+                      Notify all
+                      <Badge badgeContent={statistics.pending} color="error" sx={{ ml: 1,p:1 }} />
+                    </Button>
+                  </Grid>
+                </Grid>
+              </FilterContainer>
+            </StickyFilterSection>
+          </Grid>
 
-                  <TableContainer component={Paper}>
-                    <Table>
+          {/* Table Section */}
+          <Grid item xs={12}>
+            <StyledCard>
+              <CardContent sx={{ p: 0 }}>
+                {data.length === 0 ? (
+                  <Box sx={{ p: 2, textAlign: 'center' }}>
+                    <EmailIcon sx={{ fontSize: 64, color: 'text.secondary', mb: 1 }} />
+                    <Typography variant="h6" color="text.secondary" gutterBottom>
+                      No email records found
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Try adjusting your search filters or check back later
+                    </Typography>
+                  </Box>
+                ) : (
+                  <TableContainer component={Paper} sx={{ maxHeight: 600 }}>
+                    <Table stickyHeader>
                       <TableHead>
                         <TableRow>
-                          <StyledTableCell align="center">First Name</StyledTableCell>
-                          <StyledTableCell align="center">Sent Date</StyledTableCell>
-                          {/*<StyledTableCell align="center">Status</StyledTableCell>*/}
-                          <StyledTableCell align="center">
-                            Opened At /<br />
-                            <span>send sms</span>
-                          </StyledTableCell>
-                          <StyledTableCell align="center">Healthcard</StyledTableCell>
-                          <StyledTableCell align="center">Birthday</StyledTableCell>
-                          <StyledTableCell align="center">Email</StyledTableCell>
-                          <StyledTableCell align="center">Total Files</StyledTableCell>
+                          <StyledTableCell>Patient Name</StyledTableCell>
+                          <StyledTableCell>Sent Date</StyledTableCell>
+                          <StyledTableCell>Opened At / Send sms</StyledTableCell>
+                          <StyledTableCell>Health Card</StyledTableCell>
+                          <StyledTableCell>Birthday</StyledTableCell>
+                          <StyledTableCell>Email</StyledTableCell>
+                          <StyledTableCell>Files</StyledTableCell>
+                          <StyledTableCell>Message</StyledTableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
                         {data.map((record, index) => (
                           <StyledTableRow key={record.newid} isOdd={index % 2 !== 0}>
-                            <TableCell align="center">{record.firstName}</TableCell>
-                            <TableCell align="center">
-                              {formatDateTimeString(record.created_at)}
+                            <TableCell>
+                              <Typography variant="body2" >
+                                {record.firstName}
+                              </Typography>
                             </TableCell>
-                            {/*<TableCell align="center">{record.is_accessible === true ? 'Opened' : 'Not Opened'}</TableCell>*/}
-                            <TableCell align="center">
-                              {record.is_accessible ? (
-                                formatDateTimeString(record.mailoppned)
-                              ) : (
-                                <>
-                                  {record.smsSent ? (
-                                    "Notified"
-                                  ) : (
-                                    <Button
-                                      onClick={() => send_Check_Email_Sms(record.newid, index)}
-                                      disabled={submitbutton}
-                                    >
-                                      Notify via SMS
-                                    </Button>
-                                  )}
-                                </>
-                              )}
+                            <TableCell>
+                              <Typography variant="body2">
+                                {formatDateTimeString(record.created_at)}
+                              </Typography>
                             </TableCell>
-
-                            <TableCell align="center">{record.healthcard}</TableCell>
-                            <TableCell align="center">{record.birthday}</TableCell>
-                            <TableCell align="center">{record.email}</TableCell>
-                            <TableCell align="center">{record.file_sent}</TableCell>
+                            <TableCell>
+                              {record.is_accessible ? formatDateTimeString(record.mailoppned) : renderStatusChip(record, index)}
+                            </TableCell>
+                            <TableCell>
+                              <Typography variant="body2" fontFamily="monospace">
+                                {record.healthcard}
+                              </Typography>
+                            </TableCell>
+                            <TableCell>
+                              <Typography variant="body2">{formatDateString(record.birthday)}</Typography>
+                            </TableCell>
+                            <TableCell>
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  maxWidth: 200,
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  fontFamily: 'monospace',
+                                  fontSize: '0.75rem'
+                                }}
+                              >
+                                {record.email}
+                              </Typography>
+                            </TableCell>
+                            <TableCell>
+                              <Chip
+                                label={record.file_sent}
+                                size="small"
+                                variant="outlined"
+                                color="primary"
+                              />
+                            </TableCell>
+                            <TableCell>
+                              {record.body}
+                            </TableCell>
                           </StyledTableRow>
                         ))}
                       </TableBody>
                     </Table>
                   </TableContainer>
-                  <Stack spacing={2} alignItems="center" sx={{ mt: 2 }}>
-                    <Pagination
-                      count={totalPages}
-                      page={currentPage}
-                      onChange={handlePageChange}
-                      color="primary"
-                      showFirstButton
-                      showLastButton
-                      sx={{ mt: 2 }}
-                      boundaryCount={2}
-                      siblingCount={2}
-                    />
-                  </Stack>
-                </CardContent>
-              </Card>
-            </div>,
-          ];
-        } else {
-          return (
-            <div>
-              <Card>
-                <CardHeader title="No email to check status" />
-              </Card>
-            </div>
-          );
-        }
-      })()}
+                )}
+              </CardContent>
+            </StyledCard>
+          </Grid>
+        </Grid>
+      </Box>
 
-      {submitbutton && (
-        <div
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            zIndex: 9000,
-          }}
-        >
-          <NdLoader />
-        </div>
+      {/* Fixed Pagination at Bottom with No Space After */}
+      {totalPages > 1 && (
+        <Grid item xs={12}>
+        <StickyPagination>
+          <Stack  justifyContent="space-between" alignItems="center" sx={{ maxWidth: '100%', mx: 'auto', px: 3 }}>
+            {/*<Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>*/}
+            {/*  Showing {data.length} of {totalCount} results*/}
+            {/*</Typography>*/}
+            <Box sx={{ display: 'flex', justifyContent: 'center', flex: 1, width: '100%' }}>
+              <Box sx={{width: '100%', display: 'flex', justifyContent: 'center' }}>
+                <Pagination
+                  count={totalPages}
+                  page={currentPage}
+                  onChange={handlePageChange}
+                  color="primary"
+                  showFirstButton
+                  showLastButton
+                  disabled={submitting}
+                  size="large"
+                  sx={{
+                    '& .MuiPagination-ul': {
+                      justifyContent: 'center', // Center pagination items
+                    },
+                  }}
+                />
+              </Box>
+            </Box>
+
+            <Box sx={{ width: 200 }} /> {/* Spacer for balance */}
+          </Stack>
+        </StickyPagination>
+        </Grid>
       )}
+
+      {/* Loading overlay */}
+      {submitting && (
+        <LoadingOverlay>
+          <NdLoader />
+        </LoadingOverlay>
+      )}
+
+      {/* Notification dialog */}
       <NotificationDialog
         open={openModal}
-        onClose={setOpenModal}
+        onClose={() => setOpenModal(false)}
         content={modalContent}
         isError={isError}
       />
-    </div>
+    </Box>
   );
 };
 

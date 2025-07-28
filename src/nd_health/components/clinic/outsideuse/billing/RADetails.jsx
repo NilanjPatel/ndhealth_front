@@ -22,16 +22,8 @@ import CardHeader from "@mui/material/CardHeader";
 import CircularProgress from "@mui/material/CircularProgress";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogActions from "@mui/material/DialogActions";
-import RefreshIcon from "@mui/icons-material/Refresh";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
+
+import { useClinicInfo } from "../../../resources/useClinicInfo.js";
 
 const ProductSearch = () => {
   const tabtitle = "ND Health - RA Analysis";
@@ -58,34 +50,15 @@ const ProductSearch = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
-  const [clinicInfo, setClinicInfo] = useState(null);
-  const [clinicInfoFetched, setClinicInfoFetched] = useState(false);
+  // const [clinicInfo, setClinicInfo] = useState(null);
+  // const [clinicInfoFetched, setClinicInfoFetched] = useState(false);
   const [page, setPage] = useState(0); // Current page
   const [rowsPerPage, setRowsPerPage] = useState(10); // Rows per page
   const [totalCount, setTotalCount] = useState(0); // Total number of items
   const { clinicSlug } = useParams();
+  const { clinicInfo, locationsData, notice, loading1 } = useClinicInfo(clinicSlug);
 
-  useEffect(() => {
-    const fetchClinicInfo = async () => {
-      try {
-        const response = await fetch(`${API_BASE_PATH}/clinic/${clinicSlug}/`);
-        const data = await response.json();
-        setClinicInfo(data.clinic);
-      } catch (error) {
-        console.error("Error fetching clinic information:", error);
-      }
-    };
 
-    if (!clinicInfoFetched) {
-      fetchClinicInfo().then(r => {
-      });
-      setClinicInfoFetched(true);
-    }
-    // change clinic_locations_multiple if there are multiple locations
-    // if (locationsData && locationsData.length > 1) {
-    //     set_clinic_locations_multiple("Serving at Multiple Locations.");
-    // }
-  }, [clinicSlug, clinicInfoFetched]);
 
   useEffect(() => {
     const fetchProducts = async () => {
