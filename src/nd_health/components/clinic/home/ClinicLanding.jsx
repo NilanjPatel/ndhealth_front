@@ -1,21 +1,27 @@
-import React, {useRef, useState} from "react";
-import { useNavigate, useParams} from "react-router-dom";
+import React, {useEffect, useRef, useState} from "react";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import {
     Card,
+    CardActionArea,
     CardContent,
     Grid,
     Typography,
     Box,
     IconButton,
     CircularProgress,
+    MenuItem,
     Button,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
     useTheme,
     useMediaQuery,
 } from "@mui/material";
-import {blue, deepPurple, green, teal} from "@mui/material/colors";
+import {blue, deepPurple, green, lime, teal} from "@mui/material/colors";
 import Layout from "../../Layout";
 import HelmetComponent from "../../SEO/HelmetComponent";
-// import API_BASE_PATH from "apiConfig";
+import API_BASE_PATH from "apiConfig";
 import {FaWpforms} from "react-icons/fa6";
 import {MdOutlineDateRange} from "react-icons/md";
 import {ImProfile} from "react-icons/im";
@@ -25,54 +31,78 @@ import {CgProfile} from "react-icons/cg";
 import MKTypography from "components/MKTypography";
 import Container from "@mui/material/Container";
 import MKBox from "../../../../components/MKBox";
-// import colors from "assets/theme/base/colors";
+import colors from "assets/theme/base/colors";
 // Material Kit 2 PRO React Examples
-// import SimpleInfoCard from "examples/Cards/InfoCards/SimpleInfoCard";
-// import DefaultBlogCard from "examples/Cards/BlogCards/DefaultBlogCard";
+import SimpleInfoCard from "examples/Cards/InfoCards/SimpleInfoCard";
+import DefaultBlogCard from "examples/Cards/BlogCards/DefaultBlogCard";
 import Divider from "@mui/material/Divider";
-// resources
-import { useClinicInfo } from "../../resources/useClinicInfo.js";
 
 const ClinicLanding = () => {
     const headerRef = useRef(null);
-    // const typedJSRef = useRef(null);
+    const typedJSRef = useRef(null);
     const {clinicSlug} = useParams();
-    // const [clinicInfo, setClinicInfo] = useState(null);
-    // const [locationsData, setLocations] = useState(null);
-    // const [selectedLocation, setSelectedLocation] = useState(null);
-    // const [locationColor, setLocationColor] = useState(null);
-    // const [notice, setNotice] = useState(null);
-    // const [clinicInfoFetched, setClinicInfoFetched] = useState(false);
-    const [submitButton] = useState(true);
+    const [clinicInfo, setClinicInfo] = useState(null);
+    const [locationsData, setLocations] = useState(null);
+    const [selectedLocation, setSelectedLocation] = useState(null);
+    const [locationColor, setLocationColor] = useState(null);
+    const [notice, setNotice] = useState(null);
+    const [clinicInfoFetched, setClinicInfoFetched] = useState(false);
+    const [submitbutton] = useState(true);
     const navigate = useNavigate();
     const [clinic_locations_multiple] = useState("We provide services at the following location(s):");
-    const { clinicInfo, locationsData, notice, loading } = useClinicInfo(clinicSlug);
 
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const isTablet = useMediaQuery(theme.breakpoints.between('md', 'lg'));
 
     // Function to invert a hex color
-    // function invertColor(hex) {
-    //     hex = hex.replace(/^#/, "");
-    //     let r = parseInt(hex.slice(0, 2), 16);
-    //     let g = parseInt(hex.slice(2, 4), 16);
-    //     let b = parseInt(hex.slice(4, 6), 16);
-    //     r = 255 - r;
-    //     g = 255 - g;
-    //     b = 255 - b;
-    //     return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
-    // }
-    //
-    // const handleLocationClick = (location) => {
-    //     const locationId = location.id;
-    //     setSelectedLocation(selectedLocation === locationId ? null : locationId);
-    //     setLocationColor(location.color);
-    // };
-    //
-    // const handleClose = () => {
-    //     setSelectedLocation(null);
-    // };
+    function invertColor(hex) {
+        hex = hex.replace(/^#/, "");
+        let r = parseInt(hex.slice(0, 2), 16);
+        let g = parseInt(hex.slice(2, 4), 16);
+        let b = parseInt(hex.slice(4, 6), 16);
+        r = 255 - r;
+        g = 255 - g;
+        b = 255 - b;
+        return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+    }
+
+    useEffect(() => {
+        const fetchClinicInfo = async () => {
+            try {
+                const response = await fetch(`${API_BASE_PATH}/clinic/${clinicSlug}/`);
+                const data = await response.json();
+                setClinicInfo(data.clinic);
+                setLocations(data.locations);
+                if (data.notices) {
+                    const notices = [];
+                    for (let i = 0; i < data.notices.length; i++) {
+                        if (data.notices[i]) {
+                            notices.push(data.notices[i]);
+                            setNotice(notices.join(" | "));
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching clinic information:", error);
+            }
+        };
+
+        if (!clinicInfoFetched) {
+            fetchClinicInfo();
+            setClinicInfoFetched(true);
+        }
+    }, [clinicSlug, clinicInfoFetched]);
+
+    const handleLocationClick = (location) => {
+        const locationId = location.id;
+        setSelectedLocation(selectedLocation === locationId ? null : locationId);
+        setLocationColor(location.color);
+    };
+
+    const handleClose = () => {
+        setSelectedLocation(null);
+    };
 
     const cardData = [
         {
@@ -447,7 +477,7 @@ const ClinicLanding = () => {
                 </Box>
               )}
 
-              {!submitButton && (
+              {!submitbutton && (
                 <Box
                   sx={{
                       position: "fixed",
