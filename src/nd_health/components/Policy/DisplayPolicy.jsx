@@ -21,7 +21,7 @@ const DisplayPolicy = () => {
         console.error("Error fetching clinic information:", error);
       }
     };
-    fetchClinicInfo();
+    fetchClinicInfo().then(r => {});
   }, []);
 
   if (!document) {
@@ -31,7 +31,7 @@ const DisplayPolicy = () => {
   return (
     <div>
       {/*<h3>{document.title}</h3>*/}
-      <Worker workerUrl="https://unpkg.com/pdfjs-dist@4.0.379/build/pdf.worker.min.js">
+      <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
         <Viewer fileUrl={document.file} />
       </Worker>
     </div>
