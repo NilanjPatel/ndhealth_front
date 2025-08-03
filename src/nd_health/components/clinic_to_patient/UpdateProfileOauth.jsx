@@ -35,7 +35,6 @@ import MKBox from "components/MKBox";
 import MKButton from "components/MKButton";
 import GoHome from "../resources/GoHome";
 import Divider from "@mui/material/Divider";
-import { useClinicInfo } from "../resources/useClinicInfo.js";
 
 const UpdateProfileOauth = () => {
     const {clinicSlug} = useParams();
@@ -43,14 +42,13 @@ const UpdateProfileOauth = () => {
     const [updatepressed, setUpdatePressed] = useState(true);
     const [gotpatientInfo, setGotpatientInfo] = useState(false);
     const [hin, setHin] = useState("");
-    // const [clinicInfoFetched, setClinicInfoFetched] = useState(false);
+    const [clinicInfoFetched, setClinicInfoFetched] = useState(false);
     const dobRef = useRef(null);
-    // const [clinicInfo, setClinicInfo] = useState(null);
+    const [clinicInfo, setClinicInfo] = useState(null);
     const [dob, setDob] = useState("");
     const [patientInfo, setpatientInfo] = useState(null);
 
     const [isEmailValid, setIsEmailValid] = React.useState(true);
-    const { clinicInfo, locationsData, notice, clinicInfoFetched, clinicInfoError } = useClinicInfo(clinicSlug);
 
     const [updatedInfo, setUpdatedInfo] = useState({
         address: "",
@@ -63,7 +61,23 @@ const UpdateProfileOauth = () => {
         demo: "",
     });
 
+    useEffect(() => {
+        const fetchClinicInfo = async () => {
+            try {
+                const response = await fetch(`${API_BASE_PATH}/clinic/${clinicSlug}/`);
 
+                const data = await response.json();
+                setClinicInfo(data.clinic);
+            } catch (error) {
+                console.error("Error fetching clinic information:", error);
+            }
+        };
+
+        if (!clinicInfoFetched) {
+            fetchClinicInfo();
+            setClinicInfoFetched(true);
+        }
+    }, [clinicSlug, hin, clinicInfoFetched]);
 
     const handleHinChange = (e) => {
         const formattedHin = formatHin(e.target.value);

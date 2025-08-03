@@ -31,7 +31,7 @@ const DisplayPolicy = () => {
   return (
     <div>
       {/*<h3>{document.title}</h3>*/}
-      <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
+      <Worker workerUrl="https://unpkg.com/pdfjs-dist@5.3.93/build/pdf.worker.min.js">
         <Viewer fileUrl={document.file} />
       </Worker>
     </div>

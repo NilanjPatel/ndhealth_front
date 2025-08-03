@@ -22,23 +22,38 @@ import MKButton from "../../../components/MKButton";
 import Breadcrumbs from "../../../examples/Breadcrumbs";
 import Icon from "@mui/material/Icon";
 import API_BASE_PATH from "../../../apiConfig";
-import { useClinicInfo } from "../resources/useClinicInfo.js";
 
 const RecordOauth = () => {
   const { clinicSlug } = useParams();
-  // const [clinicInfo, setClinicInfo] = useState(null);
-  const [buttonPressed, setButtonPressed] = useState(true);
+  const [clinicInfo, setClinicInfo] = useState(null);
+  const [buttonpressed, setButtonPressed] = useState(true);
   const [hin, setHin] = useState("");
   const [dob, setDob] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const [modalContent, setModalContent] = useState("");
-  // const [clinicInfoFetched, setClinicInfoFetched] = useState(false);
+  const [clinicInfoFetched, setClinicInfoFetched] = useState(false);
   const [doctorsMsgDisplay, setDoctorsMsg] = useState("none");
   const [authformdisplay, setAuthformdisplay] = useState("block");
   const [secureFileData, setSecureFileData] = useState([]);
   const [expandedMessageId, setExpandedMessageId] = useState(null); // Track expanded message
   const dobRef = useRef(null);
-  const { clinicInfo, locationsData, notice, clinicInfoFetched, clinicInfoError } = useClinicInfo(clinicSlug);
+
+  useEffect(() => {
+    const fetchClinicInfo = async () => {
+      try {
+        const response = await fetch(`${API_BASE_PATH}/clinic/${clinicSlug}/`);
+        const data = await response.json();
+        setClinicInfo(data.clinic);
+      } catch (error) {
+        console.error("Error fetching clinic information:", error);
+      }
+    };
+
+    if (!clinicInfoFetched) {
+      fetchClinicInfo();
+      setClinicInfoFetched(true);
+    }
+  }, [clinicSlug, hin, clinicInfoFetched]);
 
   const handleHinChange = (e) => {
     const formattedHin = formatHin(e.target.value);
@@ -165,7 +180,7 @@ const RecordOauth = () => {
                   <MKButton
                     color="info"
                     variant="contained"
-                    disabled={!buttonPressed}
+                    disabled={!buttonpressed}
                     onClick={handleRequest}
                     fullWidth
                   >

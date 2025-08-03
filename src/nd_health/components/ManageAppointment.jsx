@@ -1,14 +1,19 @@
 // src/components/clinicInfo.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import {
-
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
   CardActions,
   Grid,
   Card,
   CardContent,
   CardHeader,
   Typography,
+  IconButton,
   Avatar,
 } from "@mui/material";
 import { AccessTime, Event, Cancel, Home } from "@mui/icons-material";
@@ -17,38 +22,36 @@ import "nd_health/components/css/Marquee.css";
 import MKButton from "../../components/MKButton";
 import NotificationDialog from "./resources/Notification";
 import API_BASE_PATH from "apiConfig";
-import { useClinicInfo } from "./resources/useClinicInfo.js";
 
 const ManageAppointment = () => {
   const location = useLocation();
   const { clinicSlug } = useParams();
-  const { appointmentData, } = location.state || {};
+  const { appointmentData, clinicInfo } = location.state || {};
   const [homeButton, setHomeButton] = useState(true);
   const [disabledAppointments, setDisabledAppointments] = useState({});
-  // const [notice, setNotice] = useState(null);
+  const [notice, setNotice] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const [isError, setIsError] = useState(false);
   const [modalContent, setModalContent] = useState("");
-  const { clinicInfo, locationsData, notice, loading } = useClinicInfo(clinicSlug);
 
 
-  // useEffect(() => {
-  //   const fetchClinicAppointmentPolicy = async () => {
-  //     try {
-  //       const response = await fetch(`${API_BASE_PATH}/clinic/${clinicSlug}/`);
-  //       const data = await response.json();
-  //
-  //       if (data.notices) {
-  //         const notices = data.notices.filter(Boolean).join(" | ");
-  //         setNotice(notices);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching clinic information:", error);
-  //     }
-  //   };
-  //
-  //   fetchClinicAppointmentPolicy();
-  // }, [clinicSlug]);
+  useEffect(() => {
+    const fetchClinicAppointmentPolicy = async () => {
+      try {
+        const response = await fetch(`${API_BASE_PATH}/clinic/${clinicSlug}/`);
+        const data = await response.json();
+
+        if (data.notices) {
+          const notices = data.notices.filter(Boolean).join(" | ");
+          setNotice(notices);
+        }
+      } catch (error) {
+        console.error("Error fetching clinic information:", error);
+      }
+    };
+
+    fetchClinicAppointmentPolicy().then(r => {});
+  }, [clinicSlug]);
 
   const handleRequest = async (appid) => {
     try {
