@@ -52,6 +52,7 @@
     "react-lazy-load-image-component": "^1.6.0",
     "react-modal": "^3.16.1",
     "react-pdf": "^9.0.0",
+    "react-pdf-viewer": "^0.1.0",
     "react-router-dom": "^6.21.1",
     "react-scripts": "^5.0.1",
     "react-sf-building-blocks": "^1.0.87",
