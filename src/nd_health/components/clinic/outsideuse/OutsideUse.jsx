@@ -1558,7 +1558,7 @@ export const InitallOutsideUse = () => {
     );
   }
   const manager = OutsideUseManager.getInstance(clinicSlug);
-  manager.showDialog();
+  manager.showDialog().then(r => {});
   // Cleanup on unmount
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {

@@ -143,8 +143,8 @@ const StepIconWrapper = styled(Box, {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  width: 40,
-  height: 40,
+  // width: 25,
+  // height: 25,
   borderRadius: '50%',
   marginRight: theme.spacing(2),
   backgroundColor: isCompleted
