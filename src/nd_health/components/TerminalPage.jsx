@@ -246,10 +246,10 @@ const TerminalPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [clinicSlugCurrent, clinicLocation, loading, appointments.length, doctors.length]);
+  }, [clinicSlugCurrent, clinicLocation, appointments.length, doctors.length]);
 
   useEffect(() => {
-    fetchClinicData();
+    fetchClinicData().then(r => {});
   }, [fetchClinicData]);
 
   // Utility functions
