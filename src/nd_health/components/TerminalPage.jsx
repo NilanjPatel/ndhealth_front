@@ -296,6 +296,7 @@ const TerminalPage = () => {
 
   // Event handlers
   const handleDoctorSelect = (doctor) => {
+    fetchClinicData().then(r => {}); // refresh
     setSelectedDoctor(doctor);
 
     const doctorAppointments = appointments.filter(
