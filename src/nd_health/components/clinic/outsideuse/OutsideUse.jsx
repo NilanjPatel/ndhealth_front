@@ -585,7 +585,7 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
             </TableCell>
           )}
 
-          {/*<TableCell >{row.code}</TableCell>*/}
+          <TableCell >{row.percentageDifference}</TableCell>
           {/*<TableCell >*/}
           {/*  <Link*/}
           {/*    fontWeight={"bolder"}*/}
@@ -1170,11 +1170,11 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                                         fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
                                         fontSize: "0.875rem",
                                       }}>Difference</TableCell>
-                                      {/*<TableCell  sx={{*/}
-                                      {/*  fontWeight: "600",*/}
-                                      {/*  fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",*/}
-                                      {/*  fontSize: "0.875rem",*/}
-                                      {/*}}>Code</TableCell>*/}
+                                      <TableCell  sx={{
+                                        fontWeight: "600",
+                                        fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                                        fontSize: "0.875rem",
+                                      }}>Percentage</TableCell>
                                       {/*<TableCell  sx={{*/}
                                       {/*  fontWeight: "600",*/}
                                       {/*  fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",*/}
