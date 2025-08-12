@@ -217,10 +217,8 @@ const TerminalPage = () => {
   const [isUpdatingInfo, setIsUpdatingInfo] = useState(false);
   const [filteredAppointments, setFilteredAppointments] = useState([]);
 
-  // Fetch clinic data
-  const fetchClinicData = useCallback(async () => {
-    if (loading || (appointments.length > 0 && doctors.length > 0)) return;
-
+  const fetchClinicData = async () => {
+    if (loading) return;
     setLoading(true);
     try {
       const response = await fetch(
@@ -246,11 +244,12 @@ const TerminalPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [clinicSlugCurrent, clinicLocation, appointments.length, doctors.length]);
 
-  useEffect(() => {
-    fetchClinicData().then(r => {});
-  }, [fetchClinicData]);
+  };
+
+  // useEffect(() => {
+  //   fetchClinicData().then(r => {});
+  // }, [fetchClinicData]);
 
   // Utility functions
   const showSnackbar = (message, severity = "info") => {
@@ -302,7 +301,6 @@ const TerminalPage = () => {
     const doctorAppointments = appointments.filter(
       (appointment) => appointment.doctorID__id === doctor.doctor__id
     );
-
     setFilteredAppointments(doctorAppointments);
 
     if (doctorAppointments.length > 0) {
