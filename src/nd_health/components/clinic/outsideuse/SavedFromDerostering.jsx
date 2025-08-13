@@ -40,6 +40,10 @@ import { getCurrentDate } from "../../resources/utils";
 import powered_by_logo from "nd_health/assets/images/powered_by_nd_health_n.png";
 import ndHealthLogo from "nd_health/assets/images/ND(1).png";
 import AdvancedDashboardLoading from "../../processes/AdvancedDashboardLoading";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers";
+import { TextField } from "@mui/material";
 // Row component for collapsible detail view
 const EnhancedTerminatedRow = ({ row, onUpdate, emrHomeUrl }) => {
   const [open, setOpen] = useState(false);
@@ -332,6 +336,21 @@ export const SavedByDerostering = () => {
   const [individualRosterUpdating, setIndividualRosterUpdating] = useState(false);
   const [totalTerminated, setTotalTerminated] = useState(0);
   const [totalDeceased, setTotalDeceased] = useState(0);
+  //search from all
+  const [searchValues, setSearchValues] = useState({
+    bill_date_from: new Date().toISOString().split("T")[0], // Jan 1st of current year
+    bill_date_to: new Date().toISOString().split("T")[0],
+    // min_occurrences: 2,
+  });
+  const [filters, setFilters] = useState(searchValues); // actual applied filters
+
+  const handleSearchChange = (field, value) => {
+    setSearchValues((prev) => ({ ...prev, [field]: value }));
+  };
+  const handleSearch = () => {
+    setFilters(searchValues);
+    setPage(0);
+  };
 
   // Pagination state
   const [page, setPage] = useState(0);
@@ -469,12 +488,26 @@ export const SavedByDerostering = () => {
 
   // Filter data based on selected roster
   const filteredData = useMemo(() => {
-    if (selectedCode === "all") {
-      return terminatedPatients.filter(patient => patient.confirmBilled === 1 || patient.confirmBilled === 2);
+    const fromDate = new Date(filters.bill_date_from);
+    const toDate = new Date(filters.bill_date_to);
+    toDate.setHours(23, 59, 59, 999); // include the whole day for "to"
+
+    let patients = terminatedPatients.filter(
+      (patient) => patient.confirmBilled === 1 || patient.confirmBilled === 2
+    );
+
+    if (selectedCode !== "all") {
+      patients = patients.filter(
+        (patient) => patient.code.toString() === selectedCode
+      );
     }
-    const terminatedPatients1 = terminatedPatients.filter(patient => patient.confirmBilled === 1 || patient.confirmBilled === 2);
-    return terminatedPatients1.filter(patient => patient.code.toString() === selectedCode);
-  }, [terminatedPatients, selectedCode]);
+
+    return patients.filter((patient) => {
+      const created = new Date(patient.createDate);
+      return created >= fromDate && created <= toDate;
+    });
+  }, [terminatedPatients, selectedCode, filters]);
+
 
   useEffect(() => {
     // const datas = getCurrentPageData();
@@ -620,7 +653,7 @@ export const SavedByDerostering = () => {
     ];
     const tableRows = [];
 
-    terminatedPatients.forEach((row, index) => {
+    filteredData.forEach((row, index) => {
       if (row.code !== 44) {
         // y=y+10;
         const billingStatus = row.confirmBilled === 1 ? "Not Billed" : row.confirmBilled === 2 ? "De-Roster Billed" : row.confirmBilled === 3 ? "Next: Re-Roster Bill": row.confirmBilled === 4 ? "Re-Roster Billed": "Unknown";
@@ -863,6 +896,56 @@ export const SavedByDerostering = () => {
                               }}
                             >
                               {isRefreshingRosters ? "Updating..." : "Refresh Data"}
+                            </Button>
+                          </Grid>
+                          <Grid item >
+                              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker
+                                  label="From Date"
+                                  value={searchValues.bill_date_from}
+                                  onChange={(newValue) => handleSearchChange("bill_date_from", newValue?.format("YYYY-MM-DD"))}
+                                  renderInput={(params) => <TextField {...params} fullWidth />}
+                                />
+
+                              </LocalizationProvider>
+
+                          </Grid>
+                          <Grid item >
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+
+                              <DatePicker
+                                label="To Date"
+                                value={searchValues.bill_date_to}
+                                onChange={(newValue) => handleSearchChange("bill_date_to", newValue?.format("YYYY-MM-DD"))}
+                                renderInput={(params) => <TextField {...params} fullWidth />}
+                              />
+                            </LocalizationProvider>
+
+                          </Grid>
+                          <Grid item>
+                            <Button
+                              variant="contained"
+                              onClick={() => {
+                                handleSearch();
+                              }}
+                              fullWidth
+                              sx={{
+                                textTransform: "none",
+                                fontWeight: "bold",
+                                fontFamily: "sans-serif",
+                                fontVariantCaps: "normal",
+                                color: "white",
+                                borderColor: "rgba(255, 255, 255, 0.3)",
+                                backgroundColor: "#1976d2",
+                                "&:hover": {
+                                  backgroundColor: "#1565c0", // Slightly darker on hover
+                                  borderColor: "rgba(255, 255, 255, 0.5)",
+                                  color: "black",
+                                },
+                              }}
+                            >
+
+                              {isRefreshingRosters ? "Updating..." : "Search"}
                             </Button>
                           </Grid>
 

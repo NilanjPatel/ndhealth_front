@@ -85,6 +85,7 @@ const EnhancedTerminatedRow = ({ row, onUpdate , emrHomeUrl}) => {
       >
         <TableCell align="left">{row.hin || "N/A"}</TableCell>
         <TableCell component="th" scope="row">{row.name || "N/A"}</TableCell>
+        <TableCell component="th" scope="row">{row.rosterStatus || "N/A"}</TableCell>
         <TableCell>
           <Link
             color={"blue"}
@@ -230,6 +231,7 @@ export const RosterTerminatedPatients = () => {
   const [loading, setLoading] = useState(true);
   const [selectedCode, setSelectedCode] = useState("all");
   const [isRefreshingRosters, setIsRefreshingRosters] = useState(false);
+  const [isTerminatingBulk, setTerminatingBulk] = useState(false);
   const [individualRosterUpdating, setIndividualRosterUpdating] = useState(false);
 
   // Pagination state
@@ -346,6 +348,39 @@ export const RosterTerminatedPatients = () => {
     }
   };
 
+
+  // terminate all the patient who are not terminated
+  const terminateBulk = async () => {
+    setTerminatingBulk(true);
+    setIndividualRosterUpdating(true);
+    // get the current cached list of patients
+    try{
+      const cachedData = localStorage.getItem(CACHE_KEY);
+      // filter the list by rosterStatus != "TE"
+      let filteredPatients = [];
+
+      if (cachedData) {
+        const parsedData = JSON.parse(cachedData);
+        filteredPatients = parsedData.data.filter(patient => {
+          return (
+            patient.rosterStatus !== "TE" && // match status
+            patient.rosterTerminationDate === null // or any condition you need
+          );
+        });
+        // hit api call with this list
+        await handleUpdatePatient(filteredPatients);
+      }
+    } catch (error) {
+      console.error("Error terminate bulk:", error);
+    }finally {
+      setTerminatingBulk(false);
+      setIndividualRosterUpdating(false);
+    }
+
+
+
+  }
+
   // Fetch clinic info on component mount
   useEffect(() => {
     const fetchClinicInfo = async () => {
@@ -445,25 +480,32 @@ export const RosterTerminatedPatients = () => {
       const urlParams = new URLSearchParams(window.location.search);
       const accessTokenurl = urlParams.get("token");
       const accessToken = localStorage.getItem("accessToken") || accessTokenurl;
+
+      // Always convert to array for consistent processing
+      const patientsToUpdate = Array.isArray(patientData) ? patientData : [patientData];
+
       const response = await fetch(`${API_BASE_PATH}/outsideuse/getletestRoster/terminated/`, {
         method: "PUT",
         headers: {
           "Authorization": `Token ${accessToken}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(patientData),
+        body: JSON.stringify(patientsToUpdate),
       });
 
       if (response.status === 204) {
         const cachedData = localStorage.getItem(CACHE_KEY);
         if (cachedData) {
           const { data } = JSON.parse(cachedData);
-          const patientsData = typeof data === 'string' ? JSON.parse(data) : data;
+          const patientsData = typeof data === "string" ? JSON.parse(data) : data;
+
           const updatedPatients = patientsData.map(patient => {
-            if (patient.hin === patientData.hin) {
+            // Find if this patient is in the update list
+            const match = patientsToUpdate.find(p => p.hin === patient.hin);
+            if (match) {
               return {
                 ...patient,
-                rosterTerminationDate: patientData.terminatedDate,
+                rosterTerminationDate: match.terminatedDate,
                 rosterStatus: "TE",
               };
             }
@@ -471,17 +513,24 @@ export const RosterTerminatedPatients = () => {
           });
 
           setTerminatedPatients(updatedPatients);
+
           localStorage.setItem(CACHE_KEY, JSON.stringify({
             data: JSON.stringify(updatedPatients),
             timestamp: Date.now(),
           }));
         }
-        handleSuccess("Patient terminated in oscar successfully!");
+
+        handleSuccess(
+          patientsToUpdate.length > 1
+            ? `${patientsToUpdate.length} patients terminated successfully!`
+            : "Patient terminated successfully!"
+        );
+
       } else {
-        throw new Error(`Failed to update patient`);
+        throw new Error(`Failed to update patient(s)`);
       }
     } catch (error) {
-      handleFailure(`Failed to update patient`);
+      handleFailure(`Failed to update patient(s)`);
       throw error;
     }
   };
@@ -638,6 +687,30 @@ export const RosterTerminatedPatients = () => {
                               {isRefreshingRosters ? "Updating..." : "Refresh Data"}
                             </Button>
                           </Grid>
+                          <Grid item>
+                            <Button
+                              variant="contained"
+                              onClick={terminateBulk}
+                              disabled={isTerminatingBulk || individualRosterUpdating}
+                              startIcon={isTerminatingBulk ? <CircularProgress size={16} /> : <RefreshIcon />}
+                              sx={{
+                                textTransform: "none",
+                                fontWeight: "bold",
+                                fontFamily: "sans-serif",
+                                fontVariantCaps: "normal",
+                                color: "white",
+                                borderColor: "rgba(255, 255, 255, 0.3)",
+                                backgroundColor: "#1976d2",
+                                "&:hover": {
+                                  backgroundColor: "#1565c0",
+                                  borderColor: "rgba(255, 255, 255, 0.5)",
+                                  color: "black",
+                                },
+                              }}
+                            >
+                              {isTerminatingBulk ? "Updating..." : "Terminate all"}
+                            </Button>
+                          </Grid>
 
                           {/* Page info */}
                           <Grid item sx={{ ml: "auto", mr: 2 }}>
@@ -672,6 +745,11 @@ export const RosterTerminatedPatients = () => {
                                     fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
                                     fontSize: "0.875rem",
                                   }}>Patient Name</TableCell>
+                                  <TableCell sx={{
+                                    fontWeight: "600",
+                                    fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                                    fontSize: "0.875rem",
+                                  }}>Oscar Status</TableCell>
                                   <TableCell sx={{
                                     fontWeight: "600",
                                     fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",

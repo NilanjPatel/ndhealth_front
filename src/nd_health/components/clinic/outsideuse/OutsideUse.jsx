@@ -603,6 +603,14 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
               href={`${emrHomeUrl}oscar/demographic/demographiccontrol.jsp?demographic_no=${row.demo}&displaymode=edit&dboperation=search_detail`}
             >Demographic</Link>
           </TableCell>
+          <TableCell>
+            <Link
+
+              fontWeight={"bolder"}
+              target="_blank"
+              href={`${emrHomeUrl}oscar/billing/CA/ON/billinghistory.jsp?demographic_no=${row.demo}&last_name=${row.lname}&first_name=${row.fname}&orderby=appointment_date&displaymode=appt_history&dboperation=appt_history&limit1=0&limit2=10`}
+            >BH</Link>
+          </TableCell>
           <TableCell >
             {isUpdating ? (
               <AdvancedDashboardLoading />
@@ -1185,6 +1193,11 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
                                         fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
                                         fontSize: "0.875rem",
                                       }}>Demographic</TableCell>
+                                      <TableCell  sx={{
+                                        fontWeight: "600",
+                                        fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                                        fontSize: "0.875rem",
+                                      }}>BH</TableCell>
                                       <TableCell  sx={{
                                         fontWeight: "600",
                                         fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
