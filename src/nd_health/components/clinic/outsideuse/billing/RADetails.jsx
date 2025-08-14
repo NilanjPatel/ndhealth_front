@@ -113,7 +113,7 @@ const ProductSearch = () => {
   const handleChange = () => {
     // const { name, value } = e.target;
     // setFilters((prev) => ({ ...prev, [name]: value }));
-    setProducts([]);
+    // setProducts([]);
     setFilters(inputValues);
   };
   const handleClear = () => {
@@ -608,7 +608,17 @@ const ProductSearch = () => {
                                       fontWeight: "600",
                                       fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
                                       fontSize: "0.875rem",
+                                    }}>Service Date</TableCell>
+                                    <TableCell sx={{
+                                      fontWeight: "600",
+                                      fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                                      fontSize: "0.875rem",
                                     }}>Service Code</TableCell>
+                                    <TableCell sx={{
+                                      fontWeight: "600",
+                                      fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                                      fontSize: "0.875rem",
+                                    }}>Error</TableCell>
                                     <TableCell sx={{
                                       fontWeight: "600",
                                       fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
@@ -624,16 +634,8 @@ const ProductSearch = () => {
                                       fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
                                       fontSize: "0.875rem",
                                     }}>Amount Paid</TableCell>
-                                    <TableCell sx={{
-                                      fontWeight: "600",
-                                      fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                                      fontSize: "0.875rem",
-                                    }}>Service Date</TableCell>
-                                    <TableCell sx={{
-                                      fontWeight: "600",
-                                      fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                                      fontSize: "0.875rem",
-                                    }}>Error</TableCell>
+
+
                                     <TableCell sx={{
                                       fontWeight: "600",
                                       fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
@@ -656,12 +658,14 @@ const ProductSearch = () => {
                                       <TableRow key={index}>
                                         <TableCell>{row.hin}, {row.versionCode}</TableCell>
                                         <TableCell>{row.billing_no}</TableCell>
+                                        <TableCell>{row.service_date}</TableCell>
                                         <TableCell>{row.service_code}</TableCell>
+                                        <TableCell>{row.error_code}</TableCell>
                                         <TableCell>{row.service_count}</TableCell>
                                         <TableCell>{row.amountClaim}</TableCell>
                                         <TableCell>{row.amountPay}</TableCell>
-                                        <TableCell>{row.service_date}</TableCell>
-                                        <TableCell>{row.error_code}</TableCell>
+
+
                                         <TableCell>{row.billType}</TableCell>
                                         <TableCell>{row.claim_no}</TableCell>
                                         <TableCell>{row.raHeader.raHeader_no}</TableCell>

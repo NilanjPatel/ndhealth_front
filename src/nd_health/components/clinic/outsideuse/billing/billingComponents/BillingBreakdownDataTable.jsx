@@ -29,6 +29,7 @@ const BillingBreakdownDataTable = ({ dateBreakdown }) => {
             <TableCell>Paid</TableCell>
             <TableCell>Error</TableCell>
             <TableCell>Claim No</TableCell>
+            <TableCell>RA Header</TableCell>
           </TableRow>
         {/*</TableHead>*/}
 
@@ -68,6 +69,7 @@ const BillingBreakdownDataTable = ({ dateBreakdown }) => {
 
 
                   <TableCell>{record.claim_no}</TableCell>
+                  <TableCell>{record.raHeader__raHeader_no}</TableCell>
                 </TableRow>
               ))}
             </React.Fragment>

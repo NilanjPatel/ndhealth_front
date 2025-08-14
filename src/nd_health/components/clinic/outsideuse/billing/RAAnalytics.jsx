@@ -74,7 +74,8 @@ const RAServiceCodeAnalytics = () => {
 
   const [filters, setFilters] = useState({
     target_service_code: "K030A",
-    service_date_from: new Date(new Date().getFullYear(), 0, 1).toISOString().split("T")[0], // Jan 1st of current year
+    // service_date_from: new Date(new Date().getFullYear(), 0, 1).toISOString().split("T")[0], // Jan 1st of current year
+    service_date_from: new Date(new Date().setDate(new Date().getDate() - 365)).toISOString().split("T")[0], // 365 days ago
     service_date_to: new Date().toISOString().split("T")[0],
     // min_occurrences: 2,
   });
@@ -84,10 +85,10 @@ const RAServiceCodeAnalytics = () => {
 
   const [inputValues, setInputValues] = useState({
     target_service_code: "K030A",
-    service_date_from: new Date(new Date().getFullYear(), 0, 1).toISOString().split("T")[0], // Jan 1st of current year
-    service_date_to: new Date().toISOString().split("T")[0],
-    // min_occurrences: 2,
+    service_date_from: new Date(new Date().setDate(new Date().getDate() - 365)).toISOString().split("T")[0], // 365 days ago
+    service_date_to: new Date().toISOString().split("T")[0], // today
   });
+
 
   const [analyticsData, setAnalyticsData] = useState(null);
   const [listDoctors, setListDoctors] = useState(null);
@@ -261,13 +262,19 @@ const RAServiceCodeAnalytics = () => {
     setInputValues((prev) => ({ ...prev, [field]: value }));
   };
   const handleSearch = () => {
-    setFilters(inputValues);
-    setPage(0);
+    const localData = JSON.parse(localStorage.getItem("analyticsData"));
+    if ( localData.analysis_parameters.date_range.from !== inputValues.service_date_from || localData.analysis_parameters.date_range.to !== inputValues.service_date_to) {
+      setFilters(inputValues);
+      setPage(0);
+    }
+    //
+
   };
+
   const handleClear = () => {
     const defaultValues = {
       target_service_code: "K030A",
-      service_date_from: "2024-01-01",
+      service_date_from: new Date(new Date().setDate(new Date().getDate() - 365)).toISOString().split("T")[0], // 365 days ago
       service_date_to: new Date().toISOString().split("T")[0],
       // min_occurrences: 2,
     };
@@ -365,7 +372,6 @@ const RAServiceCodeAnalytics = () => {
   useEffect(() => {
     const fetchConfig = async () => {
       try {
-        setLoading(true);
         const accessToken = localStorage.getItem("accessToken");
         const response = await fetch(
           `${API_BASE_PATH}/third-party-call-setup/`,
@@ -397,7 +403,6 @@ const RAServiceCodeAnalytics = () => {
       } catch (error) {
         console.error("Error fetching config:", error);
       } finally {
-        setLoading(false);
       }
     };
 
@@ -870,7 +875,7 @@ const RAServiceCodeAnalytics = () => {
                           }}
                           fullWidth
                         >
-                          Analyze
+                          Search
                         </Button>
                         <Button
                           variant="outlined"
@@ -881,7 +886,7 @@ const RAServiceCodeAnalytics = () => {
                           }}
                           fullWidth
                         >
-                          Clear
+                          Last 365 Days
                         </Button>
                       </Box>
                     </Box>
@@ -1014,7 +1019,7 @@ const RAServiceCodeAnalytics = () => {
                               }}
                               fullWidth
                             >
-                              Analyze
+                              Search
                             </Button>
                             <Button
                               variant="outlined"
@@ -1025,7 +1030,7 @@ const RAServiceCodeAnalytics = () => {
                               }}
                               fullWidth
                             >
-                              Clear
+                              Last 365 Days
                             </Button>
                           </Box>
                         </Box>
