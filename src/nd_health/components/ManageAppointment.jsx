@@ -22,6 +22,7 @@ import "nd_health/components/css/Marquee.css";
 import MKButton from "../../components/MKButton";
 import NotificationDialog from "./resources/Notification";
 import API_BASE_PATH from "apiConfig";
+import GoHome from "./resources/GoHome";
 
 const ManageAppointment = () => {
   const location = useLocation();
@@ -117,12 +118,13 @@ const ManageAppointment = () => {
 
             <Card>
               <CardHeader title={`Information of your appointment at ${clinicInfo.name}`} />
+              <GoHome clinicSlug={clinicSlug}/>
               {appointmentData.appointment.map((app) => (
                 <Card key={app.id} sx={{ margin: 2, boxShadow: 3 }}>
                   <CardContent>
                     <Grid container spacing={2} alignItems="center">
                       <Grid item>
-                        <Avatar sx={{ bgcolor: "primary.main" }}>
+                        <Avatar >
                           <Event />
                         </Avatar>
                       </Grid>
@@ -138,34 +140,36 @@ const ManageAppointment = () => {
                         </Typography>
                       </Grid>
                       <Grid item>
+
                         <MKButton
-                          color="primary"
-                          variant="contained"
                           disabled={disabledAppointments[app.id] || false}
                           onClick={() => handleRequest(app.id)}
-                          startIcon={<Cancel />}
+                          variant="contained"
+                          color="info"
+                          fontWeight="regular"
+                          opacity={0.8}
+                          sx={{
+                            "&:hover, &:focus": {
+                              // color: ({ palette: { info } }) => info.main,
+                            },
+                            "&.Mui-disabled": {
+                              backgroundColor: "#ccc", // gray background when disabled
+                              color: "#666",           // text/icon color when disabled
+                              opacity: 0.6,            // optional transparency
+                            },
+                            fontSize: "1rem",
+                            padding: "0.8rem",
+                          }}
                         >
-                          Cancel
+                          <Cancel />&nbsp;&nbsp;Cancel
                         </MKButton>
+
                       </Grid>
                     </Grid>
                   </CardContent>
                 </Card>
               ))}
-              <CardActions style={{ display: "flex", justifyContent: "center" }}>
-                <Grid item xs={12}>
-                  <MKButton
-                    color="info"
-                    variant="contained"
-                    disabled={!homeButton}
-                    onClick={redirectHome}
-                    fullWidth
-                    startIcon={<Home />}
-                  >
-                    Go Home
-                  </MKButton>
-                </Grid>
-              </CardActions>
+
             </Card>
           </>
         ) : (

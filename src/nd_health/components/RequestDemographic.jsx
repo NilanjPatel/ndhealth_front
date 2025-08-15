@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, Link } from "react-router-dom";
 import API_BASE_PATH from "apiConfig";
 
 import Layout from "nd_health/components/Layout";
@@ -866,7 +866,22 @@ const RequestDemographic = () => {
 
             <Grid container spacing={2} justifyContent="center" display={displayNextStep}>
               <Grid item xs={12} sm={12} md={12}>
-                <MKButton varient="contained" color="primary" onClick={handledisplayfirstStep}>
+                <MKButton
+                  onClick={handledisplayfirstStep}
+                  variant="contained"
+                  color="info"
+                  fontWeight="regular"
+                  opacity={0.8}
+                  sx={{
+                    "&:hover, &:focus": {
+                      // color: ({ palette: { info } }) => info.main,
+                    },
+                    fontSize:"1rem",
+                    padding: "0.8rem",
+                    // with:'100%'
+                  }}
+
+                >
                   Back
                 </MKButton>
               </Grid>

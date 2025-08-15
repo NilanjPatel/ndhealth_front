@@ -1055,6 +1055,11 @@ const RAServiceCodeAnalytics = () => {
                           fontWeight: "600",
                           fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
                           fontSize: "0.875rem",
+                        }}>Capitation</TableCell>
+                        <TableCell sx={{
+                          fontWeight: "600",
+                          fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+                          fontSize: "0.875rem",
                         }}>HIN</TableCell>
                         <TableCell sx={{
                           fontWeight: "600",
@@ -1110,7 +1115,9 @@ const RAServiceCodeAnalytics = () => {
                           <React.Fragment key={index}>
                             <TableRow>
                               <TableCell onClick={() => toggleRowExpansion(index)}>{item.details.name}</TableCell>
+                              <TableCell>{item.baseRate}, {item.compCare}</TableCell>
                               <TableCell>{item.hin}</TableCell>
+
                               <TableCell>
                                 <Typography
                                   sx={{

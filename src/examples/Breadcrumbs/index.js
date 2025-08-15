@@ -28,9 +28,8 @@ import MKButton from "../../components/MKButton";
 
 function Breadcrumbs({ routes, ...rest }) {
   return (
-    <MKBox bgColor="inreate" borderRadius="md" py={1} px={2}
-    >
-      <MuiBreadcrumbs {...rest}>
+    <MKBox bgColor="inreate" borderRadius="md" py={1} px={2}>
+      {/*<MuiBreadcrumbs {...rest}>*/}
         {routes.map(({ label, route, icon }) =>
           route ? (
             <>
@@ -44,7 +43,7 @@ function Breadcrumbs({ routes, ...rest }) {
                 opacity={0.8}
                 sx={{
                   "&:hover, &:focus": {
-                    color: ({ palette: { info } }) => info.main,
+                    // color: ({ palette: { info } }) => info.main,
                   },
                   fontSize:"1rem",
                   padding: "0.8rem",
@@ -62,7 +61,7 @@ function Breadcrumbs({ routes, ...rest }) {
             </MKButton>
           ),
         )}
-      </MuiBreadcrumbs>
+      {/*</MuiBreadcrumbs>*/}
     </MKBox>
   );
 }
