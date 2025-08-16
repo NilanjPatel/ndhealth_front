@@ -259,20 +259,28 @@ const RAServiceCodeAnalytics = () => {
   }, [analyticsData, filteredData, rowsPerPage]);
 
   const handleInputChange = (field, value) => {
+    console.log(`Field:${ field }, value: ${value}`);
     setInputValues((prev) => ({ ...prev, [field]: value }));
   };
   const handleSearch = () => {
     const localData = JSON.parse(localStorage.getItem("analyticsData"));
-    if ( localData.analysis_parameters.date_range.from !== inputValues.service_date_from || localData.analysis_parameters.date_range.to !== inputValues.service_date_to) {
+    try{
+      if ( localData.analysis_parameters.date_range.from !== inputValues.service_date_from || localData.analysis_parameters.date_range.to !== inputValues.service_date_to) {
+        setFilters(inputValues);
+        setPage(0);
+      }
+    } catch (error) {
       setFilters(inputValues);
       setPage(0);
     }
+
     //
 
   };
 
   const handleClear = () => {
     const defaultValues = {
+      doctorOhip : inputValues.doctorOhip,
       target_service_code: "K030A",
       service_date_from: new Date(new Date().setDate(new Date().getDate() - 365)).toISOString().split("T")[0], // 365 days ago
       service_date_to: new Date().toISOString().split("T")[0],
