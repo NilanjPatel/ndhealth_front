@@ -59,6 +59,7 @@ import { Buffer } from "buffer";
 import { getCurrentDate } from "../../../resources/utils";
 import { makeStyles } from "@mui/styles";
 import { useClinicInfo } from "../../../resources/useClinicInfo.js";
+import Stack from "@mui/material/Stack";
 
 window.Buffer = Buffer;
 
@@ -1185,28 +1186,49 @@ const RAServiceCodeAnalytics = () => {
                                 )}
 
                               </TableCell>
-                              <TableCell>
 
-                                <TableCell>
-                                  {item.billDate ? (
-                                    <Link target="_blank"
-                                          to={`${analyticsData.url}oscar/billing/CA/ON/billingOB.jsp?billRegion=ON&billForm=MFP&hotclick=&appointment_no=0&demographic_name=${item.details.name}&demographic_no=${item.details.demo}&providerview=${analyticsData.apptProvider_no}&user_no=${analyticsData.user_no}&apptProvider_no=${analyticsData.apptProvider_no}&AppointmentDate=${item.billDate}&deroster=Q040A&hin=${item.hin}`}>
+
+                              <TableCell align="center">
+                                {/* Next Bill */}
+                                {item.billDate ? (
+                                  <Link target="_blank"
+                                        to={`${analyticsData.url}oscar/billing/CA/ON/billingOB.jsp?billRegion=ON&billForm=MFP&hotclick=&appointment_no=0&demographic_name=${item.details.name}&demographic_no=${item.details.demo}&providerview=${analyticsData.apptProvider_no}&user_no=${analyticsData.user_no}&apptProvider_no=${analyticsData.apptProvider_no}&AppointmentDate=${item.billDate}&deroster=Q040A&hin=${item.hin}`}
+                                        underline="hover">
+                                    <Typography variant="body1" color="primary">
                                       {item.nextBill}
-                                    </Link>
-                                  ) : (
-                                    item.nextBill
-                                  )}
-                                </TableCell>
+                                    </Typography>
+                                  </Link>
+                                ) : (
+                                  <Typography variant="body2">{item.nextBill}</Typography>
+                                )}
 
-                                <TableCell
-                                  style={{
-                                    color: new Date(item.billDate) > new Date() ? "yellow" : "green",
-                                  }}
-                                >
-                                  {item.billDate}
-                                </TableCell>
+                                {/* Bill Date */}
+                                {item.billDate && (
+                                  <Stack spacing={0.5} alignItems="center" sx={{ mt: 1 }}>
+                                    <Typography variant="body2" color="textSecondary">
+                                      Bill Date:
+                                    </Typography>
+                                    <Typography
+                                      variant="body2"
+                                      sx={{
+                                        fontWeight: "bold",
+                                        color: new Date(item.billDate) > new Date() ? "darkred" : "green",
+                                      }}
+                                    >
+                                      {item.billDate}
+                                    </Typography>
+                                  </Stack>
+                                )}
 
-
+                                {/* Next Appointment */}
+                                {item.next_appointment && (
+                                  <Typography
+                                    variant="body2"
+                                    sx={{ mt: 1, fontStyle: "italic", color: "text.secondary" }}
+                                  >
+                                    Next App: {item.next_appointment}
+                                  </Typography>
+                                )}
                               </TableCell>
                               {/*<TableCell>{item.details.phone}</TableCell>*/}
                               <TableCell>
