@@ -737,56 +737,8 @@ const RAServiceCodeAnalytics = () => {
                           onClick={() => applyFilter("eligible_q040")}
                         />
                       </Grid>
-                      <Grid item xs={6} md={1}>
-                        <MetricCard
-                          title="Claimed"
-                          value={`${formatCurrency(analyticsData.summary.total_amount_claimed)}K`}
-                          suffix=""
-                          icon="invoice"
-                          // trend="up"
-                          // trendValue="+0.3%"
-                          color="secondary"
-                          size="extraSmall"
-                        />
-                      </Grid>
-                      <Grid item xs={6} md={1}>
-                        <MetricCard
-                          title="Total Paid"
-                          value={`${formatCurrency(analyticsData.summary.total_amount_paid)}K`}
-                          suffix=""
-                          icon="paid"
-                          // trend="up"
-                          // trendValue="+0.3%"
-                          color="success"
-                          size="extraSmall"
-                        />
-                      </Grid>
-                      <Grid item xs={6} md={1}>
-                        <MetricCard
-                          title="Potential"
-                          value={`${formatCurrency(analyticsData.summary.total_potential)}K`}
 
-                          suffix=""
-                          icon="unpaid"
-                          // trend="up"
-                          // trendValue="+0.3%"
-                          color="info"
-                          size="extraSmall"
-                          subtitle={`+ ${formatCurrency(analyticsData.summary.total_amount_claimed - analyticsData.summary.total_amount_paid)}k`}
-                        />
-                      </Grid>
-                      <Grid item xs={6} md={1}>
-                        <MetricCard
-                          title="Total"
-                          value={`${formatCurrency(analyticsData.summary.total_potential + analyticsData.summary.total_amount_claimed)}K`}
-                          suffix=""
-                          icon="revenue"
-                          // trend="up"
-                          // trendValue="+0.3%"
-                          color="primary"
-                          size="extraSmall"
-                        />
-                      </Grid>
+
                     </Grid>
                   </>
                 ) : (
@@ -1061,11 +1013,7 @@ const RAServiceCodeAnalytics = () => {
                           fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
                           fontSize: "0.875rem",
                         }}>Name</TableCell>
-                        <TableCell sx={{
-                          fontWeight: "600",
-                          fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
-                          fontSize: "0.875rem",
-                        }}>Capitation</TableCell>
+
                         <TableCell sx={{
                           fontWeight: "600",
                           fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
@@ -1126,7 +1074,6 @@ const RAServiceCodeAnalytics = () => {
                           <React.Fragment key={index}>
                             <TableRow>
                               <TableCell onClick={() => toggleRowExpansion(index)}>{item.details.name}</TableCell>
-                              <TableCell>{item.baseRate}, {item.compCare}</TableCell>
                               <TableCell>{item.hin}</TableCell>
 
                               <TableCell>
@@ -1188,7 +1135,7 @@ const RAServiceCodeAnalytics = () => {
                               </TableCell>
 
 
-                              <TableCell align="center">
+                              <TableCell >
                                 {/* Next Bill */}
                                 {item.billDate ? (
                                   <Link target="_blank"
@@ -1227,6 +1174,14 @@ const RAServiceCodeAnalytics = () => {
                                     sx={{ mt: 1, fontStyle: "italic", color: "text.secondary" }}
                                   >
                                     Next App: {item.next_appointment}
+                                  </Typography>
+                                )}
+                                {item.systemq040 && (
+                                  <Typography
+                                    variant="body2"
+                                    sx={{ mt: 1, fontStyle: "italic", color: "text.secondary" }}
+                                  >
+                                    {item.systemq040}
                                   </Typography>
                                 )}
                               </TableCell>
