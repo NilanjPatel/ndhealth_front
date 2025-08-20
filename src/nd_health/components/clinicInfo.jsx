@@ -15,7 +15,7 @@ import {
     TextField,
     CardActionArea, Box, useTheme, useMediaQuery,
 } from "@mui/material";
-import {useParams, useNavigate} from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 
 import {Grid, Card, CardContent, Typography, CardHeader} from "@mui/material";
 import Layout from "./Layout";
@@ -34,6 +34,7 @@ import MKTypography from "components/MKTypography";
 // import Icon from "@mui/material/Icon";
 import GoHome from "./resources/GoHome";
 import Divider from "@mui/material/Divider";
+import MKButton from "../../components/MKButton";
 
 const ClinicInfo = () => {
     // const location = useLocation();
@@ -119,6 +120,7 @@ const ClinicInfo = () => {
     const handleRequest = async () => {
         try {
             // Make a request with clinicSlug, hin, and dob
+            setHcvValidate(false);
             setSubmitbutton(false);
             if (hin.length < 12 || dob.length < 10) {
                 setSubmitbutton(true);
@@ -223,6 +225,7 @@ const ClinicInfo = () => {
     };
 
     const handleHCVDialog = () => {
+        setOpenModal(false);
         setHcvValidate(false);
         setInputValue("");
         window.location.reload();
@@ -230,39 +233,49 @@ const ClinicInfo = () => {
 
     const updateVersionCode = async () => {
         // hin, dob, inputValue
+        setSubmitbutton(false);
+        setHcvValidate(false);
+        try{
+            const response = await fetch(`${API_BASE_PATH}/updateHCV/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    hin: hin,
+                    dob: dob,
+                    clinicSlug: clinicSlug,
+                    newversion: inputValue,
+                    update: true,
+                }),
+            });
+            const data = await response.json();
+            if (data.status === "success") {
+                setModalContent(data.message);
+                setOpenModal(true);
+                setButtonPressed(true);
+                setHcvValidate(false);
+                setInputValue("");
+            } else if (data.status === "failed") {
+                setModalContent(data.message);
+                setOpenModal(true);
+                setButtonPressed(true);
+                setHcvValidate(false);
+                setInputValue("");
+                setInputValue("");
+            }
+        } catch {
 
-        const response = await fetch(`${API_BASE_PATH}/updateHCV/`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                hin: hin,
-                dob: dob,
-                clinicSlug: clinicSlug,
-                newversion: inputValue,
-                update: true,
-            }),
-        });
-        const data = await response.json();
-        if (data.status === "success") {
-            setModalContent(data.message);
-            setOpenModal(true);
-            setButtonPressed(true);
-            setHcvValidate(false);
-            setInputValue("");
-        } else if (data.status === "failed") {
-            setModalContent(data.message);
-            setOpenModal(true);
-            setButtonPressed(true);
-            setHcvValidate(false);
-            setInputValue("");
-            setInputValue("");
+        } finally {
+            setSubmitbutton(true);
         }
     };
 
     const changeVersionCode = (event) => {
-        setInputValue(event.target.value);
+        let value = event.target.value.toUpperCase(); // convert to uppercase
+        value = value.replace(/[^A-Z]/g, "");         // allow only letters
+        if (value.length > 2) value = value.slice(0, 2); // max 2 chars
+        setInputValue(value);
     };
 
     return (
@@ -453,8 +466,9 @@ const ClinicInfo = () => {
                         />
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleHCVDialog}>Close</Button>
-                        <Button onClick={updateVersionCode}>Update</Button>
+                        <Button onClick={handleHCVDialog} variant="contained" color={"error"}>Close</Button>
+                        <Button onClick={updateVersionCode} disabled={inputValue.length!==2} variant="contained" color={"info"}>Update</Button>
+
                     </DialogActions>
                 </Dialog>
 
