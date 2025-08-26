@@ -99,11 +99,11 @@ const ApprovePatients = ({ clinicSlug }) => {
           Authorization: `Token ${accessToken}`,
         },
         body: JSON.stringify({
-          hin: row.hin,
+          row: row,
         }),
       });
       const data = await response.json();
-      if (data.status === "success") {
+      if (data.statusCode === 200) {
         alert("Patient approved!");
         // window.location.reload();
 
@@ -113,7 +113,7 @@ const ApprovePatients = ({ clinicSlug }) => {
         alert("Error approving patient!");
       }
     };
-    fetchApprove();
+    fetchApprove().then(r => {});
   };
 
   const handleDelete = (row) => {
