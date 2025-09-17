@@ -29,6 +29,7 @@ import CenteredFooter from "examples/Footers/CenteredFooter";
 // Presentation page sections
 import Counters from "pages/presentation/sections/Counters";
 import Information from "pages/presentation/sections/Information";
+import MedicalPracticeSlideshow from "./sections/MedicalPracticeSlideshow";
 import GettingStart from "pages/presentation/sections/GettingStart";
 // import DesignBlocks from "pages/presentation/sections/DesignBlocks";
 // import AuthPages from "pages/presentation/sections/AuthPages";
@@ -177,6 +178,7 @@ function Presentation() {
         }}
       >
         <Counters />
+        {/*<MedicalPracticeSlideshow slideHeight="750px" />*/}
         <Information />
         <GettingStart />
         {/*<Features />*/}

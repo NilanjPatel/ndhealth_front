@@ -6,7 +6,6 @@ import {
   CardContent,
   Typography,
   Box,
-  Container,
   Dialog,
   DialogActions,
   DialogContent,
@@ -18,9 +17,10 @@ import { redirectHomeM } from "./utils";
 import { useParams } from "react-router-dom";
 import NotificationDialog from "./Notification";
 import API_BASE_PATH from "../../../apiConfig";
+import { isValidEmail } from "./utils";
 
 const theme = createTheme({
-  spacing: 8, // Default spacing unit
+  spacing: 8,
 });
 
 const useStyles = makeStyles(() => ({
@@ -70,16 +70,11 @@ const PasswordReset = () => {
   const classes = useStyles();
   const [email, setEmail] = useState("");
   const [open, setOpen] = useState(true);
-  // NotificationDialog
   const [openNotification, setOpenNotification] = useState(false);
   const [isError, setIsError] = useState(false);
   const [notificationContent, setNotificationContent] = useState("");
 
   const { clinicSlug } = useParams();
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
 
   const handleClose = () => {
     setOpen(false);
@@ -87,36 +82,34 @@ const PasswordReset = () => {
   };
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    // Handle password reset logic here
+    event.preventDefault(); // ✅ prevent page reload
 
-    const responcebody = {
-      email: email,
-    };
+    // ✅ Validate email
+    if (!isValidEmail(email)) {
+      handleFailure("Please enter a valid email address.");
+      return;
+    }
+
     try {
       const response = await fetch(`${API_BASE_PATH}/password-reset/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(responcebody),
+        body: JSON.stringify({ email }),
       });
 
       if (response.ok) {
-        // Handle successful response
         handleSuccess(
-          `We have sent email on ${email} with password reset link. Please check your email and reset password`
+          `We have sent an email to ${email} with a password reset link. Please check your email.`
         );
-        handleClose();
+        setEmail(""); // Clear input
       } else {
-        // Handle Error response
-
-        handleFailure("Something went wrong, Please try again later");
-        console.error("Failed to upload files", response);
+        handleFailure("Something went wrong. Please try again later.");
       }
     } catch (error) {
-      handleFailure("Something went wrong, Please try again later");
-      console.error("Error uploading files:", error);
+      handleFailure("Something went wrong. Please try again later.");
+      console.error("Error:", error);
     }
   };
 
@@ -125,6 +118,7 @@ const PasswordReset = () => {
     setIsError(false);
     setOpenNotification(true);
   };
+
   const handleFailure = (message) => {
     setNotificationContent(message);
     setIsError(true);
@@ -138,7 +132,7 @@ const PasswordReset = () => {
           <DialogTitle>
             <Card className={classes.card}>
               <Box className={classes.header}>
-                <Typography variant="h5" component="h2" className={classes.title}>
+                <Typography variant="h5" className={classes.title}>
                   Reset Password
                 </Typography>
               </Box>
@@ -163,7 +157,6 @@ const PasswordReset = () => {
               >
                 RESET
               </Button>
-
               <Typography variant="body2" className={classes.subtitle}>
                 You will receive an e-mail in maximum 60 seconds
               </Typography>
@@ -175,6 +168,7 @@ const PasswordReset = () => {
             </Button>
           </DialogActions>
         </Dialog>
+
         <NotificationDialog
           open={openNotification}
           onClose={setOpenNotification}

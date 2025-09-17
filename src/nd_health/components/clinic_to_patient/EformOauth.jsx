@@ -11,7 +11,7 @@ import {
   DialogContent,
   DialogActions,
   TextField,
-  CardActionArea,
+  CardActionArea, Box, useTheme,
 } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
 
@@ -26,6 +26,8 @@ import NotificationDialog from "../resources/Notification";
 // import MKBox from "../../../components/MKBox";
 import MKButton from "../../../components/MKButton";
 import GoHome from "../resources/GoHome";
+import { alpha } from "@mui/material/styles";
+import NdLoader from "../resources/Ndloader";
 
 const EformOauth = () => {
   // const location = useLocation();
@@ -33,6 +35,8 @@ const EformOauth = () => {
   const [clinicInfo, setClinicInfo] = useState(null);
   const [buttonpressed, setButtonPressed] = useState(true);
   const navigate = useNavigate();
+  const [submitbutton, setSubmitbutton] = useState(true);
+  const theme = useTheme();
 
   // const pathSegments = location.pathname.split('/');
   // const clinicSlugcurrent = clinicSlug || pathSegments[pathSegments.indexOf('clinic') + 1]
@@ -83,10 +87,11 @@ const EformOauth = () => {
   const handleRequest = async () => {
     try {
       // Make a request with clinicSlug, hin, and dob
+      setSubmitbutton(false);
       if (hin === "" || dob === "") {
         handleFailure("Please enter your health-card number and date of birth.");
         setButtonPressed(true);
-
+        setSubmitbutton(true);
         return;
       }
       setButtonPressed(false);
@@ -97,16 +102,19 @@ const EformOauth = () => {
 
       const data = await response.json();
       if (data.status === "success") {
+        setSubmitbutton(false);
         navigate(`/clinic-forms/${clinicSlug}`, {
           state: { demo: data.demo, clinicInfo: clinicInfo },
         }); // TODO change the demo
       } else if (data.status === "failed") {
         setButtonPressed(true);
         handleFailure(data.message);
+        setSubmitbutton(false);
       }
     } catch (error) {
       console.error("Error making request:", error, hin);
       setButtonPressed(true);
+      setSubmitbutton(false);
     }
   };
 
@@ -188,6 +196,24 @@ const EformOauth = () => {
           </>
         ) : (
           <p>Loading...</p>
+        )}
+
+        {!submitbutton && (
+          <Box sx={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: alpha(theme.palette.background.paper, 0.7),
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1301,
+            backdropFilter: "blur(3px)",
+          }}>
+            <NdLoader size="lg" variant="solid" value={70} color="primary" />
+          </Box>
         )}
 
         {/* Modal */}

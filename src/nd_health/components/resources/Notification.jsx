@@ -36,7 +36,7 @@ function NotificationDialog({ open, onClose, content, isError, closeButtonLabel 
       setTitleColor(green[900]);
       setContentsColor(notificationColor);
     }
-  }, [isError]);
+  }, [isError, notificationColor]);
 
   const handleCloseModal = () => {
     onClose(false);

@@ -5,14 +5,14 @@ import React, {useState, useEffect, useRef} from "react";
 import {Link, useLocation} from "react-router-dom";
 
 import {
-    Button,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    TextField,
-    CardActionArea,
-    Backdrop,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  CardActionArea,
+  Backdrop, useTheme, Box,
 } from "@mui/material";
 import {useParams, useNavigate} from "react-router-dom";
 
@@ -35,6 +35,8 @@ import MKBox from "components/MKBox";
 import MKButton from "components/MKButton";
 import GoHome from "../resources/GoHome";
 import Divider from "@mui/material/Divider";
+import { alpha } from "@mui/material/styles";
+import NdLoader from "../resources/Ndloader";
 
 const UpdateProfileOauth = () => {
     const {clinicSlug} = useParams();
@@ -47,7 +49,8 @@ const UpdateProfileOauth = () => {
     const [clinicInfo, setClinicInfo] = useState(null);
     const [dob, setDob] = useState("");
     const [patientInfo, setpatientInfo] = useState(null);
-
+  const [submitbutton, setSubmitbutton] = useState(true);
+  const theme = useTheme();
     const [isEmailValid, setIsEmailValid] = React.useState(true);
 
     const [updatedInfo, setUpdatedInfo] = useState({
@@ -92,10 +95,12 @@ const UpdateProfileOauth = () => {
     const handleRequest = async () => {
         try {
             // Make a request with clinicSlug, hin, and dob
+          setSubmitbutton(false);
             if (hin === "" || dob === "") {
                 handleFailure("Please enter your health-card number and date of birth.");
                 setButtonPressed(true);
 
+              setSubmitbutton(true);
                 return;
             }
             setButtonPressed(false);
@@ -106,6 +111,7 @@ const UpdateProfileOauth = () => {
 
             const data = await response.json();
             if (data.status === "success") {
+              setSubmitbutton(true);
                 setGotpatientInfo(true);
                 console.log(`data:${data}`);
                 setpatientInfo(data.profile);
@@ -122,12 +128,15 @@ const UpdateProfileOauth = () => {
                 });
                 // navigate(`/clinic-forms/${clinicSlug}`, {state: {demo: data.profile, clinicInfo: clinicInfo,}}); // TODO change the demo
             } else if (data.status === "failed") {
+              setSubmitbutton(true);
                 setButtonPressed(true);
                 handleFailure(data.message);
             }
         } catch (error) {
+          setSubmitbutton(true);
             console.error("Error making request:", error, hin);
         } finally {
+          setSubmitbutton(true);
             setButtonPressed(false);
         }
     };
@@ -150,6 +159,7 @@ const UpdateProfileOauth = () => {
 
     const handleSubmitCheckIn = async () => {
         setUpdatePressed(false);
+        setSubmitbutton(false);
         if (isEmailValid) {
             // Add logic to update user information with the provided date of birth (dob)
             // You can make a POST request to the server to update the user's information.
@@ -174,17 +184,23 @@ const UpdateProfileOauth = () => {
                 }),
             });
             const data = await response.json();
+          setSubmitbutton(true);
             if (data.status === "success") {
+              setSubmitbutton(true);
                 handleSuccess(data.message);
                 setUpdatePressed(true);
+
             } else if (data.status === "failed") {
+              setSubmitbutton(true);
                 handleFailure(data.message);
                 setUpdatePressed(true);
             } else {
+              setSubmitbutton(true);
                 handleFailure("Something went wrong, try again!");
                 setUpdatePressed(true);
             }
         } else {
+          setSubmitbutton(true);
             // Email is not valid, handle accordingly (show an Error message, etc.)
             handleFailure("Email is not valid, kindly write valid email address.");
             setUpdatePressed(true);
@@ -429,7 +445,23 @@ const UpdateProfileOauth = () => {
                     <></>
                 )}
             </Dialog>
-
+          {!submitbutton && (
+            <Box sx={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              backgroundColor: alpha(theme.palette.background.paper, 0.7),
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 1301,
+              backdropFilter: "blur(3px)",
+            }}>
+              <NdLoader size="lg" variant="solid" value={70} color="primary" />
+            </Box>
+          )}
             <NotificationDialog
                 open={openNotification}
                 onClose={gotoHome}
