@@ -31,13 +31,13 @@ function Information() {
       rating: 5,
     },
     {
-      name: "Riddhi Parmar",
-      role: "Clinic Administrative",
-      clinic: "Clinic Administrative at Noble Clinic",
+      name: "Dr. Ramesh Asirwatham",
+      role: "Family Physician",
+      clinic: "Family Physician at Hope Medical Clinic",
       avatar:
         "https://media.licdn.com/dms/image/v2/C5603AQH4M0GDSO8uZg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1643374291751?e=1732147200&v=beta&t=bhwNS9JxsTFytHIiY3EauPtAANJtmbWy9ro5npslPM4",
       testimonial:
-        "ND Health helped us to improved our clinic's operations. We were facing heavy administrative tasks and constant patient calls. ND Health significantly reduced our workload and our patient are satisfied with this service.",
+        "Managing billing for our clinic was always complicated, with frequent errors and delayed reconciliations. ND Health provided clear billing suggestions and streamlined the entire process. Their system flagged inconsistencies early, saving us countless hours of manual checking. We now feel more confident in our billing accuracy and financial management.",
       backgroundColor: "light",
       rating: 4.5,
     },

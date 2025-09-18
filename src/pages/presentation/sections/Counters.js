@@ -11,6 +11,7 @@ import MKBox from "components/MKBox";
 import DefaultCounterCard from "examples/Cards/CounterCards/DefaultCounterCard";
 import { useEffect, useState } from "react";
 import API_BASE_PATH from "../../../apiConfig";
+import Typography from "@mui/material/Typography";
 
 function Counters() {
   const [appointmentCount, setAppointmentCount] = useState(0);
@@ -42,7 +43,43 @@ function Counters() {
   return (
     <MKBox component="section" py={3}>
       <Container>
+        <MKBox textAlign="center" mb={4}>
+          <Typography variant="h3" color="text.primary" mb={2}>
+            What One Clinic Achieves With Us
+          </Typography>
+
+        </MKBox>
         <Grid container item xs={12} lg={9} sx={{ mx: "auto" }}>
+          <Grid item xs={12} md={4}>
+            <DefaultCounterCard
+              color="success" // Specifying the color for the text gradient
+              icon={<Icon>book_online</Icon>} // Adding an icon
+              count={25}
+              suffix="%"
+              title="Improved Billing Accuracy"
+              description=""
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <DefaultCounterCard
+              color="info" // Specifying the color for the text gradient
+              icon={<Icon>book_online</Icon>} // Adding an icon
+              count={99}
+              suffix="%"
+              title="Less EH2 Error"
+              description=""
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <DefaultCounterCard
+              color="warning" // Specifying the color for the text gradient
+              icon={<Icon>book_online</Icon>} // Adding an icon
+              count={95}
+              suffix="%"
+              title="Improved Roster Management"
+              description=""
+            />
+          </Grid>
           <Grid item xs={12} md={4}>
             <DefaultCounterCard
               color="info" // Specifying the color for the text gradient
@@ -101,7 +138,7 @@ function Counters() {
             <DefaultCounterCard
               color="success" // Different color for different stats
               icon={<Icon>timer</Icon>} // Adding an icon
-              count={300}
+              count={30}
               suffix="+"
               title="Hours Saved Monthly"
               description="Average Monthly hours saved by one clinic"
