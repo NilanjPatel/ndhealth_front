@@ -113,7 +113,6 @@ const UpdateProfileOauth = () => {
             if (data.status === "success") {
               setSubmitbutton(true);
                 setGotpatientInfo(true);
-                console.log(`data:${data}`);
                 setpatientInfo(data.profile);
 
                 setUpdatedInfo({
@@ -210,7 +209,6 @@ const UpdateProfileOauth = () => {
     const handleEmailChange = (value) => {
         // Validate email format
         const isValid = isValidEmail(value);
-        console.log(value, isValid);
         setIsEmailValid(isValid);
     };
 

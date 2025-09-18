@@ -109,7 +109,6 @@ const PasswordReset = () => {
       }
     } catch (error) {
       handleFailure("Something went wrong. Please try again later.");
-      console.error("Error:", error);
     }
   };
 

@@ -1122,9 +1122,15 @@ const RAServiceCodeAnalytics = () => {
                         {paginatedData.map((item, index) => (
                           <React.Fragment key={index}>
                             <TableRow>
-                              <TableCell onClick={() => toggleRowExpansion(index)}>{item.details.name}</TableCell>
+                              <TableCell onClick={() => toggleRowExpansion(index)}>
+                                {/*{item.details.name}*/}
+                                Test, Patient
+                              </TableCell>
                               <TableCell>{item.baseRate}, {item.compCare}</TableCell>
-                              <TableCell>{item.hin}</TableCell>
+                              <TableCell>
+                                {/*{item.hin}*/}
+                                012-345-6789
+                              </TableCell>
 
                               <TableCell>
                                 <Typography
@@ -1222,12 +1228,13 @@ const RAServiceCodeAnalytics = () => {
                                   <Tooltip title="Call Patient">
                                     <IconButton
                                       color="primary"
-                                      onClick={() => makeCall(item.details.phone, item.details.name)}
+                                      // onClick={() => makeCall(item.details.phone, item.details.name)}
                                       disabled={isCallActive}
                                     >
                                       <Phone />
                                     </IconButton>
-                                    {item.details.phone}
+                                    {/*{item.details.phone}*/}
+                                    012-345-6789
                                   </Tooltip>
                                 ) : (
                                   <Tooltip
@@ -1237,7 +1244,8 @@ const RAServiceCodeAnalytics = () => {
                                         <Phone />
                                       </IconButton>
                                     </span>
-                                    {item.details.phone}
+                                    {/*{item.details.phone}*/}
+                                    012-345-6789
                                   </Tooltip>
                                 )}
                               </TableCell>

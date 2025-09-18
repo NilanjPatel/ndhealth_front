@@ -26,6 +26,7 @@ export function useClinicInfo(clinicSlug) {
         } else {
           const response = await fetch(`${API_BASE_PATH}/clinic/${clinicSlug}/`);
           const data = await response.json();
+
           localStorage.setItem("clinicInfo", JSON.stringify(data));
           setClinicInfo(data.clinic);
           setLocations(data.locations);

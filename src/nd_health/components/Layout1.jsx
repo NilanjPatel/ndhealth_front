@@ -191,13 +191,13 @@ const Layout1 = ({ clinicInfo, tabtitle, children, title }) => {
     // fetchClinicInfo();
 
     if (accessToken !== null) {
-      fetchUserInfo();
+      fetchUserInfo().then(r => {});
     } else {
       if (currentPage === `/clinic/${clinicSlug}/home`) {
         navigate(`/clinic/${clinicSlug}/`);
       }
     }
-    fetchClinicInfo();
+    fetchClinicInfo().then(r => {});
     // set_clinicdetails();
   }, [accessToken, clinicInfo]);
 

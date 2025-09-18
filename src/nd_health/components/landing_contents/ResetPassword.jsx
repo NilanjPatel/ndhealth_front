@@ -70,7 +70,6 @@ const PasswordResetConfirm = () => {
       }
     } catch (error) {
       handleFailure("Something went wrong. Please try again.");
-      console.error(error);
     } finally {
       setIsSubmitting(false);
     }
