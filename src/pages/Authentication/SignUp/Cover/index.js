@@ -53,6 +53,7 @@ function Cover() {
     first_name: "",
     last_name: "",
     ohip: "",
+    preferred_contact: "email",
   });
 
   // Close (go to home). Avoid forcing a page reload; react-router navigate is enough.
@@ -89,6 +90,8 @@ function Cover() {
           email: updatedInfo.email,
           phone: updatedInfo.phone,
           ohip: updatedInfo.ohip,
+          preferred_contact: updatedInfo.preferred_contact,
+
         }),
       });
 
@@ -264,6 +267,36 @@ function Cover() {
                 />
               </MKBox>
             </Grid>
+            <Grid item xs={12} md={12}>
+              <MKBox>
+                <MKTypography variant="body2" fontWeight="medium" mb={1}>
+                  Preferred Contact Method
+                </MKTypography>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={updatedInfo.preferred_contact === "email"}
+                      onChange={() =>
+                        setUpdatedInfo((p) => ({ ...p, preferred_contact: "email" }))
+                      }
+                    />
+                  }
+                  label="Email"
+                />
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={updatedInfo.preferred_contact === "phone"}
+                      onChange={() =>
+                        setUpdatedInfo((p) => ({ ...p, preferred_contact: "phone" }))
+                      }
+                    />
+                  }
+                  label="Phone"
+                />
+              </MKBox>
+            </Grid>
+
 
             <Grid item xs={12} md={12}>
               <MKBox>
