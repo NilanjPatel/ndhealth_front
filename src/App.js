@@ -49,6 +49,8 @@ import RADetails from "./nd_health/components/clinic/outsideuse/billing/RADetail
 import RADx250 from "./nd_health/components/clinic/outsideuse/billing/RADx250";
 import RAServiceCodeAnalytics from "./nd_health/components/clinic/outsideuse/billing/RAAnalytics";
 import RAServiceCodeAnalytics1 from "./nd_health/components/clinic/outsideuse/billing/RAAnalytics1";
+import Lab from "./nd_health/components/lab";
+import Measurements from "./nd_health/components/ads/Measurements";
 
 export default function App() {
   const { pathname } = useLocation();
@@ -81,6 +83,8 @@ export default function App() {
         {/*//Clinic routs*/}
         <Route path="/clinic/:clinicSlug/" element={<ClinicLanding />} />
         <Route path="/clinic/:clinicSlug/appointment" element={<ClinicInfo />} />
+        <Route path="/clinic/:clinicSlug/lab" element={<Lab />} />
+        <Route path="/clinic/:clinicSlug/measurements" element={<Measurements />} />
         <Route path="/family-appointment/:clinicSlug" element={<FamilyAppointmentPage />} />
         <Route path="/walkin-appointment/:clinicSlug" element={<WalkinAppointmentPage />} />
         <Route path="/clinic/:clinicSlug/manageappointment" element={<ManageAppointment />} />
