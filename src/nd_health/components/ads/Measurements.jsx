@@ -14,7 +14,6 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TableHead,
   TableRow,
   Paper,
   TextField,
@@ -209,8 +208,16 @@ const Measurements = () => {
             {measurementsData.measurements && Object.keys(measurementsData.measurements).length > 0 ? (
               <Card elevation={2}>
                 <CardHeader
+                  // title={
+                  //   <Box display="flex" alignItems="center" gap={1}>
+                  //     <TimelineIcon sx={{ color: theme.palette.primary.main, fontSize: 28 }} />
+                  //     <Typography variant="h5" component="div" fontWeight={600}>
+                  //       Patient Measurements
+                  //     </Typography>
+                  //   </Box>
+                  // }
                   subheader={
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
                       {Object.keys(measurementsData.measurements || {}).length} measurement types •
                       {dates.length > 0 ? ` ${formatDate(dates[dates.length - 1])} to ${formatDate(dates[0])}` : " No data"}
                     </Typography>
@@ -221,7 +228,12 @@ const Measurements = () => {
                         <IconButton
                           onClick={handleExportToCSV}
                           color="primary"
-                          sx={{ mr: 1 }}
+                          sx={{
+                            mr: 1,
+                            '&:hover': {
+                              backgroundColor: theme.palette.primary.light + '20',
+                            }
+                          }}
                         >
                           <FileDownloadIcon />
                         </IconButton>
@@ -229,12 +241,13 @@ const Measurements = () => {
                     )
                   }
                   sx={{
-                    borderBottom: `1px solid ${theme.palette.divider}`,
+                    backgroundColor: theme.palette.grey[50],
+                    borderBottom: `2px solid ${theme.palette.primary.main}`,
                     pb: 2
                   }}
                 />
 
-                <CardContent>
+                <CardContent sx={{ p: 3, backgroundColor: theme.palette.grey[50] }}>
                   {/* Search and Filter Section */}
                   <Box sx={{ mb: 3 }}>
                     <TextField
@@ -262,45 +275,49 @@ const Measurements = () => {
                         ),
                       }}
                       sx={{
-                        backgroundColor: theme.palette.background.paper,
+                        backgroundColor: '#ffffff',
                         '& .MuiOutlinedInput-root': {
                           '&:hover fieldset': {
                             borderColor: theme.palette.primary.main,
                           },
+                          '&.Mui-focused fieldset': {
+                            borderColor: theme.palette.primary.main,
+                            borderWidth: 2,
+                          }
                         }
                       }}
                     />
 
                     {/* Quick Filter Chips */}
-                    {/*{!isMobile && measurementTypes.length > 0 && (*/}
-                    {/*  <Stack direction="row" spacing={1} sx={{ mt: 2, flexWrap: "wrap", gap: 1 }}>*/}
-                    {/*    <Typography variant="body2" color="text.secondary" sx={{ mr: 1, alignSelf: "center" }}>*/}
-                    {/*      Quick filters:*/}
-                    {/*    </Typography>*/}
-                    {/*    {measurementTypes.slice(0, 5).map((type) => (*/}
-                    {/*      <Chip*/}
-                    {/*        key={type}*/}
-                    {/*        label={type}*/}
-                    {/*        onClick={() => setSearchTerm(type)}*/}
-                    {/*        size="small"*/}
-                    {/*        variant={searchTerm === type ? "filled" : "outlined"}*/}
-                    {/*        color={searchTerm === type ? "primary" : "default"}*/}
-                    {/*        sx={{ cursor: "pointer" }}*/}
-                    {/*      />*/}
-                    {/*    ))}*/}
-                    {/*    {searchTerm && (*/}
-                    {/*      <Chip*/}
-                    {/*        label="Clear"*/}
-                    {/*        onClick={() => setSearchTerm("")}*/}
-                    {/*        size="small"*/}
-                    {/*        color="error"*/}
-                    {/*        variant="outlined"*/}
-                    {/*        onDelete={() => setSearchTerm("")}*/}
-                    {/*        sx={{ cursor: "pointer" }}*/}
-                    {/*      />*/}
-                    {/*    )}*/}
-                    {/*  </Stack>*/}
-                    {/*)}*/}
+                    {!isMobile && measurementTypes.length > 0 && (
+                      <Stack direction="row" spacing={1} sx={{ mt: 2, flexWrap: "wrap", gap: 1 }}>
+                        <Typography variant="body2" color="text.secondary" sx={{ mr: 1, alignSelf: "center" }}>
+                          Quick filters:
+                        </Typography>
+                        {measurementTypes.slice(0, 5).map((type) => (
+                          <Chip
+                            key={type}
+                            label={type}
+                            onClick={() => setSearchTerm(type)}
+                            size="small"
+                            variant={searchTerm === type ? "filled" : "outlined"}
+                            color={searchTerm === type ? "primary" : "default"}
+                            sx={{ cursor: "pointer" }}
+                          />
+                        ))}
+                        {searchTerm && (
+                          <Chip
+                            label="Clear"
+                            onClick={() => setSearchTerm("")}
+                            size="small"
+                            color="error"
+                            variant="outlined"
+                            onDelete={() => setSearchTerm("")}
+                            sx={{ cursor: "pointer" }}
+                          />
+                        )}
+                      </Stack>
+                    )}
                   </Box>
 
                   {/* Results count */}
@@ -314,11 +331,12 @@ const Measurements = () => {
                   <TableContainer
                     component={Paper}
                     sx={{
-                      maxHeight: isMobile ? "40rem" : "50rem",
+                      maxHeight: isMobile ? "30rem" : "50rem",
                       overflow: "auto",
                       border: `1px solid ${theme.palette.divider}`,
-                      borderRadius: 1,
-                      boxShadow: theme.shadows[1],
+                      borderRadius: 2,
+                      boxShadow: theme.shadows[3],
+                      backgroundColor: '#ffffff',
                     }}
                   >
                     <Table stickyHeader size={isMobile ? "small" : "medium"} aria-label="measurements table">
@@ -326,13 +344,16 @@ const Measurements = () => {
                           <TableCell
                             sx={{
                               fontWeight: 700,
-                              backgroundColor: theme.palette.primary.main,
-                              color: theme.palette.primary.contrastText,
+                              background: `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`,
+                              color: '#ffffff',
+                              width: 200,
+                              maxWidth: 200,
                               minWidth: 150,
                               position: "sticky",
                               left: 0,
                               zIndex: 3,
                               fontSize: isMobile ? "0.875rem" : "1rem",
+                              borderRight: `2px solid ${theme.palette.primary.light}`,
                             }}
                           >
                             Measurement Type
@@ -341,13 +362,16 @@ const Measurements = () => {
                             <TableCell
                               sx={{
                                 fontWeight: 700,
-                                backgroundColor: theme.palette.primary.main,
-                                color: theme.palette.primary.contrastText,
+                                background: `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`,
+                                color: '#ffffff',
+                                width: 140,
+                                maxWidth: 140,
                                 minWidth: 120,
                                 position: "sticky",
                                 top: 0,
                                 zIndex: 2,
                                 fontSize: "0.875rem",
+                                borderRight: `2px solid ${theme.palette.primary.light}`,
                               }}
                               align="center"
                             >
@@ -360,17 +384,18 @@ const Measurements = () => {
                               align="center"
                               sx={{
                                 fontWeight: 600,
-                                backgroundColor: index === 0
-                                  ? theme.palette.primary.main
-                                  : theme.palette.grey[200],
+                                background: index === 0
+                                  ? `linear-gradient(135deg, ${theme.palette.success.dark} 0%, ${theme.palette.success.main} 100%)`
+                                  : `linear-gradient(135deg, ${theme.palette.grey[300]} 0%, ${theme.palette.grey[200]} 100%)`,
                                 color: index === 0
-                                  ? theme.palette.primary.contrastText
+                                  ? '#ffffff'
                                   : theme.palette.text.primary,
                                 minWidth: 120,
                                 position: "sticky",
                                 top: 0,
                                 zIndex: 2,
                                 fontSize: isMobile ? "0.75rem" : "0.875rem",
+                                borderRight: `1px solid ${theme.palette.divider}`,
                               }}
                             >
                               {formatDate(date)}
@@ -382,8 +407,9 @@ const Measurements = () => {
                                     ml: 0.5,
                                     height: 18,
                                     fontSize: "0.65rem",
-                                    backgroundColor: theme.palette.success.light,
-                                    color: theme.palette.success.contrastText,
+                                    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+                                    color: '#ffffff',
+                                    fontWeight: 600,
                                   }}
                                 />
                               )}
@@ -396,13 +422,17 @@ const Measurements = () => {
                             <TableRow
                               key={row.measurementType}
                               sx={{
+                                "&:nth-of-type(even)": {
+                                  backgroundColor: theme.palette.grey[50]
+                                },
                                 "&:nth-of-type(odd)": {
-                                  backgroundColor: theme.palette.action.hover
+                                  backgroundColor: '#ffffff'
                                 },
                                 "&:hover": {
-                                  backgroundColor: theme.palette.action.selected,
-                                  cursor: "pointer",
+                                  backgroundColor: theme.palette.primary.light + '15',
+                                  transition: 'background-color 0.2s ease',
                                 },
+                                borderBottom: `1px solid ${theme.palette.grey[200]}`,
                               }}
                             >
                               <TableCell
@@ -410,13 +440,18 @@ const Measurements = () => {
                                 scope="row"
                                 sx={{
                                   fontWeight: 600,
+                                  width: 200,
+                                  maxWidth: 200,
+                                  minWidth: 150,
                                   position: "sticky",
                                   left: 0,
                                   zIndex: 1,
                                   backgroundColor: rowIndex % 2 === 0
-                                    ? theme.palette.background.paper
-                                    : theme.palette.action.hover,
+                                    ? theme.palette.grey[50]
+                                    : '#ffffff',
                                   fontSize: isMobile ? "0.875rem" : "1rem",
+                                  borderRight: `1px solid ${theme.palette.grey[300]}`,
+                                  color: theme.palette.text.primary,
                                 }}
                               >
                                 {row.measurementType}
@@ -425,9 +460,14 @@ const Measurements = () => {
                                 <TableCell
                                   align="center"
                                   sx={{
+                                    width: 140,
+                                    maxWidth: 140,
+                                    minWidth: 120,
                                     backgroundColor: rowIndex % 2 === 0
-                                      ? theme.palette.background.paper
-                                      : theme.palette.action.hover,
+                                      ? theme.palette.grey[50]
+                                      : '#ffffff',
+                                    borderRight: `1px solid ${theme.palette.grey[300]}`,
+                                    padding: '8px',
                                   }}
                                 >
                                   {row.chartData && row.chartData.length > 0 ? (
@@ -437,7 +477,7 @@ const Measurements = () => {
                                           type="monotone"
                                           dataKey="value"
                                           stroke={theme.palette.primary.main}
-                                          strokeWidth={2}
+                                          strokeWidth={2.5}
                                           dot={false}
                                         />
                                       </LineChart>
@@ -461,8 +501,9 @@ const Measurements = () => {
                                     fontWeight: dateIndex === 0 && row[date] ? 600 : "normal",
                                     fontSize: isMobile ? "0.875rem" : "1rem",
                                     backgroundColor: dateIndex === 0 && row[date]
-                                      ? theme.palette.success.light + "20"
+                                      ? theme.palette.success.light + '25'
                                       : "transparent",
+                                    borderRight: dateIndex !== dates.length - 1 ? `1px solid ${theme.palette.grey[200]}` : 'none',
                                   }}
                                 >
                                   {row[date] || "-"}
@@ -472,7 +513,7 @@ const Measurements = () => {
                           ))
                         ) : (
                           <TableRow>
-                            <TableCell colSpan={dates.length + 2} align="center" sx={{ py: 4 }}>
+                            <TableCell colSpan={dates.length + 2} align="center" sx={{ py: 4, backgroundColor: theme.palette.grey[50] }}>
                               <Typography variant="body2" color="text.secondary">
                                 No measurements match your search
                               </Typography>
