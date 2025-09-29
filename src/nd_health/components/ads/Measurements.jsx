@@ -31,6 +31,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import TimelineIcon from "@mui/icons-material/Timeline";
 import { Card, CardContent, Typography, CardHeader } from "@mui/material";
+import { LineChart, Line, ResponsiveContainer } from "recharts";
 import "../css/Marquee.css";
 
 import HelmetComponent from "../SEO/HelmetComponent";
@@ -98,9 +99,24 @@ const Measurements = () => {
 
     const measurementRows = Object.keys(measurementMap).map(measurementType => {
       const row = { measurementType };
+      const chartData = [];
+
       sortedDates.forEach(date => {
-        row[date] = measurementMap[measurementType][date] || "";
+        const value = measurementMap[measurementType][date] || "";
+        row[date] = value;
+
+        // Parse numeric value for chart
+        if (value) {
+          const numericValue = parseFloat(String(value).replace(/[^\d.-]/g, ''));
+          if (!isNaN(numericValue)) {
+            chartData.push({ date, value: numericValue });
+          }
+        }
       });
+
+      // Sort chart data chronologically (oldest to newest for proper line chart)
+      row.chartData = chartData.sort((a, b) => a.date - b.date);
+
       return row;
     });
 
@@ -193,14 +209,6 @@ const Measurements = () => {
             {measurementsData.measurements && Object.keys(measurementsData.measurements).length > 0 ? (
               <Card elevation={2}>
                 <CardHeader
-                  title={
-                    <Box display="flex" alignItems="center" gap={1}>
-                      <TimelineIcon color="primary" />
-                      <Typography variant="h6" component="div">
-                        Patient Measurements Overview
-                      </Typography>
-                    </Box>
-                  }
                   subheader={
                     <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
                       {Object.keys(measurementsData.measurements || {}).length} measurement types •
@@ -264,35 +272,35 @@ const Measurements = () => {
                     />
 
                     {/* Quick Filter Chips */}
-                    {!isMobile && measurementTypes.length > 0 && (
-                      <Stack direction="row" spacing={1} sx={{ mt: 2, flexWrap: "wrap", gap: 1 }}>
-                        <Typography variant="body2" color="text.secondary" sx={{ mr: 1, alignSelf: "center" }}>
-                          Quick filters:
-                        </Typography>
-                        {measurementTypes.slice(0, 5).map((type) => (
-                          <Chip
-                            key={type}
-                            label={type}
-                            onClick={() => setSearchTerm(type)}
-                            size="small"
-                            variant={searchTerm === type ? "filled" : "outlined"}
-                            color={searchTerm === type ? "primary" : "default"}
-                            sx={{ cursor: "pointer" }}
-                          />
-                        ))}
-                        {searchTerm && (
-                          <Chip
-                            label="Clear"
-                            onClick={() => setSearchTerm("")}
-                            size="small"
-                            color="error"
-                            variant="outlined"
-                            onDelete={() => setSearchTerm("")}
-                            sx={{ cursor: "pointer" }}
-                          />
-                        )}
-                      </Stack>
-                    )}
+                    {/*{!isMobile && measurementTypes.length > 0 && (*/}
+                    {/*  <Stack direction="row" spacing={1} sx={{ mt: 2, flexWrap: "wrap", gap: 1 }}>*/}
+                    {/*    <Typography variant="body2" color="text.secondary" sx={{ mr: 1, alignSelf: "center" }}>*/}
+                    {/*      Quick filters:*/}
+                    {/*    </Typography>*/}
+                    {/*    {measurementTypes.slice(0, 5).map((type) => (*/}
+                    {/*      <Chip*/}
+                    {/*        key={type}*/}
+                    {/*        label={type}*/}
+                    {/*        onClick={() => setSearchTerm(type)}*/}
+                    {/*        size="small"*/}
+                    {/*        variant={searchTerm === type ? "filled" : "outlined"}*/}
+                    {/*        color={searchTerm === type ? "primary" : "default"}*/}
+                    {/*        sx={{ cursor: "pointer" }}*/}
+                    {/*      />*/}
+                    {/*    ))}*/}
+                    {/*    {searchTerm && (*/}
+                    {/*      <Chip*/}
+                    {/*        label="Clear"*/}
+                    {/*        onClick={() => setSearchTerm("")}*/}
+                    {/*        size="small"*/}
+                    {/*        color="error"*/}
+                    {/*        variant="outlined"*/}
+                    {/*        onDelete={() => setSearchTerm("")}*/}
+                    {/*        sx={{ cursor: "pointer" }}*/}
+                    {/*      />*/}
+                    {/*    )}*/}
+                    {/*  </Stack>*/}
+                    {/*)}*/}
                   </Box>
 
                   {/* Results count */}
@@ -306,7 +314,7 @@ const Measurements = () => {
                   <TableContainer
                     component={Paper}
                     sx={{
-                      maxHeight: isMobile ? "500px" : "600px",
+                      maxHeight: isMobile ? "40rem" : "50rem",
                       overflow: "auto",
                       border: `1px solid ${theme.palette.divider}`,
                       borderRadius: 1,
@@ -329,6 +337,23 @@ const Measurements = () => {
                           >
                             Measurement Type
                           </TableCell>
+                          {!isMobile && (
+                            <TableCell
+                              sx={{
+                                fontWeight: 700,
+                                backgroundColor: theme.palette.primary.main,
+                                color: theme.palette.primary.contrastText,
+                                minWidth: 120,
+                                position: "sticky",
+                                top: 0,
+                                zIndex: 2,
+                                fontSize: "0.875rem",
+                              }}
+                              align="center"
+                            >
+                              Trend
+                            </TableCell>
+                          )}
                           {dates.map((date, index) => (
                             <TableCell
                               key={date}
@@ -396,6 +421,34 @@ const Measurements = () => {
                               >
                                 {row.measurementType}
                               </TableCell>
+                              {!isMobile && (
+                                <TableCell
+                                  align="center"
+                                  sx={{
+                                    backgroundColor: rowIndex % 2 === 0
+                                      ? theme.palette.background.paper
+                                      : theme.palette.action.hover,
+                                  }}
+                                >
+                                  {row.chartData && row.chartData.length > 0 ? (
+                                    <ResponsiveContainer width="100%" height={40}>
+                                      <LineChart data={row.chartData}>
+                                        <Line
+                                          type="monotone"
+                                          dataKey="value"
+                                          stroke={theme.palette.primary.main}
+                                          strokeWidth={2}
+                                          dot={false}
+                                        />
+                                      </LineChart>
+                                    </ResponsiveContainer>
+                                  ) : (
+                                    <Typography variant="caption" color="text.disabled">
+                                      -
+                                    </Typography>
+                                  )}
+                                </TableCell>
+                              )}
                               {dates.map((date, dateIndex) => (
                                 <TableCell
                                   key={`${row.measurementType}-${date}`}
@@ -419,7 +472,7 @@ const Measurements = () => {
                           ))
                         ) : (
                           <TableRow>
-                            <TableCell colSpan={dates.length + 1} align="center" sx={{ py: 4 }}>
+                            <TableCell colSpan={dates.length + 2} align="center" sx={{ py: 4 }}>
                               <Typography variant="body2" color="text.secondary">
                                 No measurements match your search
                               </Typography>
