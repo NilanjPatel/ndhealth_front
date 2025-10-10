@@ -24,6 +24,7 @@ import ListItemText from "@mui/material/ListItemText";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PeopleIcon from "@mui/icons-material/People";
 import MailIcon from "@mui/icons-material/Mail";
+import PodcastsIcon from '@mui/icons-material/Podcasts';
 import SettingsIcon from "@mui/icons-material/Settings";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -39,6 +40,7 @@ import Settings1 from "./Settings";
 import EFormList from "./EFormList";
 import EmailStatus from "./EmailStatus";
 import CreateNewStaff from "./CreateNewStaff";
+import Broadcast from "./Broadcast";
 
 const drawerWidth = 280;
 
@@ -175,6 +177,7 @@ const getNavigationItems = (userType) => {
     ...baseItems,
     { id: 'patients', label: 'Patients', icon: PeopleIcon, component: 'ApprovePatients', hasBadge: true },
     { id: 'email', label: 'Email Status', icon: MailIcon, component: 'EmailStatus' },
+    { id: 'Broadcast', label: 'Broadcast', icon: PodcastsIcon, component: 'Broadcast' },
     { id: 'eforms', label: 'E-Forms', icon: ListAltIcon, component: 'EFormList' },
     { id: 'settings', label: 'Settings', icon: SettingsIcon, component: 'Settings1' },
     { id: 'staff', label: 'New Staff', icon: PersonAddIcon, component: 'CreateNewStaff' },
@@ -184,6 +187,7 @@ const getNavigationItems = (userType) => {
     ...baseItems,
     { id: 'patients', label: 'Patients', icon: PeopleIcon, component: 'ApprovePatients', hasBadge: true },
     { id: 'email', label: 'Email Status', icon: MailIcon, component: 'EmailStatus' },
+    { id: 'Broadcast', label: 'Broadcast', icon: PodcastsIcon, component: 'Broadcast' },
     { id: 'eforms', label: 'E-Forms', icon: ListAltIcon, component: 'EFormList' },
   ];
 
@@ -337,6 +341,7 @@ export default function ClinicHome() {
       'EFormList': () => <EFormList {...props} />,
       'Settings1': () => <Settings1 {...props} />,
       'CreateNewStaff': () => <CreateNewStaff {...props} />,
+      'Broadcast': () => <Broadcast {...props} />,
     };
 
     const ContentComponent = contentMap[activeItem.component];

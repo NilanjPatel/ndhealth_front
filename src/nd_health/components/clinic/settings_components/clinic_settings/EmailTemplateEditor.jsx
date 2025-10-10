@@ -1,30 +1,19 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import {
   Grid,
-  Card,
-  CardContent,
   Typography,
   TextField,
-  CardHeader,
-  Table,
-  TableBody,
-  TableContainer,
-  TableHead,
-  Paper,
   Button,
   MenuItem,
   FormControl,
   InputLabel,
   Select,
-  Backdrop,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import PlaceholderAwareInput from "./../../../resources/PlaceholderAwareInput";
 import API_BASE_PATH from "../../../../../apiConfig";
 
 import { APPOINTMENTTYPE } from "./../../../resources/variables";
@@ -87,12 +76,16 @@ const EmailTemplateEditor = () => {
   useEffect(() => {
     // Fetch initial template data from backend when component mounts
     // fetchTemplate();
-    fetchTemplate();
+    fetchTemplate().then(r => {});
   }, []);
 
   useEffect(() => {
+
     for (let index = 0; index < content.length; index++) {
+
       const element = content[index];
+      console.log(`element:${JSON.stringify(element)}`);
+      console.log(`appointmenttype:${appointmenttype}`);
       if (element.apptype === appointmenttype) {
         setClinicContentConfirmation(element.content);
         // Clinic
@@ -132,7 +125,7 @@ const EmailTemplateEditor = () => {
       setPhoneStatus(false);
       setVideoStatus(true);
     }
-  }, [appointmenttype]);
+  }, [appointmenttype, content, staticClinicConformation, staticClinicReminder, staticPhoneConformation, staticPhoneReminder, staticVideoConformation, staticVideoReminder]);
 
   function generateAppointmentDetails() {
     // Get today's date
