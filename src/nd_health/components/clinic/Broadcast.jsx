@@ -556,295 +556,296 @@ const Broadcast = () => {
           </CardContent>
         </Card>
       )}
-      {
-        lastBatch?.batch_status === 'COMPLETED' &&(
-          <Card style={{ width: "100%", marginBottom: "20px" }}>
-            <CardHeader title="Broadcast Message to Patients" />
-            <CardContent>
-              <Grid container spacing={3}>
-                {/* Email Template Section */}
-                <Grid item xs={12}>
-                  <Typography variant="h6" gutterBottom style={{ marginTop: "20px" }}>
-                    1. Select or Create Email Template
-                  </Typography>
-                </Grid>
+      {/*{*/}
+      {/*  lastBatch?.batch_status === 'COMPLETED' || lastBatch?.message === 'No broadcasts found' &&(*/}
+      {/*    */}
+      {/*  )*/}
+      {/*}*/}
+      <Card style={{ width: "100%", marginBottom: "20px" }}>
+        <CardHeader title="Broadcast Message to Patients" />
+        <CardContent>
+          <Grid container spacing={3}>
+            {/* Email Template Section */}
+            <Grid item xs={12}>
+              <Typography variant="h6" gutterBottom style={{ marginTop: "20px" }}>
+                1. Select or Create Email Template
+              </Typography>
+            </Grid>
 
-                {templates.length > 0 && (
-                  <Grid item xs={12} md={6}>
-                    <FormControl className={classes.formControl}>
-                      <InputLabel>Select Template</InputLabel>
-                      <Select
-                        value={selectedTemplateId}
-                        onChange={(e) => handleTemplateChange(e.target.value)}
-                        label="Select Template"
-                      >
-                        {templates.map((template) => (
-                          <MenuItem key={template.id} value={template.id}>
-                            {template.name} - {template.title}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                )}
-
-                <Grid item xs={12} md={templates.length > 0 ? 6 : 12}>
-                  <Box display="flex" gap={2}>
-                    <Button
-                      variant="outlined"
-                      color="primary"
-                      onClick={() => setOpenSaveDialog(true)}
-                      fullWidth
-                    >
-                      Save as New Template
-                    </Button>
-                    {selectedTemplateId && (
-                      <Button
-                        variant="outlined"
-                        color="secondary"
-                        onClick={handleUpdateTemplate}
-                        fullWidth
-                      >
-                        Update Current Template
-                      </Button>
-                    )}
-                  </Box>
-                </Grid>
-
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    fullWidth
-                    label="Template Name"
-                    variant="outlined"
-                    value={templateName}
-                    onChange={(e) => setTemplateName(e.target.value)}
-                    placeholder="e.g., Welcome Email"
-                  />
-                </Grid>
-
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    fullWidth
-                    label="Email Subject/Title"
-                    variant="outlined"
-                    value={templateTitle}
-                    onChange={(e) => setTemplateTitle(e.target.value)}
-                    placeholder="e.g., Welcome to Our Clinic"
-                  />
-                </Grid>
-
-                <Grid item xs={12} md={8}>
-                  <Typography variant="subtitle2" gutterBottom>
-                    Template Editor
-                  </Typography>
-                  <TextField
-                    fullWidth
-                    multiline
-                    rows={15}
-                    variant="outlined"
-                    value={emailTemplate}
-                    onChange={(e) => setEmailTemplate(e.target.value)}
-                    placeholder="Edit your HTML email template here..."
-                    InputProps={{
-                      className: classes.editorContainer,
-                      style: { height: "440px", overflow: "auto" }, // fixed height
-                    }}
-                  />
-
-                </Grid>
-
-                <Grid item xs={12} md={4}>
-                  <Typography variant="subtitle2" gutterBottom>
-                    Live Preview
-                  </Typography>
-                  <Paper
-                    elevation={2}
-                    style={{
-                      height: "440px",          // ✅ match with editor
-                      overflow: "auto",
-                      padding: "10px",
-                      backgroundColor: "#fff",
-                      border: "1px solid #ccc",
-                    }}
+            {templates.length > 0 && (
+              <Grid item xs={12} md={6}>
+                <FormControl className={classes.formControl}>
+                  <InputLabel>Select Template</InputLabel>
+                  <Select
+                    value={selectedTemplateId}
+                    onChange={(e) => handleTemplateChange(e.target.value)}
+                    label="Select Template"
                   >
-                    <div
-                      dangerouslySetInnerHTML={{
-                        __html: previewTemplate.replace("{{ broadcastTemplate }}", emailTemplate),
-                      }}
-                    />
-                  </Paper>
-
-                </Grid>
-                {/* Filter Section */}
-                <Grid item xs={12}>
-                  <Typography variant="h6" gutterBottom>
-                    2. Conditions
-                  </Typography>
-                </Grid>
-
-                <Grid item xs={12} md={4}>
-                  <TextField
-                    fullWidth
-                    label="EveryDay limit"
-                    type="number"
-                    variant="outlined"
-                    value={everyDayLimit}
-                    onChange={(e) => setEveryDayLimit(e.target.value)}
-                    placeholder="e.g., 18"
-                  />
-                </Grid>
-
-                {/*<Grid item xs={12} md={4}>*/}
-                {/*  <TextField*/}
-                {/*    fullWidth*/}
-                {/*    label="Age From"*/}
-                {/*    type="number"*/}
-                {/*    variant="outlined"*/}
-                {/*    value={ageFrom}*/}
-                {/*    onChange={(e) => setAgeFrom(e.target.value)}*/}
-                {/*    placeholder="e.g., 18"*/}
-                {/*  />*/}
-                {/*</Grid>*/}
-
-                {/*<Grid item xs={12} md={4}>*/}
-                {/*  <TextField*/}
-                {/*    fullWidth*/}
-                {/*    label="Age To"*/}
-                {/*    type="number"*/}
-                {/*    variant="outlined"*/}
-                {/*    value={ageTo}*/}
-                {/*    onChange={(e) => setAgeTo(e.target.value)}*/}
-                {/*    placeholder="e.g., 65"*/}
-                {/*  />*/}
-                {/*</Grid>*/}
-
-                {/*<Grid item xs={12} md={4}>*/}
-                {/*  <FormControl className={classes.formControl}>*/}
-                {/*    <InputLabel>Patient Status</InputLabel>*/}
-                {/*    <Select*/}
-                {/*      value={activePatients}*/}
-                {/*      onChange={(e) => setActivePatients(e.target.value)}*/}
-                {/*      label="Patient Status"*/}
-                {/*    >*/}
-                {/*      <MenuItem value="all">All Patients</MenuItem>*/}
-                {/*      <MenuItem value="active">Active Patients Only</MenuItem>*/}
-                {/*    </Select>*/}
-                {/*  </FormControl>*/}
-                {/*</Grid>*/}
-
-                {/* CSV Upload Section */}
-                <Grid item xs={12}>
-                  <Typography variant="h6" gutterBottom style={{ marginTop: "20px" }}>
-                    3. Upload Patient List (CSV)
-                  </Typography>
-                </Grid>
-
-                <Grid item xs={12} md={8}>
-                  <input
-                    accept=".csv"
-                    style={{ display: "none" }}
-                    id="csv-file-upload"
-                    type="file"
-                    onChange={handleFileChange}
-                  />
-                  <label htmlFor="csv-file-upload">
-                    <Button variant="outlined" component="span" fullWidth>
-                      Choose CSV File
-                    </Button>
-                  </label>
-                  {fileName && (
-                    <Chip
-                      label={fileName}
-                      onDelete={() => {
-                        setSelectedFile(null);
-                        setFileName("");
-                      }}
-                      style={{ marginTop: "10px" }}
-                    />
-                  )}
-                </Grid>
-
-
-                {/* Broadcast Button */}
-                <Grid item xs={12}>
-                  <Button
-                    variant="contained"
-                    color="success"
-                    size="large"
-                    onClick={handleBroadcast}
-                    // disabled={isBroadcasting || totalPatients === 0}
-                    fullWidth
-                    style={{ marginTop: "20px" }}
-                  >
-                    {isBroadcasting ? "Broadcasting..." : "Send Broadcast"}
-                  </Button>
-                </Grid>
-
-                {/* Progress Section */}
-                {(isBroadcasting || broadcastComplete) && (
-                  <Grid item xs={12}>
-                    <Box className={classes.progressContainer}>
-                      <Typography variant="h6" gutterBottom>
-                        4. Broadcast Status
-                      </Typography>
-
-                      {broadcastComplete && (
-                        <Alert severity="success" style={{ marginBottom: "20px" }}>
-                          Broadcast completed successfully!
-                        </Alert>
-                      )}
-
-                      <Grid container spacing={2}>
-                        <Grid item xs={12} md={4}>
-                          <Paper className={classes.statsBox}>
-                            <Typography variant="h4" color="primary">
-                              {totalPatients}
-                            </Typography>
-                            <Typography variant="subtitle1">Total Patients</Typography>
-                          </Paper>
-                        </Grid>
-
-                        <Grid item xs={12} md={4}>
-                          <Paper className={classes.statsBox}>
-                            <Typography variant="h4" color="success">
-                              {notifiedPatients}
-                            </Typography>
-                            <Typography variant="subtitle1">Notified</Typography>
-                          </Paper>
-                        </Grid>
-
-                        <Grid item xs={12} md={4}>
-                          <Paper className={classes.statsBox}>
-                            <Typography variant="h4" color="warning">
-                              {remainingPatients}
-                            </Typography>
-                            <Typography variant="subtitle1">Remaining</Typography>
-                          </Paper>
-                        </Grid>
-                      </Grid>
-
-                      <Box style={{ marginTop: "20px" }}>
-                        <LinearProgress
-                          variant="determinate"
-                          value={progressPercentage}
-                          style={{ height: "10px", borderRadius: "5px" }}
-                        />
-                        <Typography
-                          variant="body2"
-                          color="textSecondary"
-                          style={{ marginTop: "10px", textAlign: "center" }}
-                        >
-                          {progressPercentage.toFixed(1)}% Complete
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Grid>
-                )}
+                    {templates.map((template) => (
+                      <MenuItem key={template.id} value={template.id}>
+                        {template.name} - {template.title}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Grid>
-            </CardContent>
-          </Card>
-        )
-      }
+            )}
+
+            <Grid item xs={12} md={templates.length > 0 ? 6 : 12}>
+              <Box display="flex" gap={2}>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => setOpenSaveDialog(true)}
+                  fullWidth
+                >
+                  Save as New Template
+                </Button>
+                {selectedTemplateId && (
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={handleUpdateTemplate}
+                    fullWidth
+                  >
+                    Update Current Template
+                  </Button>
+                )}
+              </Box>
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="Template Name"
+                variant="outlined"
+                value={templateName}
+                onChange={(e) => setTemplateName(e.target.value)}
+                placeholder="e.g., Welcome Email"
+              />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="Email Subject/Title"
+                variant="outlined"
+                value={templateTitle}
+                onChange={(e) => setTemplateTitle(e.target.value)}
+                placeholder="e.g., Welcome to Our Clinic"
+              />
+            </Grid>
+
+            <Grid item xs={12} md={8}>
+              <Typography variant="subtitle2" gutterBottom>
+                Template Editor
+              </Typography>
+              <TextField
+                fullWidth
+                multiline
+                rows={15}
+                variant="outlined"
+                value={emailTemplate}
+                onChange={(e) => setEmailTemplate(e.target.value)}
+                placeholder="Edit your HTML email template here..."
+                InputProps={{
+                  className: classes.editorContainer,
+                  style: { height: "440px", overflow: "auto" }, // fixed height
+                }}
+              />
+
+            </Grid>
+
+            <Grid item xs={12} md={4}>
+              <Typography variant="subtitle2" gutterBottom>
+                Live Preview
+              </Typography>
+              <Paper
+                elevation={2}
+                style={{
+                  height: "440px",          // ✅ match with editor
+                  overflow: "auto",
+                  padding: "10px",
+                  backgroundColor: "#fff",
+                  border: "1px solid #ccc",
+                }}
+              >
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: previewTemplate.replace("{{ broadcastTemplate }}", emailTemplate),
+                  }}
+                />
+              </Paper>
+
+            </Grid>
+            {/* Filter Section */}
+            <Grid item xs={12}>
+              <Typography variant="h6" gutterBottom>
+                2. Conditions
+              </Typography>
+            </Grid>
+
+            <Grid item xs={12} md={4}>
+              <TextField
+                fullWidth
+                label="EveryDay limit"
+                type="number"
+                variant="outlined"
+                value={everyDayLimit}
+                onChange={(e) => setEveryDayLimit(e.target.value)}
+                placeholder="e.g., 18"
+              />
+            </Grid>
+
+            {/*<Grid item xs={12} md={4}>*/}
+            {/*  <TextField*/}
+            {/*    fullWidth*/}
+            {/*    label="Age From"*/}
+            {/*    type="number"*/}
+            {/*    variant="outlined"*/}
+            {/*    value={ageFrom}*/}
+            {/*    onChange={(e) => setAgeFrom(e.target.value)}*/}
+            {/*    placeholder="e.g., 18"*/}
+            {/*  />*/}
+            {/*</Grid>*/}
+
+            {/*<Grid item xs={12} md={4}>*/}
+            {/*  <TextField*/}
+            {/*    fullWidth*/}
+            {/*    label="Age To"*/}
+            {/*    type="number"*/}
+            {/*    variant="outlined"*/}
+            {/*    value={ageTo}*/}
+            {/*    onChange={(e) => setAgeTo(e.target.value)}*/}
+            {/*    placeholder="e.g., 65"*/}
+            {/*  />*/}
+            {/*</Grid>*/}
+
+            {/*<Grid item xs={12} md={4}>*/}
+            {/*  <FormControl className={classes.formControl}>*/}
+            {/*    <InputLabel>Patient Status</InputLabel>*/}
+            {/*    <Select*/}
+            {/*      value={activePatients}*/}
+            {/*      onChange={(e) => setActivePatients(e.target.value)}*/}
+            {/*      label="Patient Status"*/}
+            {/*    >*/}
+            {/*      <MenuItem value="all">All Patients</MenuItem>*/}
+            {/*      <MenuItem value="active">Active Patients Only</MenuItem>*/}
+            {/*    </Select>*/}
+            {/*  </FormControl>*/}
+            {/*</Grid>*/}
+
+            {/* CSV Upload Section */}
+            <Grid item xs={12}>
+              <Typography variant="h6" gutterBottom style={{ marginTop: "20px" }}>
+                3. Upload Patient List (CSV)
+              </Typography>
+            </Grid>
+
+            <Grid item xs={12} md={8}>
+              <input
+                accept=".csv"
+                style={{ display: "none" }}
+                id="csv-file-upload"
+                type="file"
+                onChange={handleFileChange}
+              />
+              <label htmlFor="csv-file-upload">
+                <Button variant="outlined" component="span" fullWidth>
+                  Choose CSV File
+                </Button>
+              </label>
+              {fileName && (
+                <Chip
+                  label={fileName}
+                  onDelete={() => {
+                    setSelectedFile(null);
+                    setFileName("");
+                  }}
+                  style={{ marginTop: "10px" }}
+                />
+              )}
+            </Grid>
+
+
+            {/* Broadcast Button */}
+            <Grid item xs={12}>
+              <Button
+                variant="contained"
+                color="success"
+                size="large"
+                onClick={handleBroadcast}
+                // disabled={isBroadcasting || totalPatients === 0}
+                fullWidth
+                style={{ marginTop: "20px" }}
+              >
+                {isBroadcasting ? "Broadcasting..." : "Send Broadcast"}
+              </Button>
+            </Grid>
+
+            {/* Progress Section */}
+            {(isBroadcasting || broadcastComplete) && (
+              <Grid item xs={12}>
+                <Box className={classes.progressContainer}>
+                  <Typography variant="h6" gutterBottom>
+                    4. Broadcast Status
+                  </Typography>
+
+                  {broadcastComplete && (
+                    <Alert severity="success" style={{ marginBottom: "20px" }}>
+                      Broadcast completed successfully!
+                    </Alert>
+                  )}
+
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} md={4}>
+                      <Paper className={classes.statsBox}>
+                        <Typography variant="h4" color="primary">
+                          {totalPatients}
+                        </Typography>
+                        <Typography variant="subtitle1">Total Patients</Typography>
+                      </Paper>
+                    </Grid>
+
+                    <Grid item xs={12} md={4}>
+                      <Paper className={classes.statsBox}>
+                        <Typography variant="h4" color="success">
+                          {notifiedPatients}
+                        </Typography>
+                        <Typography variant="subtitle1">Notified</Typography>
+                      </Paper>
+                    </Grid>
+
+                    <Grid item xs={12} md={4}>
+                      <Paper className={classes.statsBox}>
+                        <Typography variant="h4" color="warning">
+                          {remainingPatients}
+                        </Typography>
+                        <Typography variant="subtitle1">Remaining</Typography>
+                      </Paper>
+                    </Grid>
+                  </Grid>
+
+                  <Box style={{ marginTop: "20px" }}>
+                    <LinearProgress
+                      variant="determinate"
+                      value={progressPercentage}
+                      style={{ height: "10px", borderRadius: "5px" }}
+                    />
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      style={{ marginTop: "10px", textAlign: "center" }}
+                    >
+                      {progressPercentage.toFixed(1)}% Complete
+                    </Typography>
+                  </Box>
+                </Box>
+              </Grid>
+            )}
+          </Grid>
+        </CardContent>
+      </Card>
 
       {/* Save Template Dialog */}
       <Dialog open={openSaveDialog} onClose={() => setOpenSaveDialog(false)}>
