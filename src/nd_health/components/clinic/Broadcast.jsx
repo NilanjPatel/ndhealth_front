@@ -449,7 +449,7 @@ const Broadcast = () => {
   };
 
   const progressPercentage = totalPatients > 0
-    ? (notifiedPatients / totalPatients) * 100
+    ? (notifiedPatients * 100) /totalPatients
     : 0;
 
   return (
@@ -511,7 +511,7 @@ const Broadcast = () => {
                 <Box>
                   <Typography variant="body2" color="textSecondary" gutterBottom>
                     Progress: {lastBatch.emails_sent} / {lastBatch.total_recipients}
-                    {lastBatch.success_rate && ` (${lastBatch.success_rate.toFixed(1)}% success rate)`}
+                    {lastBatch.success_rate && ` (${lastBatch.success_rate.toFixed(1)}%)`}
                   </Typography>
                   <LinearProgress
                     variant="determinate"
