@@ -148,7 +148,19 @@ const RAServiceCodeAnalytics = () => {
   const tabtitle = "RA Analytics by ND Health";
   const { clinicInfo, locationsData, notice, loading1 } = useClinicInfo(clinicSlug);
 
+  const handleTokenFromURL = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const accessToken = urlParams.get("token");
+    const username = urlParams.get("username");
+    const loggedIn = urlParams.get("loggedIn");
 
+    if (accessToken && username && loggedIn) {
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("username", username);
+      localStorage.setItem("loggedIn", loggedIn);
+      window.location.reload();
+    }
+  };
   const fetchAnalytics = async () => {
     setLoading(true);
     setError(null);
@@ -171,6 +183,9 @@ const RAServiceCodeAnalytics = () => {
       }
 
       const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken) {
+        handleTokenFromURL();
+      }
       params.append("user_type", user_type);
       const response = await fetch(
         `${API_BASE_PATH}/billing/ra-analytics1?${params}`,

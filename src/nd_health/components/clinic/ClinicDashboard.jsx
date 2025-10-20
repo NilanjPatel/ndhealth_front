@@ -261,7 +261,7 @@ export default function ClinicHome() {
       }
     };
 
-    fetchUserInfo();
+    fetchUserInfo().then(r => {});
   }, []);
 
   const handleTokenFromURL = () => {
