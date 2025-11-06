@@ -125,6 +125,7 @@ const Broadcast = () => {
           setTemplateTitle(data[0].title);
           setEmailTemplate(data[0].content);
           setPreviewTemplate(data[0].merged_content);
+          setClinicId(data[0].clinic);
 
         } else {
           // Set default template if no templates exist
@@ -171,6 +172,7 @@ const Broadcast = () => {
     }
 
     try {
+      console.log(`Clinic ID:${clinicId}`);
       // ViewSet POST to create new template
       const response = await fetch(`${API_BASE_PATH}/Broadcast/`, {
         method: "POST",

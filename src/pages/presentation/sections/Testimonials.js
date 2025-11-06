@@ -91,30 +91,7 @@ function Information() {
         ))}
       </Grid>
       <Divider sx={{ my: 6 }} />
-      {/*<Grid container spacing={3} justifyContent="center">*/}
-      {/*  <Grid item xs={6} md={4} lg={2}>*/}
-      {/*    <MKBox component="img" src={appleLogo} alt="Apple" width="100%" opacity={0.6} />*/}
-      {/*  </Grid>*/}
-      {/*  <Grid item xs={6} md={4} lg={2}>*/}
-      {/*    <MKBox component="img" src={facebookLogo} alt="Facebook" width="100%" opacity={0.6} />*/}
-      {/*  </Grid>*/}
-      {/*  <Grid item xs={6} md={4} lg={2}>*/}
-      {/*    <MKBox component="img" src={nasaLogo} alt="Nasa" width="100%" opacity={0.6} />*/}
-      {/*  </Grid>*/}
-      {/*  <Grid item xs={6} md={4} lg={2}>*/}
-      {/*    <MKBox component="img" src={vodafoneLogo} alt="Vodafone" width="100%" opacity={0.6} />*/}
-      {/*  </Grid>*/}
-      {/*  <Grid item xs={6} md={4} lg={2}>*/}
-      {/*    <MKBox*/}
-      {/*      component="img"*/}
-      {/*      src={digitalOceanLogo}*/}
-      {/*      alt="DigitalOcean"*/}
-      {/*      width="100%"*/}
-      {/*      opacity={0.6}*/}
-      {/*    />*/}
-      {/*  </Grid>*/}
-      {/*</Grid>*/}
-      {/*</Container>*/}
+
     </MKBox>
   );
 }
