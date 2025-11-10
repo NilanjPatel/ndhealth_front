@@ -1,17 +1,4 @@
-/*
-=========================================================
-* Material Kit 2 PRO React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-kit-pro-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
+//layouts/sections/page-sections/pricing/components/PricingOne/index
 
 import { useState } from "react";
 
@@ -39,9 +26,9 @@ function PricingOne() {
   };
 
   return (
-    <MKBox component="section" pb={3}>
+    <MKBox component="section" sx={{ pb: { xs: 1, lg: 3 } }}>
       <MKBox variant="gradient" bgColor="dark">
-        <Container sx={{ pb: { xs: 12, lg: 22 }, pt: 12 }}>
+        <Container sx={{ pb: { xs: 17, lg: 22 }, pt: 12 }}>
           <Grid
             container
             item
@@ -51,10 +38,28 @@ function PricingOne() {
             md={8}
             sx={{ mx: "auto", textAlign: "center" }}
           >
-            <MKTypography variant="h3" color="white" mb={2}>
+            <MKTypography variant="h3" color="white" mb={2} sx={({ breakpoints, typography: { size } }) => ({
+              fontWeight: "bold",
+              fontSize: size["4xl"],
+              [breakpoints.down("xl")]: {
+                fontSize: size["3xl"],
+              },
+              [breakpoints.down("lg")]: { fontSize: size["2xl"] },
+              [breakpoints.down("md")]: { fontSize: size["xl"] },
+              [breakpoints.down("sm")]: { fontSize: size["0.81rem"] },
+              [breakpoints.down("xs")]: { fontSize: size["0.81rem"] },
+            })}
+            >
               See our pricing
             </MKTypography>
-            <MKTypography variant="body2" color="white">
+            <MKTypography variant="body2" color="white" sx={({ breakpoints, typography: { size } }) => ({
+              // fontWeight: "500",
+              // fontSize: size["3xl"],
+              [breakpoints.down("md")]: { fontSize: size["0.1rem"] },
+              [breakpoints.down("xs")]: { fontSize: size["0.1rem"] },
+              [breakpoints.down("sm")]: { fontSize: size["0.1rem"] },
+              [breakpoints.down("lg")]: { fontSize: size["1rem"] },
+            })}>
               We offer customization options as well.
             </MKTypography>
           </Grid>
@@ -91,19 +96,20 @@ function PricingOne() {
               <Grid item xs={12} lg={4}>
                 <DefaultPricingCard
                   badge={{ color: "light", label: "starter" }}
-                  price={{ currency: "$", value: tabType === "annual" ? 0 : 0, type: "mo" }}
+                  price={{ currency: "$", value: tabType === "annual" ? 0 : 0, type: "/mo" }}
                   specifications={[
                     { label: "Health card validation", includes: true },
+                    { label: "Keyboard Shortcuts", includes: false },
                     { label: "Online Appointment", includes: false },
                     { label: "Conformation and reminder Emails", includes: false },
                     { label: "Secure emails", includes: false },
-                    { label: "Complete documentation", includes: false },
+                    // { label: "Complete documentation", includes: false },
                   ]}
                   action={{
                     type: "internal",
-                    route: "/",
+                    route: "/join",
                     color: "dark",
-                    label: "join",
+                    label: "Join",
                   }}
                 />
               </Grid>
@@ -111,18 +117,22 @@ function PricingOne() {
                 <DefaultPricingCard
                   color="dark"
                   badge={{ color: "info", label: "premium" }}
-                  price={{ currency: "$", value: tabType === "annual" ? 159 : 59, type: "mo per doctor" }}
+                  price={{
+                    currency: "$",
+                    value: tabType === "annual" ? 49 : 59,
+                    type: "mo per doctor",
+                  }}
                   specifications={[
-                    { label: "10 team members", includes: true },
-                    { label: "40GB Cloud storage", includes: true },
-                    { label: "Integration help", includes: true },
-                    { label: "Sketch Files", includes: true },
-                    { label: "API Access", includes: false },
-                    { label: "Complete documentation", includes: false },
+                    { label: "Health card validation", includes: true },
+                    { label: "Keyboard Shortcuts", includes: true },
+                    { label: "Online Appointment", includes: true },
+                    { label: "Conformation and reminder Emails", includes: true },
+                    { label: "Secure emails", includes: true },
+                    // { label: "Complete documentation", includes: true },
                   ]}
                   action={{
                     type: "internal",
-                    route: "/",
+                    route: "/join",
                     color: "info",
                     label: "try premium",
                   }}
@@ -131,18 +141,21 @@ function PricingOne() {
               <Grid item xs={12} lg={4}>
                 <DefaultPricingCard
                   badge={{ color: "light", label: "enterprise" }}
-                  price={{ currency: "$", value: tabType === "annual" ? 99 : 399, type: "mo" }}
+                  price={{ currency: "", value: tabType === "annual" ? "" : "", type: "Contact us for price" }}
                   specifications={[
-                    { label: "Unlimited team members", includes: true },
-                    { label: "100GB Cloud storage", includes: true },
-                    { label: "Integration help", includes: true },
-                    { label: "Sketch Files", includes: true },
-                    { label: "API Access", includes: true },
-                    { label: "Complete documentation", includes: true },
+                    { label: "All the premium features", includes: true },
+                    // {label: "Keyboard Shortcuts", includes: true},
+                    // {label: "Online Appointment", includes: true},
+                    // {label: "Conformation and reminder Emails", includes: true},
+                    // {label: "Secure emails", includes: true},
+                    // {label: "Complete documentation", includes: true},
+                    { label: "Customization options", includes: true },
+                    { label: "Dedicated Server", includes: true },
+                    { label: "Domain of your choice*", includes: true },
                   ]}
                   action={{
                     type: "internal",
-                    route: "/",
+                    route: "/join",
                     color: "dark",
                     label: "join",
                   }}

@@ -23,7 +23,7 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle"; // Import AccountCircleIcon
-import ndHealthLogo from "nd_health/assets/images/nd-health-logo.png";
+import ndHealthLogo from "nd_health/assets/images/ND(1).png";
 import powered_by_logo from "nd_health/assets/images/powered_by_nd_health_n.png";
 // import "../App.css";
 import API_BASE_PATH from "apiConfig";

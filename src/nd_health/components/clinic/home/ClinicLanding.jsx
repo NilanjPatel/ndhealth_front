@@ -30,8 +30,7 @@ import { faCalendar, faClipboard, faAddressCard, faUser } from "@fortawesome/fre
 
 // Material Kit 2 PRO React components
 import MKTypography from "components/MKTypography";
-import bgImage from "../../../assets/images/maple_clinic.jpg";
-import book_appointment from "../../../assets/images/clinic_landing_page/appointment_book.png";
+import bgImage from "../../../assets/images/medical_clinic_2.jpeg";
 import Container from "@mui/material/Container";
 import MKBox from "../../../../components/MKBox";
 import colors from "assets/theme/base/colors";

@@ -1,7 +1,7 @@
 // HelmetComponent.js
 import React, { useState, useEffect } from "react";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import ndHealthLogo from "nd_health/assets/images/nd-health-logo.png";
+import ndHealthLogo from "nd_health/assets/images/ND(1).png";
 
 const HelmetComponent = () => {
   const [canonicalUrl, setCanonicalUrl] = useState("");

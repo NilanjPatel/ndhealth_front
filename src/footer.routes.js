@@ -7,7 +7,7 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import MKTypography from "components/MKTypography";
 
 // Images
-// import logoCT from "nd_health/assets/images/nd-health-logo.png";
+// import logoCT from "nd_health/assets/images/ND(1).png";
 import logoCT from "nd_health/assets/images/ND(1).png";
 
 const date = new Date().getFullYear();

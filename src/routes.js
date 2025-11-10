@@ -26,7 +26,7 @@
 
 // @mui material components
 import Icon from "@mui/material/Icon";
-import logoCT from "./nd_health/assets/images/nd-health-logo.png";
+import logoCT from "./nd_health/assets/images/ND(1).png";
 
 // // Pages
 // import CoworkingPage from "layouts/pages/landing-pages/coworking";
