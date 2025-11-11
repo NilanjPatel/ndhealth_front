@@ -195,18 +195,17 @@ export const getTimezone = () => {
 };
 
 
-export const ValidateHCV = async (clinicSlug, hin, versionCode, dob) => {
-  const response = await fetch(`${API_BASE_PATH}/HCV`, {
+export const ValidateHCV = async (hin, versionCode, token) => {
+  const response = await fetch(`${API_BASE_PATH}/HCV/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "Authorization": `Token ${token}`,
     },
     body: JSON.stringify({
-      clinic_slug: clinicSlug, // Add clinic_id to the form data
-      hin: hin,
-      ver: versionCode,
-      dob: dob,
-
+      number: hin,
+      versioCode: versionCode,
+      serviceCode: 'A110',
     }),
   });
   const data = await response.json();
@@ -264,3 +263,15 @@ export const getCurrentDate = () => {
   return `${year}-${month}-${day}`;
 };
 
+export const format_Date_to_month_date_year = (dateString: string): string => {
+  const date = new Date(dateString);
+
+  // Options to format the date
+  const options: Intl.DateTimeFormatOptions = {
+    month: 'short',
+    day: '2-digit',
+    year: 'numeric'
+  };
+
+  return date.toLocaleDateString('en-US', options);
+};
