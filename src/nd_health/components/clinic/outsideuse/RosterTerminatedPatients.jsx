@@ -35,6 +35,10 @@ import PersonIcon from "@mui/icons-material/Person";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { useParams } from "react-router-dom";
 import AdvancedDashboardLoading from "../../processes/AdvancedDashboardLoading";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers";
+import { TextField } from "@mui/material";
 
 // Dynamic color generator for different codes
 const getCodeColor = (code, index) => {
@@ -233,6 +237,12 @@ export const RosterTerminatedPatients = () => {
   const [isRefreshingRosters, setIsRefreshingRosters] = useState(false);
   const [isTerminatingBulk, setTerminatingBulk] = useState(false);
   const [individualRosterUpdating, setIndividualRosterUpdating] = useState(false);
+  const [searchValues, setSearchValues] = useState({
+    terminatedDateStart: new Date().toISOString().split("T")[0], // Jan 1st of current year
+    terminatedDateEnd: new Date().toISOString().split("T")[0],
+    // min_occurrences: 2,
+  });
+  const [filters, setFilters] = useState(searchValues); // actual applied filters
 
   // Pagination state
   const [page, setPage] = useState(0);
@@ -292,6 +302,7 @@ export const RosterTerminatedPatients = () => {
           "Authorization": `Token ${accessToken}`,
           "Content-Type": "application/json",
         },
+        body: JSON.stringify(searchValues),
       });
 
       if (!response.ok) {
@@ -534,7 +545,13 @@ export const RosterTerminatedPatients = () => {
       throw error;
     }
   };
-
+  const handleSearchChange = (field, value) => {
+    setSearchValues((prev) => ({ ...prev, [field]: value }));
+  };
+  const handleSearch = () => {
+    setFilters(searchValues);
+    setPage(0);
+  };
   return clinicInfo ? (
     <Layout1 clinicInfo={clinicInfo} title={"Roster Termination"} tabtitle={"Roster Termination"}>
       <div>
@@ -661,6 +678,31 @@ export const RosterTerminatedPatients = () => {
                               </FormControl>
                             </Grid>
                           )}
+                          {/* Terminated Date filter*/}
+                          <Grid item >
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                              <DatePicker
+                                label="From Date"
+                                value={searchValues.terminatedDateStart}
+                                onChange={(newValue) => handleSearchChange("terminatedDateStart", newValue?.format("YYYY-MM-DD"))}
+                                renderInput={(params) => <TextField {...params} fullWidth />}
+                              />
+
+                            </LocalizationProvider>
+
+                          </Grid>
+                          <Grid item >
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                              <DatePicker
+                                label="To Date"
+                                value={searchValues.terminatedDateEnd}
+                                onChange={(newValue) => handleSearchChange("terminatedDateEnd", newValue?.format("YYYY-MM-DD"))}
+                                renderInput={(params) => <TextField {...params} fullWidth />}
+                              />
+
+                            </LocalizationProvider>
+
+                          </Grid>
 
                           {/* Refresh Button */}
                           <Grid item>
