@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
-import { Dialog, DialogContent, DialogTitle, FormControlLabel, Switch, Grid } from "@mui/material";
+import { Dialog, DialogContent, DialogTitle, FormControlLabel, Switch, Grid, Radio, RadioGroup } from "@mui/material";
 
 // local components
 import NotificationDialog from "../../../../nd_health/components/resources/Notification";
@@ -28,11 +28,13 @@ function Cover() {
   // Validation states
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [isPhoneValid, setIsPhoneValid] = useState(true);
-  const [isOhipValid, setIsOhipValid] = useState(true);
+  const [isCpsoValid, setIsCpsoValid] = useState(true);
   const [isFirstNameValid, setIsFirstNameValid] = useState(true);
+  const [isLastNameValid, setIsLastNameValid] = useState(true);
+  const [isClinicNameValid, setIsClinicNameValid] = useState(true);
 
   // Agreement / dialog state
-  const [agreementChecked, setAgreementChecked] = useState(true);
+  const [agreementChecked, setAgreementChecked] = useState(false);
   const [openAgreementPopup, setOpenAgreementPopup] = useState(false);
   const [termsInfo, setTermsInfo] = useState(null);
 
@@ -52,7 +54,8 @@ function Cover() {
     email: "",
     first_name: "",
     last_name: "",
-    ohip: "",
+    clinic_name: "",
+    cpso: "",
     preferred_contact: "email",
   });
 
@@ -65,16 +68,20 @@ function Cover() {
   const isFormValid = () =>
     isEmailValid &&
     isPhoneValid &&
-    isOhipValid &&
+    isCpsoValid &&
     isFirstNameValid &&
+    isLastNameValid &&
+    isClinicNameValid &&
     agreementChecked &&
-    updatedInfo.first_name.trim().length > 0;
+    updatedInfo.first_name.trim().length > 0 &&
+    updatedInfo.last_name.trim().length > 0 &&
+    updatedInfo.clinic_name.trim().length > 0;
 
   const handleSignup = async () => {
     // protect double-submits and invalid form
     if (isSubmitting) return;
     if (!isFormValid()) {
-      handleFailure("Please fill required fields correctly and accept the terms.");
+      handleFailure("Please fill all required fields correctly and accept the terms.");
       return;
     }
 
@@ -87,49 +94,49 @@ function Cover() {
         body: JSON.stringify({
           first_name: updatedInfo.first_name,
           last_name: updatedInfo.last_name,
+          clinic_name: updatedInfo.clinic_name,
           email: updatedInfo.email,
           phone: updatedInfo.phone,
-          ohip: updatedInfo.ohip,
+          cpso: updatedInfo.cpso,
           preferred_contact: updatedInfo.preferred_contact,
-
         }),
       });
 
       const data = await response.json();
       setIsSubmitting(false);
       if (data?.status === "success") {
-        handleSuccess(data.message || "Signup successful.");
+        handleSuccess(data.message || "Request submitted successfully.");
         // reset form
         setUpdatedInfo({
           phone: "",
           email: "",
           first_name: "",
           last_name: "",
-          ohip: "",
+          clinic_name: "",
+          cpso: "",
+          preferred_contact: "email",
         });
-
       } else {
         // backend may send message or errors
-        setIsSubmitting(false);
-        handleFailure(data?.message || "Signup failed. Please try again.");
+        handleFailure(data?.message || "Request failed. Please try again.");
       }
     } catch (error) {
       setIsSubmitting(false);
-      console.error("Signup error:", error);
+      console.error("Request error:", error);
       handleFailure("Something went wrong. Please try again later.");
     }
   };
 
   // Controlled validation handlers
   const handleEmailChange = (value) => {
-    const valueLower = (value || "").toLowerCase();
-    setIsEmailValid(isValidEmail(valueLower));
+    const valueLower = (value || "").toLowerCase().trim();
+    setIsEmailValid(valueLower.length > 0 && isValidEmail(valueLower));
     setUpdatedInfo((p) => ({ ...p, email: valueLower }));
   };
 
   const handlePhoneChange = (value) => {
     const formatted = formatPhone(value || "");
-    setIsPhoneValid(isValidPhoneNumber(formatted));
+    setIsPhoneValid(formatted.length > 0 && isValidPhoneNumber(formatted));
     setUpdatedInfo((p) => ({ ...p, phone: formatted }));
   };
 
@@ -144,15 +151,32 @@ function Cover() {
       return;
     }
 
-    if (field === "ohip") {
+    if (field === "cpso") {
       const digits = (value || "").replace(/\D/g, "");
-      setIsOhipValid(digits.length >= 6); // keep existing rule: require 6+ digits
-      setUpdatedInfo((p) => ({ ...p, ohip: digits }));
+      setIsCpsoValid(digits.length === 0 || digits.length >= 6);
+      setUpdatedInfo((p) => ({ ...p, cpso: digits }));
       return;
     }
 
     if (field === "first_name") {
-      setIsFirstNameValid((value || "").trim().length >= 1); // at least 1 char required
+      const trimmed = (value || "").trim();
+      setIsFirstNameValid(trimmed.length >= 1);
+      setUpdatedInfo((p) => ({ ...p, first_name: trimmed }));
+      return;
+    }
+
+    if (field === "last_name") {
+      const trimmed = (value || "").trim();
+      setIsLastNameValid(trimmed.length >= 1);
+      setUpdatedInfo((p) => ({ ...p, last_name: trimmed }));
+      return;
+    }
+
+    if (field === "clinic_name") {
+      const trimmed = (value || "").trim();
+      setIsClinicNameValid(trimmed.length >= 1);
+      setUpdatedInfo((p) => ({ ...p, clinic_name: trimmed }));
+      return;
     }
 
     setUpdatedInfo((p) => ({ ...p, [field]: value }));
@@ -171,22 +195,19 @@ function Cover() {
 
   const handleAgreementChange = () => setAgreementChecked((v) => !v);
 
-  const handleAgreementClick = () => {
-    const fetchClinicInfo = async () => {
-      if (!termsInfo) {
-        try {
-          const response = await fetch(`${API_BASE_PATH}/agreement-terms/Join/`);
-          const data = await response.json();
-          setTermsInfo(data?.message?.agreement || "<p>No terms available.</p>");
-        } catch (error) {
-          console.error("Error fetching terms:", error);
-          setTermsInfo("<p>Unable to load terms at this time.</p>");
-        }
+  const handleAgreementClick = async (e) => {
+    e.preventDefault();
+    if (!termsInfo) {
+      try {
+        const response = await fetch(`${API_BASE_PATH}/agreement-terms/Join/`);
+        const data = await response.json();
+        setTermsInfo(data?.message?.agreement || "<p>No terms available.</p>");
+      } catch (error) {
+        console.error("Error fetching terms:", error);
+        setTermsInfo("<p>Unable to load terms at this time.</p>");
       }
-      setOpenAgreementPopup(true);
-    };
-
-    fetchClinicInfo();
+    }
+    setOpenAgreementPopup(true);
   };
 
   const handleCloseAgreementPopup = () => setOpenAgreementPopup(false);
@@ -206,138 +227,147 @@ function Cover() {
           textAlign="center"
         >
           <MKTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Join us today
+            Request a Demo
+          </MKTypography>
+          <MKTypography variant="body2" color="white" opacity={0.8} mt={1}>
+            Register for ND Health and get started with our clinic management solutions.
           </MKTypography>
         </MKBox>
 
-        <MKBox p={2}>
-          <Grid container spacing={2}>
+        <MKBox p={3}>
+          <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
-              <MKBox>
-                <MKInput
-                  type="text"
-                  label="First Name"
-                  fullWidth
-                  value={updatedInfo.first_name}
-                  onChange={(e) => handleInputChange("first_name", e.target.value)}
-                  error={!isFirstNameValid}
-                  helperText={!isFirstNameValid ? "First name is required" : ""}
-                />
-              </MKBox>
+              <MKInput
+                type="text"
+                label="First Name *"
+                fullWidth
+                value={updatedInfo.first_name}
+                onChange={(e) => handleInputChange("first_name", e.target.value)}
+                error={!isFirstNameValid}
+                helperText={!isFirstNameValid ? "First name is required" : ""}
+              />
             </Grid>
 
             <Grid item xs={12} md={6}>
-              <MKBox>
-                <MKInput
-                  type="text"
-                  label="Last Name (optional)"
-                  fullWidth
-                  value={updatedInfo.last_name}
-                  onChange={(e) => handleInputChange("last_name", e.target.value)}
-                />
-              </MKBox>
+              <MKInput
+                type="text"
+                label="Last Name *"
+                fullWidth
+                value={updatedInfo.last_name}
+                onChange={(e) => handleInputChange("last_name", e.target.value)}
+                error={!isLastNameValid}
+                helperText={!isLastNameValid ? "Last name is required" : ""}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <MKInput
+                type="text"
+                label="Clinic Name *"
+                fullWidth
+                value={updatedInfo.clinic_name}
+                onChange={(e) => handleInputChange("clinic_name", e.target.value)}
+                error={!isClinicNameValid}
+                helperText={!isClinicNameValid ? "Clinic name is required" : ""}
+              />
             </Grid>
 
             <Grid item xs={12} md={6}>
-              <MKBox>
-                <MKInput
-                  id="email"
-                  label="Email Address"
-                  variant="outlined"
-                  onChange={(e) => handleInputChange("email", e.target.value)}
-                  value={updatedInfo.email}
-                  fullWidth
-                  error={!isEmailValid}
-                  type="email"
-                  helperText={!isEmailValid ? "Invalid email address" : ""}
-                />
-              </MKBox>
+              <MKInput
+                id="email"
+                label="Email Address *"
+                onChange={(e) => handleInputChange("email", e.target.value)}
+                value={updatedInfo.email}
+                fullWidth
+                error={!isEmailValid}
+                type="email"
+                helperText={!isEmailValid ? "Valid email address is required" : ""}
+              />
             </Grid>
 
             <Grid item xs={12} md={6}>
-              <MKBox>
-                <MKInput
-                  label="Phone"
-                  type="tel"
-                  fullWidth
-                  value={updatedInfo.phone}
-                  onChange={(e) => handleInputChange("phone", e.target.value)}
-                  helperText={!isPhoneValid ? "Invalid phone number" : ""}
-                  error={!isPhoneValid}
-                />
-              </MKBox>
-            </Grid>
-            <Grid item xs={12} md={12}>
-              <MKBox>
-                <MKTypography variant="body2" fontWeight="medium" mb={1}>
-                  Preferred Contact Method
-                </MKTypography>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={updatedInfo.preferred_contact === "email"}
-                      onChange={() =>
-                        setUpdatedInfo((p) => ({ ...p, preferred_contact: "email" }))
-                      }
-                    />
-                  }
-                  label="Email"
-                />
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={updatedInfo.preferred_contact === "phone"}
-                      onChange={() =>
-                        setUpdatedInfo((p) => ({ ...p, preferred_contact: "phone" }))
-                      }
-                    />
-                  }
-                  label="Phone"
-                />
-              </MKBox>
+              <MKInput
+                label="Phone Number *"
+                type="tel"
+                fullWidth
+                value={updatedInfo.phone}
+                onChange={(e) => handleInputChange("phone", e.target.value)}
+                helperText={!isPhoneValid ? "Valid phone number is required" : ""}
+                error={!isPhoneValid}
+              />
             </Grid>
 
-
-            <Grid item xs={12} md={12}>
-              <MKBox>
-                <MKInput
-                  label="Primary Doctor's CPSO number"
-                  value={updatedInfo.ohip}
-                  onChange={(e) => handleInputChange("ohip", e.target.value)}
-                  inputMode="numeric"
-                  placeholder="Primary Doctor's CPSO number"
-                  fullWidth
-                  type="text"
-                  error={!isOhipValid}
-                  helperText={!isOhipValid ? "CPSO number must be at least 6 digits" : ""}
-                />
-              </MKBox>
+            <Grid item xs={12}>
+              <MKTypography variant="body2" fontWeight="medium" mb={1}>
+                Preferred Contact Method
+              </MKTypography>
+              <RadioGroup
+                row
+                value={updatedInfo.preferred_contact}
+                onChange={(e) => handleInputChange("preferred_contact", e.target.value)}
+              >
+                <FormControlLabel value="email" control={<Radio />} label="Email" />
+                <FormControlLabel value="phone" control={<Radio />} label="Phone" />
+              </RadioGroup>
             </Grid>
 
-            <Grid item xs={12} md={6}>
-              <MKBox sx={{ display: "flex", gap: 2 }}>
-                <MKButton m={2} onClick={handleClose} color="primary">
-                  Cancel
-                </MKButton>
+            <Grid item xs={12}>
+              <MKInput
+                label="CPSO Number (optional)"
+                value={updatedInfo.cpso}
+                onChange={(e) => handleInputChange("cpso", e.target.value)}
+                inputMode="numeric"
+                placeholder="Enter your CPSO number if applicable"
+                fullWidth
+                type="text"
+                error={!isCpsoValid}
+                helperText={!isCpsoValid ? "CPSO number must be at least 6 digits if provided" : ""}
+              />
+            </Grid>
 
-                <MKButton
-                  m={2}
-                  onClick={handleSignup}
-                  color="info"
-                  variant={"contained"}
-                  disabled={!isFormValid() || isSubmitting}
-                >
-                  {isSubmitting ? "Signing up..." : "Sign Up"}
-                </MKButton>
-              </MKBox>
+            <Grid item xs={12}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={agreementChecked}
+                    onChange={handleAgreementChange}
+                    color="primary"
+                  />
+                }
+                label={
+                  <MKTypography variant="body2">
+                    I agree to the{" "}
+                    <span
+                      style={{ color: "info.main", cursor: "pointer", textDecoration: "underline" }}
+                      onClick={handleAgreementClick}
+                    >
+                      terms and conditions
+                    </span>
+                  </MKTypography>
+                }
+              />
+            </Grid>
+
+            <Grid item xs={12} sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
+              <MKButton onClick={handleClose} color="secondary" variant="outlined">
+                Cancel
+              </MKButton>
+              <MKButton
+                onClick={handleSignup}
+                color="info"
+                variant="contained"
+                disabled={!isFormValid() || isSubmitting}
+              >
+                {isSubmitting ? "Submitting..." : "Submit Request"}
+              </MKButton>
             </Grid>
           </Grid>
         </MKBox>
       </Card>
 
-      <Dialog open={openAgreementPopup} onClose={handleCloseAgreementPopup}>
+      <Dialog open={openAgreementPopup} onClose={handleCloseAgreementPopup} maxWidth="md" fullWidth>
         <DialogTitle>Terms and Conditions</DialogTitle>
-        <DialogContent className={"custom-scrollbar"}>
+        <DialogContent className="custom-scrollbar">
           <div
             dangerouslySetInnerHTML={{
               __html: termsInfo || "<p>Loading terms...</p>",
@@ -354,17 +384,17 @@ function Cover() {
       />
 
       {isSubmitting && (
-        <div
-          style={{
+        <MKBox
+          sx={{
             position: "absolute",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            zIndex: 900000,
+            zIndex: 1300,
           }}
         >
           <NdLoader size="lg" variant="solid" value={70} color="primary" />
-        </div>
+        </MKBox>
       )}
     </BasicLayout>
   );
