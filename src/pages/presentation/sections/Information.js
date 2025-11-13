@@ -76,25 +76,88 @@ function Information() {
           container
           item
           xs={12}
-          lg={8}
+          lg={10}
           justifyContent="center"
-          sx={{ mx: "auto", textAlign: "center", mb: 6 }}
+          sx={{ mx: "auto", textAlign: "center", mb: 8 }}
         >
-          <MKBox display="flex" alignItems="center" justifyContent="center" flexWrap="wrap" mb={1}>
-            <MKTypography variant="h2" color="info" textGradient>
-              Loved by Doctors,
-            </MKTypography>
-            <MKTypography variant="h2" ml={1}>
-              Trusted by Clinics
-            </MKTypography>
-          </MKBox>
-          <MKTypography
-            variant="body1"
-            color="text"
-            sx={{ fontSize: "1.1rem", maxWidth: "600px" }}
+          <MKBox
+            sx={{
+              position: "relative",
+              "&::before": {
+                content: '""',
+                position: "absolute",
+                top: "-20px",
+                left: "50%",
+                transform: "translateX(-50%)",
+                width: "60px",
+                height: "4px",
+                background: "linear-gradient(90deg, #667eea 0%, #764ba2 100%)",
+                borderRadius: "2px",
+              }
+            }}
           >
-            Join healthcare professionals who have already transformed their practice with ND Health
-          </MKTypography>
+            <MKBox display="flex" alignItems="center" justifyContent="center" flexWrap="wrap" mb={2} mt={4}>
+              <MKTypography
+                variant="h2"
+                sx={{
+                  fontSize: "2.5rem",
+                  fontWeight: "800",
+                  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                Loved by Doctors,
+              </MKTypography>
+              <MKTypography variant="h2" ml={1} sx={{ fontSize: "2.5rem", fontWeight: "800" }}>
+                Trusted by Clinics
+              </MKTypography>
+            </MKBox>
+            <MKTypography
+              variant="body1"
+              color="text"
+              sx={{ fontSize: "1.2rem", maxWidth: "700px", mx: "auto", lineHeight: "1.8" }}
+            >
+              Join healthcare professionals who have already transformed their practice with ND Health
+            </MKTypography>
+
+            {/* Trust Indicators */}
+            <MKBox
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 4,
+                mt: 3,
+                flexWrap: "wrap"
+              }}
+            >
+              <MKBox sx={{ textAlign: "center" }}>
+                <MKTypography variant="h4" color="info" fontWeight="bold">
+                  4.8/5
+                </MKTypography>
+                <MKTypography variant="caption" color="text">
+                  ⭐⭐⭐⭐⭐ Average Rating
+                </MKTypography>
+              </MKBox>
+              <MKBox sx={{ textAlign: "center" }}>
+                <MKTypography variant="h4" color="success" fontWeight="bold">
+                  50+
+                </MKTypography>
+                <MKTypography variant="caption" color="text">
+                  Active Clinics
+                </MKTypography>
+              </MKBox>
+              <MKBox sx={{ textAlign: "center" }}>
+                <MKTypography variant="h4" color="warning" fontWeight="bold">
+                  98%
+                </MKTypography>
+                <MKTypography variant="caption" color="text">
+                  Satisfaction Rate
+                </MKTypography>
+              </MKBox>
+            </MKBox>
+          </MKBox>
         </Grid>
 
         {/* Testimonial Cards */}

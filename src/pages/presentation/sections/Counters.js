@@ -153,7 +153,7 @@ function Counters() {
             color="text"
             sx={{ maxWidth: "700px", mx: "auto", fontSize: "1.1rem" }}
           >
-            See what one clinic achieved in their first year with ND Health
+            See what one clinic achieved with ND Health
           </MKTypography>
         </MKBox>
 
@@ -225,7 +225,7 @@ function Counters() {
         {/* Trust Signal - Psychological: Additional credibility */}
         <Box textAlign="center" mt={5}>
           <MKTypography variant="body2" color="text" fontStyle="italic">
-            ✓ Trusted by 50+ clinics across Canada  •  ✓ 98% customer satisfaction  •  ✓ 24/7 support
+            ✓ Trusted by 50+ clinics across Canada  •  ✓ 98% customer satisfaction
           </MKTypography>
         </Box>
       </Container>

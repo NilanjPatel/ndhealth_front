@@ -35,6 +35,11 @@ import CenteredFooter from "examples/Footers/CenteredFooter";
 import Counters from "pages/presentation/sections/Counters";
 import Information from "pages/presentation/sections/Information";
 import GettingStart from "pages/presentation/sections/GettingStart";
+import ProductShowcase from "pages/presentation/sections/ProductShowcase";
+import ComparisonSection from "pages/presentation/sections/ComparisonSection";
+import VideoDemo from "pages/presentation/sections/VideoDemo";
+import PricingFeatureComparison from "pages/presentation/sections/PricingFeatureComparison";
+import PricingFAQ from "pages/presentation/sections/PricingFAQ";
 // import DesignBlocks from "pages/presentation/sections/DesignBlocks";
 // import AuthPages from "pages/presentation/sections/AuthPages";
 // import Pages from "pages/presentation/sections/Pages";
@@ -46,6 +51,7 @@ import PricingOne from "layouts/sections/page-sections/pricing/components/Pricin
 
 // Presentation page components
 // import BuiltByDevelopers from "pages/presentation/components/BuiltByDevelopers";
+import FloatingCTA from "pages/presentation/components/FloatingCTA";
 
 // Routes
 import routes from "routes";
@@ -128,6 +134,36 @@ function Presentation() {
             flexDirection="column"
             sx={{ mx: "auto", textAlign: "center" }}
           >
+            {/* Trust Badge */}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
+              <MKBox
+                sx={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  backgroundColor: "rgba(255,255,255,0.15)",
+                  backdropFilter: "blur(10px)",
+                  borderRadius: "50px",
+                  px: 3,
+                  py: 1,
+                  mb: 3,
+                  border: "1px solid rgba(255,255,255,0.2)",
+                }}
+              >
+                <MKTypography
+                  variant="caption"
+                  color="white"
+                  fontWeight="bold"
+                  sx={{ fontSize: "0.9rem" }}
+                >
+                  ⭐ Rated 4.8/5 by 50+ Clinics Across Canada
+                </MKTypography>
+              </MKBox>
+            </motion.div>
+
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -138,6 +174,9 @@ function Presentation() {
                 color="white"
                 sx={({ breakpoints, typography: { size } }) => ({
                   fontSize: "4rem",
+                  fontWeight: "800",
+                  lineHeight: "1.2",
+                  textShadow: "0 4px 20px rgba(0,0,0,0.3)",
                   [breakpoints.down("sm")]: { fontSize: size["xl"] },
                   [breakpoints.down("xs")]: { fontSize: size["md"] },
                 })}
@@ -152,18 +191,23 @@ function Presentation() {
               transition={{ duration: 0.8, delay: 0.4 }}
             >
               <MKTypography
-                variant="h1"
-                opacity={0.9}
-                mt={1}
-                mb={4}
+                variant="h4"
+                opacity={0.95}
+                mt={2}
+                mb={3}
                 color="white"
                 sx={({ breakpoints, typography: { size } }) => ({
-                  fontSize: "2rem",
-                  [breakpoints.down("sm")]: { fontSize: size["2rem"] },
-                  [breakpoints.down("xs")]: { fontSize: size["2rem"] },
+                  fontSize: "1.5rem",
+                  fontWeight: "400",
+                  maxWidth: "800px",
+                  margin: "0 auto",
+                  textShadow: "0 2px 10px rgba(0,0,0,0.2)",
+                  lineHeight: "1.6",
+                  [breakpoints.down("sm")]: { fontSize: "1.2rem" },
+                  [breakpoints.down("xs")]: { fontSize: "1rem" },
                 })}
               >
-                Improve your clinic&apos;s workflow with us.
+                Improve your clinic's workflow with us.
               </MKTypography>
             </motion.div>
 
@@ -184,7 +228,7 @@ function Presentation() {
                   variant="gradient"
                   color="info"
                   size="large"
-                  href="/demo"
+                  href="/join"
                   sx={{
                     px: 4,
                     py: 1.5,
@@ -224,14 +268,45 @@ function Presentation() {
                 </MKButton>
               </Stack>
 
-              <MKTypography
-                variant="caption"
-                color="white"
-                opacity={0.8}
-                sx={{ mt: 2, display: "block" }}
-              >
-                ✓ No credit card required • ✓ Setup in 5 minutes • ✓ Free forever plan
-              </MKTypography>
+              <MKBox sx={{ mt: 3, display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+                <MKTypography
+                  variant="body2"
+                  color="white"
+                  opacity={0.9}
+                  sx={{
+                    fontSize: "1rem",
+                    fontWeight: "500",
+                    display: "flex",
+                    flexWrap: "wrap",
+                    justifyContent: "center",
+                    gap: 2
+                  }}
+                >
+                  <span>✓ No credit card required</span>
+                  {/*<span>✓ Setup in 5 minutes</span>*/}
+                  {/*<span>✓ Free forever plan</span>*/}
+                </MKTypography>
+
+                {/* Trust Logos */}
+                {/*<MKBox sx={{*/}
+                {/*  display: "flex",*/}
+                {/*  alignItems: "center",*/}
+                {/*  gap: 3,*/}
+                {/*  mt: 2,*/}
+                {/*  flexWrap: "wrap",*/}
+                {/*  justifyContent: "center"*/}
+                {/*}}>*/}
+                {/*  <MKTypography variant="caption" color="white" opacity={0.8}>*/}
+                {/*    🔒 HIPAA Compliant*/}
+                {/*  </MKTypography>*/}
+                {/*  <MKTypography variant="caption" color="white" opacity={0.8}>*/}
+                {/*    🇨🇦 Canadian Healthcare Approved*/}
+                {/*  </MKTypography>*/}
+                {/*  <MKTypography variant="caption" color="white" opacity={0.8}>*/}
+                {/*    ⚡ 99.9% Uptime*/}
+                {/*  </MKTypography>*/}
+                {/*</MKBox>*/}
+              </MKBox>
             </motion.div>
           </Grid>
         </Container>
@@ -267,7 +342,25 @@ function Presentation() {
           transition={{ duration: 0.6, delay: 0.1 }}
           viewport={{ once: true }}
         >
+          <ProductShowcase />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          viewport={{ once: true }}
+        >
           <GettingStart />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          viewport={{ once: true }}
+        >
+          <ComparisonSection />
         </motion.div>
 
         <motion.div
@@ -285,8 +378,36 @@ function Presentation() {
           transition={{ duration: 0.6, delay: 0.1 }}
           viewport={{ once: true }}
         >
+          <VideoDemo />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          viewport={{ once: true }}
+        >
           <PricingOne />
         </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          viewport={{ once: true }}
+        >
+          <PricingFeatureComparison />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          viewport={{ once: true }}
+        >
+          <PricingFAQ />
+        </motion.div>
+
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -366,6 +487,9 @@ function Presentation() {
           <CenteredFooter content={footerRoutes} />
         </MKBox>
       </motion.div>
+
+      {/* Floating CTA Buttons */}
+      <FloatingCTA />
     </>
   );
 }
