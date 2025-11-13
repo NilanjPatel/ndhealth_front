@@ -514,8 +514,8 @@ export default function ClinicHome() {
                   {/*        <Chip*/}
                   {/*          label={`${newDemographic} New`}*/}
                   {/*          size="small"*/}
-                  {/*          color="error"*/}
-                  {/*          sx={{ backgroundColor: 'error.main', color: 'white' }}*/}
+                  {/*          color="Error"*/}
+                  {/*          sx={{ backgroundColor: 'Error.main', color: 'white' }}*/}
                   {/*        />*/}
                   {/*      )}*/}
                   {/*    </Box>*/}

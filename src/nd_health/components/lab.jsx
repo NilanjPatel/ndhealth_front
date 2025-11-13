@@ -167,7 +167,7 @@ const Lab = () => {
       setSubmitbutton(true);
     } catch (error) {
       console.error("Error fetching lab results:", error);
-      setModalContent("An error occurred while fetching your lab results. Please try again.");
+      setModalContent("An Error occurred while fetching your lab results. Please try again.");
       setOpenModal(true);
       setButtonPressed(true);
       setSubmitbutton(true);

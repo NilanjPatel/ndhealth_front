@@ -484,7 +484,7 @@ const RAServiceCodeAnalytics = () => {
       // console.log('✅ webPhone ready', webPhone);
 
       if (!webPhone.userAgent) {
-        // console.error('🚫 userAgent is not available');
+        // console.Error('🚫 userAgent is not available');
         return;
       }
 
@@ -499,7 +499,7 @@ const RAServiceCodeAnalytics = () => {
 
       webPhone.userAgent.register();
     } catch (err) {
-      // console.error('WebPhone init failed', err);
+      // console.Error('WebPhone init failed', err);
       setWebPhoneStatus("Error: " + err.message);
     }
   };
@@ -637,7 +637,7 @@ const RAServiceCodeAnalytics = () => {
                       color="error"
                       size="large"
                       onClick={handleHangUp}
-                      sx={{ bgcolor: "error.main", color: "white", "&:hover": { bgcolor: "error.dark" } }}
+                      sx={{ bgcolor: "Error.main", color: "white", "&:hover": { bgcolor: "Error.dark" } }}
                     >
                       <CallEnd />
                     </IconButton>
@@ -953,7 +953,7 @@ const RAServiceCodeAnalytics = () => {
                 <AdvancedDashboardLoading />
                 // </Box>
               ) : error ? (
-                <Card sx={{ p: 1, bgcolor: "error.light", color: "white" }}>
+                <Card sx={{ p: 1, bgcolor: "Error.light", color: "white" }}>
                   <Typography variant="h6" color="#ffffff">
                     <ErrorOutline sx={{ mr: 1 }} />
                     {error}

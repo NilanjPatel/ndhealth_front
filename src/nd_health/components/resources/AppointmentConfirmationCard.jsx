@@ -162,8 +162,8 @@ const AppointmentConfirmationCard = ({
 
       {/* Warning for same date appointment */}
       {!same_date_app && selectedDate && (
-        <Box sx={{ p: 1.5, bgcolor: "error.50", borderRadius: 1, display: "flex", alignItems: "flex-start" }}>
-          <WarningIcon sx={{ color: "error.main", mr: 1, mt: 0.2, fontSize: 18 }} />
+        <Box sx={{ p: 1.5, bgcolor: "Error.50", borderRadius: 1, display: "flex", alignItems: "flex-start" }}>
+          <WarningIcon sx={{ color: "Error.main", mr: 1, mt: 0.2, fontSize: 18 }} />
           <Typography color="error.main" sx={{ fontSize: "0.85rem" }}>
             You already have an appointment on this date, You can not book on same day again.
           </Typography>
@@ -272,8 +272,8 @@ const AppointmentConfirmationCard = ({
       </Box>
 
       {!same_date_app && selectedDate && (
-        <Box sx={{ p: 2, mt: 1, bgcolor: "error.50", borderRadius: 1, display: "flex", alignItems: "flex-start" }}>
-          <WarningIcon sx={{ color: "error.main", mr: 1, mt: 0.3 }} />
+        <Box sx={{ p: 2, mt: 1, bgcolor: "Error.50", borderRadius: 1, display: "flex", alignItems: "flex-start" }}>
+          <WarningIcon sx={{ color: "Error.main", mr: 1, mt: 0.3 }} />
           <Typography color="error.main">
             You already have an appointment on this date, You can not book on same day again.
           </Typography>

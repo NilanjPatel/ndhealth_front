@@ -709,7 +709,7 @@ const Dashboard = ({ clinicSlug }) => {
                                 variant="body2"
                                 fontWeight={700}
                                 color={performanceLevel === 'high' ? 'success.main' :
-                                  performanceLevel === 'medium' ? 'warning.main' : 'error.main'}
+                                  performanceLevel === 'medium' ? 'warning.main' : 'Error.main'}
                               >
                                 {onlinePercentage}%
                               </Typography>

@@ -37,7 +37,7 @@ import RecordOauth from "nd_health/components/clinic_to_patient/record";
 import DisplayPolicy from "nd_health/components/Policy/DisplayPolicy";
 import ClinicPolicy from "nd_health/components/ClinicPolicy";
 
-//error
+//Error
 import Error from "layouts/pages/error";
 
 export default function App() {

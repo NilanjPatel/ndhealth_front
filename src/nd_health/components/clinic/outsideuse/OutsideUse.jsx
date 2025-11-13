@@ -148,7 +148,7 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
       console.error("Error refreshing rosters:", error);
 
       handleFailure(error.message);
-      return data; // Return original data on error
+      return data; // Return original data on Error
     } finally {
       setIsRefreshingRosters(false);
     }
@@ -469,10 +469,10 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug, onDataUpda
     );
   }
 
-  // Handle error case
+  // Handle Error case
   if (clinicInfoError) {
     return (
-      <Box sx={{ p: 3, color: "error.main" }}>
+      <Box sx={{ p: 3, color: "Error.main" }}>
         <Typography>Error loading clinic information: {clinicInfoError}</Typography>
       </Box>
     );
@@ -1476,7 +1476,7 @@ class OutsideUseManager {
     } catch (error) {
       console.error("Error fetching outside use data:", error);
 
-      // If we have cached data, use it on error
+      // If we have cached data, use it on Error
       const cachedData = this.getCachedData();
       if (cachedData && !this.data) {
         this.data = cachedData;
@@ -1582,7 +1582,7 @@ export const InitallOutsideUse = () => {
   if (!clinicSlug) {
     console.error("clinicSlug is undefined!");
     return (
-      <Box sx={{ p: 3, color: "error.main" }}>
+      <Box sx={{ p: 3, color: "Error.main" }}>
         <Typography>Error: Missing clinic identifier</Typography>
       </Box>
     );

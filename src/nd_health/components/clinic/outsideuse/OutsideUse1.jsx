@@ -201,10 +201,10 @@ const OutsideUseDialog = ({ open, onClose, data, loading, clinicSlug }) => {
     );
   }
 
-  // Handle error case
+  // Handle Error case
   if (clinicInfoError) {
     return (
-      <Box sx={{ p: 3, color: "error.main" }}>
+      <Box sx={{ p: 3, color: "Error.main" }}>
         <Typography>Error loading clinic information: {clinicInfoError}</Typography>
       </Box>
     );
@@ -603,7 +603,7 @@ export const InitallOutsideUse = () => {
   if (!clinicSlug) {
     console.error("clinicSlug is undefined!");
     return (
-      <Box sx={{ p: 3, color: "error.main" }}>
+      <Box sx={{ p: 3, color: "Error.main" }}>
         <Typography>Error: Missing clinic identifier</Typography>
       </Box>
     );

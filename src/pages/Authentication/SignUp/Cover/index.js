@@ -122,7 +122,7 @@ function Cover() {
       }
     } catch (error) {
       setIsSubmitting(false);
-      console.error("Request error:", error);
+      console.error("Request Error:", error);
       handleFailure("Something went wrong. Please try again later.");
     }
   };

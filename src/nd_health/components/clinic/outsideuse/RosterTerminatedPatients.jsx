@@ -477,10 +477,10 @@ export const RosterTerminatedPatients = () => {
     );
   }
 
-  // Handle error case
+  // Handle Error case
   if (clinicInfoError) {
     return (
-      <Box sx={{ p: 3, color: "error.main" }}>
+      <Box sx={{ p: 3, color: "Error.main" }}>
         <Typography>Error loading clinic information: {clinicInfoError}</Typography>
       </Box>
     );

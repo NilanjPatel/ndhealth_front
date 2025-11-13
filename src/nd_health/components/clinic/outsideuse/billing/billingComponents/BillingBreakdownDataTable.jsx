@@ -56,8 +56,8 @@ const BillingBreakdownDataTable = ({ dateBreakdown }) => {
                   <TableCell>{formatCurrency(record.amountPay)}</TableCell>
                   <TableCell>
                     {record.error_code && record.error_code !== "  " ? (
-                      // <Typography color="error"></Typography>
-                      <Avatar sx={{ width: 40, height: 40, bgcolor: "error.main", color: "white" }}>
+                      // <Typography color="Error"></Typography>
+                      <Avatar sx={{ width: 40, height: 40, bgcolor: "Error.main", color: "white" }}>
                         {record.error_code}
                       </Avatar>
                     ) : (
