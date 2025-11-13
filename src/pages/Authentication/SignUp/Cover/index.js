@@ -1,14 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 // react-router-dom components
 import { useNavigate } from "react-router-dom";
 
+// framer-motion for animations
+import { motion } from "framer-motion";
+
 // @mui material components
 import Card from "@mui/material/Card";
-import { Dialog, DialogContent, DialogTitle, FormControlLabel, Switch, Grid } from "@mui/material";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  LinearProgress,
+  Box,
+  Chip,
+  Stack
+} from "@mui/material";
 import NotificationDialog from "../../../../nd_health/components/resources/Notification";
 
 // @mui/joi
 import CircularProgress from "@mui/joy/CircularProgress";
+
+// Material Icons
+import {
+  LocalHospital as HospitalIcon,
+  Security as SecurityIcon,
+  Speed as SpeedIcon,
+  CheckCircle as CheckCircleIcon
+} from "@mui/icons-material";
 
 // Material Kit 2 PRO React components
 import MKBox from "components/MKBox";
@@ -70,6 +90,25 @@ function Cover() {
     password: "",
     password1: "",
   });
+  // Calculate form completion progress
+  const formProgress = useMemo(() => {
+    const fields = [
+      updatedInfo.clinicname,
+      updatedInfo.username,
+      updatedInfo.email,
+      updatedInfo.phone,
+      updatedInfo.address,
+      updatedInfo.city,
+      updatedInfo.postal,
+      updatedInfo.ohip,
+      updatedInfo.password,
+      updatedInfo.password1,
+      agreementChecked
+    ];
+    const filledFields = fields.filter(field => field && field.toString().length > 0).length;
+    return (filledFields / fields.length) * 100;
+  }, [updatedInfo, agreementChecked]);
+
 
   useEffect(() => {
     handelpassword();
@@ -277,218 +316,439 @@ function Cover() {
 
   return (
     <BasicLayout image={bgImage}>
-      <Card>
-        <MKBox
-          variant="gradient"
-          bgColor="info"
-          borderRadius="lg"
-          coloredShadow="success"
-          mx={2}
-          mt={-3}
-          p={3}
-          mb={1}
-          textAlign="center"
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <Card
+          sx={{
+            backdropFilter: "blur(20px)",
+            backgroundColor: "rgba(255, 255, 255, 0.95)",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
+          }}
         >
-          <MKTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Join us today
-          </MKTypography>
-          <MKTypography display="block" variant="button" color="white" my={1}>
-            Enter your email and password to register
-          </MKTypography>
-        </MKBox>
-        <MKBox p={2}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-              <MKBox>
-                <MKInput
-                  type="text"
-                  label="Clinic Name"
-                  fullWidth
-                  value={updatedInfo.clinicname}
-                  onChange={(e) => handleInputChange("clinicname", e.target.value)}
+          {/* Modern Header */}
+          <MKBox
+            sx={{
+              background: "linear-gradient(135deg, #00bcd4 0%, #0097a7 100%)",
+              borderRadius: "lg",
+              mx: 2,
+              mt: -3,
+              p: 4,
+              mb: 2,
+              textAlign: "center",
+              position: "relative",
+              overflow: "hidden",
+              "&::before": {
+                content: '""',
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: "radial-gradient(circle at 30% 50%, rgba(255,255,255,0.1) 0%, transparent 60%)",
+                pointerEvents: "none",
+              },
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+            >
+              <HospitalIcon sx={{ fontSize: 48, color: "white", mb: 1 }} />
+              <MKTypography variant="h3" fontWeight="bold" color="white" mt={1}>
+                Join ND Health
+              </MKTypography>
+              <MKTypography variant="body1" color="white" opacity={0.9} mt={1} mb={2}>
+                Trusted by 50+ Canadian Medical Clinics
+              </MKTypography>
+
+              {/* Trust Badges */}
+              <Stack
+                direction="row"
+                spacing={1}
+                justifyContent="center"
+                flexWrap="wrap"
+                sx={{ mt: 2 }}
+              >
+                <Chip
+                  icon={<SecurityIcon />}
+                  label="PIPEDA Compliant"
+                  size="small"
+                  sx={{
+                    bgcolor: "rgba(255,255,255,0.2)",
+                    color: "white",
+                    fontWeight: "bold",
+                    backdropFilter: "blur(10px)",
+                  }}
                 />
-              </MKBox>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <MKBox>
-                <MKInput
-                  // margin={"dense"}
-                  label="Username"
-                  type="text"
-                  fullWidth
-                  value={updatedInfo.username}
-                  onChange={(e) => handleInputChange("username", e.target.value)}
-                  error={!isUserValid}
-                  helperText={!isUserValid ? userNameNotice : userNameNotice}
+                <Chip
+                  icon={<SpeedIcon />}
+                  label="5 Min Setup"
+                  size="small"
+                  sx={{
+                    bgcolor: "rgba(255,255,255,0.2)",
+                    color: "white",
+                    fontWeight: "bold",
+                    backdropFilter: "blur(10px)",
+                  }}
                 />
-              </MKBox>
-            </Grid>
-            {/*<Grid item xs={12} md={4}>*/}
-            {/*  <MKBox>*/}
-            {/*    <MKTypography*/}
-            {/*      sx={{ color: red[300], fontSize: "small", verticalAlign: "center" }}*/}
-            {/*    >*/}
-            {/*      {!isUserValid ? userNameNotice : userNameNotice}*/}
-            {/*    </MKTypography>*/}
-            {/*  </MKBox>*/}
-            {/*</Grid>*/}
-            <Grid item xs={12} md={6}>
-              <MKBox>
-                <MKInput
-                  id="outlined-basic"
-                  label="Email Address"
-                  variant="outlined"
-                  onChange={(e) => handleInputChange("email", e.target.value)}
-                  value={updatedInfo.email}
-                  fullWidth
-                  error={!isEmailValid}
-                  type="email"
-                  // helperText={!isEmailValid ? "Invalid email address" : ""}
-                ></MKInput>
-              </MKBox>
-            </Grid>
-            {/*<Grid item xs={12} md={4}>*/}
-            {/*  <MKBox>*/}
-            {/*    <MKTypography*/}
-            {/*      sx={{ color: red[300], fontSize: "small", verticalAlign: "center" }}*/}
-            {/*    >*/}
-            {/*      {!isEmailValid ? "Invalid email address" : ""}*/}
-            {/*    </MKTypography>*/}
-            {/*  </MKBox>*/}
-            {/*</Grid>*/}
-            <Grid item xs={12} md={6}>
-              <MKBox>
-                <MKInput
-                  autoFocus
-                  label="Phone"
-                  type="text"
-                  fullWidth
-                  value={updatedInfo.phone}
-                  onChange={(e) => handleInputChange("phone", e.target.value)}
-                  helperText={!isPhoneValid ? "Invalid phone number" : ""}
-                  error={!isPhoneValid}
-                ></MKInput>
-              </MKBox>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <MKBox>
-                <MKInput
-                  autoFocus
-                  label="Address"
-                  value={updatedInfo.address}
-                  onChange={(e) => handleInputChange("address", e.target.value)}
-                  inputMode="text"
-                  placeholder="Address"
-                  fullWidth
-                  type="text"
-                ></MKInput>
-              </MKBox>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <MKBox>
-                <MKInput
-                  autoFocus
-                  label="City"
-                  value={updatedInfo.city}
-                  onChange={(e) => handleInputChange("city", e.target.value)}
-                  inputMode="text"
-                  placeholder="City"
-                  fullWidth
-                  type="text"
-                ></MKInput>
-              </MKBox>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <MKBox>
-                <MKInput
-                  autoFocus
-                  label="Postal - XXX-XXX"
-                  value={updatedInfo.postal}
-                  onChange={(e) => handleInputChange("postal", e.target.value)}
-                  inputMode="text"
-                  placeholder="Postal - XXX-XXX"
-                  fullWidth
-                  type="text"
-                  helperText={!isPostalValid ? "Invalid postal code" : ""}
-                  error={!isPostalValid}
-                ></MKInput>
-              </MKBox>
-            </Grid>
-            <Grid item xs={12} md={12}>
-              <MKBox>
-                <MKInput
-                  autoFocus
-                  label="Primary Doctor's OHIP Billing number"
-                  value={updatedInfo.ohip}
-                  onChange={(e) => handleInputChange("ohip", e.target.value)}
-                  inputMode="text"
-                  placeholder="Primary Doctor's OHIP Billing number"
-                  fullWidth
-                  type="text"
-                ></MKInput>
-              </MKBox>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <MKBox>
-                <MKInput
-                  label="Password"
-                  name="newndpassword"
-                  value={updatedInfo.password}
-                  onChange={(e) => handleInputChange("password", e.target.value)}
-                  fullWidth
-                  type="password"
-                  helperText={!passwordmatch ? passwordError : ""}
-                  error={!passwordmatch}
-                ></MKInput>
-              </MKBox>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <MKBox>
-                <MKInput
-                  label="Repeat Password"
-                  name="repeat Password"
-                  value={updatedInfo.password1}
-                  onChange={(e) => handleInputChange("password1", e.target.value)}
-                  fullWidth
-                  type="password"
-                  helperText={!passwordmatch ? passwordError : ""}
-                  error={!passwordmatch}
-                ></MKInput>
-              </MKBox>
-            </Grid>
-            <Grid item xs={12}>  
-              <input id="checkbox" type="checkbox" checked={agreementChecked} onChange={handleAgreementChange} />
-              <label for="checkbox" style={{fontSize: "11.5pt"}}> I agree to the <a style={{color: "rgb(89, 145, 255)"}} onClick={handleAgreementClick}>Terms and Conditions</a>.</label>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <MKBox>
-                <MKButton m={2} onClick={handleClose} color="primary">
-                  Cancel
-                </MKButton>
-                <MKButton
-                  m={2}
-                  onClick={handleSignup}
-                  color="primary"
-                  variant={"contained"}
-                  disabled={
-                    !isEmailValid ||
-                    !isEmailValid ||
-                    !isPostalValid ||
-                    !isUserValid ||
-                    !isPhoneValid ||
-                    !isClinicNameValid ||
-                    !isOhipValid ||
-                    !agreementChecked
-                  }
-                  style={{}}
+                <Chip
+                  icon={<CheckCircleIcon />}
+                  label="Free Forever Plan"
+                  size="small"
+                  sx={{
+                    bgcolor: "rgba(255,255,255,0.2)",
+                    color: "white",
+                    fontWeight: "bold",
+                    backdropFilter: "blur(10px)",
+                  }}
+                />
+              </Stack>
+            </motion.div>
+          </MKBox>
+
+          {/* Progress Bar */}
+          <MKBox px={3} pt={2}>
+            <MKTypography variant="caption" color="text" fontWeight="bold" mb={0.5}>
+              Form Completion: {Math.round(formProgress)}%
+            </MKTypography>
+            <LinearProgress
+              variant="determinate"
+              value={formProgress}
+              sx={{
+                height: 6,
+                borderRadius: 3,
+                backgroundColor: "rgba(0,188,212,0.1)",
+                "& .MuiLinearProgress-bar": {
+                  borderRadius: 3,
+                  background: "linear-gradient(90deg, #00bcd4 0%, #0097a7 100%)",
+                },
+              }}
+            />
+          </MKBox>
+          {/* Form Fields */}
+          <MKBox p={3}>
+            <MKTypography variant="h6" fontWeight="bold" color="text" mb={2}>
+              Clinic Information
+            </MKTypography>
+
+            <Grid container spacing={3}>
+              {/* Clinic Name */}
+              <Grid item xs={12} md={6}>
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1 }}
                 >
-                  Sign Up
-                </MKButton>
-              </MKBox>
+                  <MKInput
+                    type="text"
+                    label="🏢 Clinic Name"
+                    fullWidth
+                    value={updatedInfo.clinicname}
+                    onChange={(e) => handleInputChange("clinicname", e.target.value)}
+                    error={!isClinicNameValid && updatedInfo.clinicname.length > 0}
+                  />
+                </motion.div>
+              </Grid>
+
+              {/* Username */}
+              <Grid item xs={12} md={6}>
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.15 }}
+                >
+                  <MKInput
+                    label="👤 Username"
+                    type="text"
+                    fullWidth
+                    value={updatedInfo.username}
+                    onChange={(e) => handleInputChange("username", e.target.value)}
+                    error={!isUserValid}
+                    helperText={userNameNotice}
+                    success={isUserValid && updatedInfo.username.length > 4}
+                  />
+                </motion.div>
+              </Grid>
+
+              {/* Email */}
+              <Grid item xs={12} md={6}>
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  <MKInput
+                    label="📧 Email Address"
+                    variant="outlined"
+                    onChange={(e) => handleInputChange("email", e.target.value)}
+                    value={updatedInfo.email}
+                    fullWidth
+                    error={!isEmailValid && updatedInfo.email.length > 0}
+                    type="email"
+                    helperText={!isEmailValid && updatedInfo.email.length > 0 ? "Invalid email address" : ""}
+                  />
+                </motion.div>
+              </Grid>
+
+              {/* Phone */}
+              <Grid item xs={12} md={6}>
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.25 }}
+                >
+                  <MKInput
+                    label="📞 Phone Number"
+                    type="text"
+                    fullWidth
+                    value={updatedInfo.phone}
+                    onChange={(e) => handleInputChange("phone", e.target.value)}
+                    helperText={!isPhoneValid && updatedInfo.phone.length > 0 ? "Invalid phone number" : ""}
+                    error={!isPhoneValid && updatedInfo.phone.length > 0}
+                  />
+                </motion.div>
+              </Grid>
+
+              {/* Address */}
+              <Grid item xs={12} md={6}>
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  <MKInput
+                    label="🏠 Address"
+                    value={updatedInfo.address}
+                    onChange={(e) => handleInputChange("address", e.target.value)}
+                    fullWidth
+                    type="text"
+                  />
+                </motion.div>
+              </Grid>
+
+              {/* City */}
+              <Grid item xs={12} md={6}>
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.35 }}
+                >
+                  <MKInput
+                    label="🏙️ City"
+                    value={updatedInfo.city}
+                    onChange={(e) => handleInputChange("city", e.target.value)}
+                    fullWidth
+                    type="text"
+                  />
+                </motion.div>
+              </Grid>
+
+              {/* Postal Code */}
+              <Grid item xs={12} md={6}>
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  <MKInput
+                    label="📮 Postal Code (XXX XXX)"
+                    value={updatedInfo.postal}
+                    onChange={(e) => handleInputChange("postal", e.target.value)}
+                    fullWidth
+                    type="text"
+                    helperText={!isPostalValid && updatedInfo.postal.length > 0 ? "Invalid postal code" : ""}
+                    error={!isPostalValid && updatedInfo.postal.length > 0}
+                  />
+                </motion.div>
+              </Grid>
+
+              {/* OHIP */}
+              <Grid item xs={12} md={6}>
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.45 }}
+                >
+                  <MKInput
+                    label="🏥 Primary Doctor's OHIP Billing Number"
+                    value={updatedInfo.ohip}
+                    onChange={(e) => handleInputChange("ohip", e.target.value)}
+                    fullWidth
+                    type="text"
+                    error={!isOhipValid && updatedInfo.ohip.length > 0}
+                    helperText={!isOhipValid && updatedInfo.ohip.length > 0 ? "OHIP number must be at least 6 characters" : ""}
+                  />
+                </motion.div>
+              </Grid>
+
+              {/* Section Divider */}
+              <Grid item xs={12}>
+                <MKTypography variant="h6" fontWeight="bold" color="text" mt={2} mb={1}>
+                  Account Security
+                </MKTypography>
+              </Grid>
+              {/* Password */}
+              <Grid item xs={12} md={6}>
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  <MKInput
+                    label="🔒 Password"
+                    name="newndpassword"
+                    value={updatedInfo.password}
+                    onChange={(e) => handleInputChange("password", e.target.value)}
+                    fullWidth
+                    type="password"
+                    helperText={!passwordmatch && updatedInfo.password.length > 0 ? passwordError : ""}
+                    error={!passwordmatch && updatedInfo.password.length > 0}
+                  />
+                </motion.div>
+              </Grid>
+
+              {/* Confirm Password */}
+              <Grid item xs={12} md={6}>
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.55 }}
+                >
+                  <MKInput
+                    label="🔒 Confirm Password"
+                    name="repeat Password"
+                    value={updatedInfo.password1}
+                    onChange={(e) => handleInputChange("password1", e.target.value)}
+                    fullWidth
+                    type="password"
+                    helperText={!passwordmatch && updatedInfo.password1.length > 0 ? passwordError : ""}
+                    error={!passwordmatch && updatedInfo.password1.length > 0}
+                  />
+                </motion.div>
+              </Grid>
+              {/* Terms and Conditions */}
+              <Grid item xs={12}>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.6 }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      p: 2,
+                      backgroundColor: "rgba(0,188,212,0.05)",
+                      borderRadius: 2,
+                      border: "1px solid rgba(0,188,212,0.2)",
+                    }}
+                  >
+                    <input
+                      id="checkbox"
+                      type="checkbox"
+                      checked={agreementChecked}
+                      onChange={handleAgreementChange}
+                      style={{
+                        width: "20px",
+                        height: "20px",
+                        cursor: "pointer",
+                        accentColor: "#00bcd4",
+                      }}
+                    />
+                    <label
+                      htmlFor="checkbox"
+                      style={{
+                        fontSize: "14px",
+                        marginLeft: "10px",
+                        cursor: "pointer",
+                        color: "#333",
+                      }}
+                    >
+                      I agree to the{" "}
+                      <a
+                        style={{
+                          color: "#00bcd4",
+                          fontWeight: "bold",
+                          cursor: "pointer",
+                          textDecoration: "underline",
+                        }}
+                        onClick={handleAgreementClick}
+                      >
+                        Terms and Conditions
+                      </a>
+                      .
+                    </label>
+                  </Box>
+                </motion.div>
+              </Grid>
+
+              {/* Action Buttons */}
+              <Grid item xs={12}>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.7 }}
+                >
+                  <Stack direction="row" spacing={2} sx={{ mt: 2, mb: 2 }}>
+                    <MKButton
+                      onClick={handleClose}
+                      variant="outlined"
+                      color="secondary"
+                      size="large"
+                      fullWidth
+                      sx={{
+                        py: 1.5,
+                        fontSize: "1rem",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Cancel
+                    </MKButton>
+                    <MKButton
+                      onClick={handleSignup}
+                      variant="gradient"
+                      color="info"
+                      size="large"
+                      fullWidth
+                      disabled={
+                        !isEmailValid ||
+                        !isPostalValid ||
+                        !isUserValid ||
+                        !isPhoneValid ||
+                        !isClinicNameValid ||
+                        !isOhipValid ||
+                        !passwordmatch ||
+                        !agreementChecked
+                      }
+                      sx={{
+                        py: 1.5,
+                        fontSize: "1rem",
+                        fontWeight: "bold",
+                        boxShadow: "0 8px 20px rgba(0,188,212,0.4)",
+                        "&:hover": {
+                          boxShadow: "0 12px 28px rgba(0,188,212,0.5)",
+                          transform: "translateY(-2px)",
+                        },
+                        "&:disabled": {
+                          opacity: 0.6,
+                          cursor: "not-allowed",
+                        },
+                        transition: "all 0.3s ease",
+                      }}
+                    >
+                      Create My Account
+                    </MKButton>
+                  </Stack>
+                </motion.div>
+              </Grid>
             </Grid>
-          </Grid>
-        </MKBox>
-      </Card>
+          </MKBox>
+        </Card>
+      </motion.div>
       <Dialog open={openAgreementPopup} onClose={handleCloseAgreementPopup}>
         <DialogTitle>Terms and Conditions</DialogTitle>
         <DialogContent className={"custom-scrollbar"}>
