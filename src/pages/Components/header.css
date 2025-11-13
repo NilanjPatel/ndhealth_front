@@ -75,7 +75,7 @@
         margin-right: -25px;
         color: rgb(105, 105, 105);
     }
-
+    
     .navigation-container a {
       float: none;
       display: block;
@@ -107,7 +107,7 @@ nav ul {
 }
 
 nav ul li {
-   list-style: none;
+   list-style: none; 
 }
 
 nav ul li a {

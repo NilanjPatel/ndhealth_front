@@ -7,8 +7,8 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import MKTypography from "components/MKTypography";
 
 // Images
-// import logoCT from "nd_health/assets/images/nd-health-logo.png";
-import logoCT from "nd_health/assets/images/logo.png";
+// import logoCT from "nd_health/assets/images/ND(1).png";
+import logoCT from "nd_health/assets/images/ND(1).png";
 
 const date = new Date().getFullYear();
 
@@ -32,16 +32,16 @@ export default {
     {
       name: "company",
       items: [
-        { name: "about us", href: "#" },
+        { name: "about us", href: "https://www.nd-health.ca/presentation" },
         // { name: "freebies", href: "https://www.nd-health.ca/templates/free" },
         // { name: "premium tools", href: "https://www.nd-health.ca/templates/premium" },
-        { name: "blog", href: "#" },
+        { name: "blog", href: "https://www.nd-health.ca/blog" },
       ],
     },
     {
       name: "services",
       items: [
-        { name: "Appointment Booking", href: "#" },
+        { name: "Appointment Booking", href: "https://iradesign.io/" },
         { name: "Secure communication", href: "#" },
         { name: "Admin tasks", href: "#" },
       ],
@@ -58,15 +58,15 @@ export default {
     {
       name: "legal",
       items: [
-        { name: "terms & conditions", href: "#" },
-        { name: "privacy policy", href: "/OurPolicy" },
+        { name: "terms & conditions", href: "https://www.nd-health.ca/terms" },
+        { name: "privacy policy", href: "https://www.nd-health.ca/privacy" },
         // { name: "licenses (EULA)", href: "#" },
       ],
     },
   ],
   copyright: (
     <MKTypography variant="button" fontWeight="regular">
-      All rights reserved. Copyright &copy; {date} ND Health
+      Copyright &copy; {date} ND Health. All rights reserved.
       <MKTypography
         component="a"
         href="https://www.nd-health.ca"

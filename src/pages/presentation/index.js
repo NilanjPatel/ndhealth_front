@@ -1,5 +1,5 @@
 // home
-//src/pages/presentation/index.js
+
 import { useEffect, useRef } from "react";
 
 // rellax
@@ -29,13 +29,12 @@ import CenteredFooter from "examples/Footers/CenteredFooter";
 // Presentation page sections
 import Counters from "pages/presentation/sections/Counters";
 import Information from "pages/presentation/sections/Information";
-import MedicalPracticeSlideshow from "./sections/MedicalPracticeSlideshow";
 import GettingStart from "pages/presentation/sections/GettingStart";
 // import DesignBlocks from "pages/presentation/sections/DesignBlocks";
 // import AuthPages from "pages/presentation/sections/AuthPages";
 // import Pages from "pages/presentation/sections/Pages";
 import Testimonials from "pages/presentation/sections/Testimonials";
-// import Pricing from "pages/presentation/sections/Pricing";
+import Pricing from "pages/presentation/sections/Pricing";
 import PricingOne from "layouts/sections/page-sections/pricing/components/PricingOne/index";
 // import Features from "pages/presentation/components/Features";
 
@@ -50,10 +49,9 @@ import footerRoutes from "footer.routes";
 // Images
 // import bgImage from "nd_health/assets/images/medical_clinic_2.jpeg";
 import bgImage from "nd_health/assets/images/4919727.jpg";
-// import bgImage from "nd_health/assets/images/4919727.jpg";
 
 // import MKButton from "../../components/MKButton";
-import logoCT from "nd_health/assets/images/clinic_landing_page/Basic Animations (1).svg";
+import logoCT from "nd_health/assets/images/ND(1).png";
 
 // import { FaChrome } from "react-icons/fa";
 // import { FaFirefox } from "react-icons/fa";
@@ -179,7 +177,7 @@ function Presentation() {
       >
         <Counters />
         {/*<MedicalPracticeSlideshow slideHeight="750px" />*/}
-        <Information />
+
         <GettingStart />
         {/*<Features />*/}
         {/*<DesignBlocks />*/}
@@ -188,8 +186,8 @@ function Presentation() {
         {/*<Container sx={{ mt: 6 }}>*/}
         {/*  <BuiltByDevelopers />*/}
         {/*</Container>*/}
-
-        <Testimonials />
+        <Information />
+        {/*<Testimonials />*/}
         <PricingOne />
         <MKBox pt={18} pb={6}>
           <Container>
