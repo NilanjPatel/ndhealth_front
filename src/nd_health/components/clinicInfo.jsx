@@ -341,6 +341,12 @@ const ClinicInfo = () => {
                       onClick={handleRequest}
                       fullWidth
                       style={{ maxWidth: "100%", height: "100%", fontSize: "1rem", fontWeight: "bold" }}
+                      sx={{
+                        backgroundColor: "#1A73E8",
+                        "&:hover": {
+                          backgroundColor: "#1662C4",
+                        },
+                      }}
                     >
                       Book
                     </MKButton>
@@ -354,6 +360,12 @@ const ClinicInfo = () => {
                       onClick={manageApp}
                       fullWidth
                       style={{ maxWidth: "100%", height: "100%", fontSize: "1rem", fontWeight: "bold" }}
+                      sx={{
+                        backgroundColor: "#1A73E8",
+                        "&:hover": {
+                          backgroundColor: "#1662C4",
+                        },
+                      }}
                     >
                       Cancel Appointment
                     </MKButton>
@@ -369,6 +381,12 @@ const ClinicInfo = () => {
                         color={"info"}
                         variant="contained"
                         style={{  fontWeight: "bold", color:"black" }}
+                        sx={{
+                          backgroundColor: "#1A73E8",
+                          "&:hover": {
+                            backgroundColor: "#1662C4",
+                          },
+                        }}
                       >
                         Learn how to book an appointment, click here.
                       </MKButton>

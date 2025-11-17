@@ -14,12 +14,9 @@ Coded by www.creative-tim.com
 */
 
 /**
- * ND Health Brand Colors
- * Primary: #579EF9 (Vibrant Blue) - From logo
- * Secondary: #024BAA (Deep Blue) - From logo
- *
- * This color scheme creates a professional, trustworthy appearance
- * perfect for healthcare applications.
+ * The base colors for the Material Kit 2 PRO React.
+ * You can add new color using this file.
+ * You can customized the colors for the entire Material Kit 2 PRO React using thie file.
  */
 
 export default {
@@ -47,52 +44,34 @@ export default {
     focus: "#000000",
   },
 
-  // Brand Primary Color - From Logo
   primary: {
-    main: "#579EF9", // Vibrant blue from logo
-    focus: "#4a8fe6",
-    light: "#7ab3fb",
-    dark: "#024BAA", // Deep blue from logo
+    main: "#e91e63",
+    focus: "#e91e63",
   },
 
-  // Brand Secondary Color
   secondary: {
-    main: "#024BAA", // Deep blue from logo
-    focus: "#013899",
-    light: "#3569c4",
-    dark: "#011d55",
+    main: "#7b809a",
+    focus: "#8f93a9",
   },
 
-  // Info - Uses brand primary color
   info: {
-    main: "#579EF9", // Primary brand color
-    focus: "#4a8fe6",
-    light: "#7ab3fb",
-    dark: "#024BAA",
+    main: "#1A73E8",
+    focus: "#1662C4",
   },
 
-  // Success - Green for positive actions
   success: {
     main: "#4CAF50",
     focus: "#67bb6a",
-    light: "#81c784",
-    dark: "#388e3c",
   },
 
-  // Warning - Orange for warnings
   warning: {
     main: "#fb8c00",
     focus: "#fc9d26",
-    light: "#ffa726",
-    dark: "#f57c00",
   },
 
-  // Error - Red for errors
   error: {
     main: "#F44335",
     focus: "#f65f53",
-    light: "#e57373",
-    dark: "#d32f2f",
   },
 
   light: {
@@ -117,66 +96,45 @@ export default {
     900: "#212529",
   },
 
-  // Brand Gradients - Using logo colors
   gradients: {
-    // Primary gradient: Light blue to deep blue
     primary: {
-      main: "#579EF9", // Light blue from logo
-      state: "#024BAA", // Deep blue from logo
+      main: "#EC407A",
+      state: "#D81B60",
     },
 
-    // Secondary gradient: Deep blue variations
     secondary: {
-      main: "#3569c4",
-      state: "#024BAA",
+      main: "#747b8a",
+      state: "#495361",
     },
 
-    // Info gradient: Matches primary
     info: {
-      main: "#7ab3fb", // Lighter variant
-      state: "#579EF9", // Primary brand color
+      main: "#49a3f1",
+      state: "#1A73E8",
     },
 
-    // Success gradient: Green tones
     success: {
       main: "#66BB6A",
       state: "#43A047",
     },
 
-    // Warning gradient: Orange tones
     warning: {
       main: "#FFA726",
       state: "#FB8C00",
     },
 
-    // Error gradient: Red tones
     error: {
       main: "#EF5350",
       state: "#E53935",
     },
 
-    // Light gradient: Subtle greys
     light: {
       main: "#EBEFF4",
       state: "#CED4DA",
     },
 
-    // Dark gradient: Deep tones
     dark: {
       main: "#42424a",
       state: "#191919",
-    },
-
-    // Special brand gradient: Full logo color range
-    brand: {
-      main: "#579EF9", // Light blue
-      state: "#024BAA", // Deep blue
-    },
-
-    // Accent gradient: Complementary colors
-    accent: {
-      main: "#7ab3fb",
-      state: "#3569c4",
     },
   },
 
@@ -242,11 +200,10 @@ export default {
     },
   },
 
-  // Badge colors using brand palette
   badgeColors: {
     primary: {
-      background: "#c8e0fd", // Light blue tint
-      text: "#024BAA", // Deep blue from logo
+      background: "#f8b3ca",
+      text: "#cc084b",
     },
 
     secondary: {
@@ -255,8 +212,8 @@ export default {
     },
 
     info: {
-      background: "#c8e0fd", // Light blue tint
-      text: "#024BAA", // Deep blue
+      background: "#aecef7",
+      text: "#095bc6",
     },
 
     success: {
@@ -285,11 +242,10 @@ export default {
     },
   },
 
-  // Colored shadows using brand colors
   coloredShadows: {
-    primary: "#579EF9", // Brand primary
-    secondary: "#024BAA", // Brand secondary
-    info: "#579EF9", // Brand primary
+    primary: "#e91e62",
+    secondary: "#110e0e",
+    info: "#00bbd4",
     success: "#4caf4f",
     warning: "#ff9900",
     error: "#f44336",
@@ -301,15 +257,5 @@ export default {
 
   tabs: {
     indicator: { boxShadow: "#ddd" },
-  },
-
-  // Additional brand-specific colors
-  brand: {
-    primary: "#579EF9", // Light blue from logo
-    secondary: "#024BAA", // Deep blue from logo
-    light: "#7ab3fb", // Lighter variant
-    lighter: "#a8ccfc", // Even lighter
-    dark: "#013899", // Darker variant
-    darker: "#011d55", // Even darker
   },
 };

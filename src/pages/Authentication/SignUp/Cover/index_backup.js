@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 
 // @mui material components
 import Card from "@mui/material/Card";
-import { Dialog, DialogContent, DialogTitle, FormControlLabel, Switch, Grid, Radio, RadioGroup, Icon } from "@mui/material";
+import { Dialog, DialogContent, DialogTitle, FormControlLabel, Switch, Grid, Radio, RadioGroup } from "@mui/material";
 
 // local components
 import NotificationDialog from "../../../../nd_health/components/resources/Notification";
@@ -215,120 +214,25 @@ function Cover() {
 
   return (
     <BasicLayout image={bgImage}>
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        <Card
-          sx={{
-            borderRadius: "20px",
-            boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
-            overflow: "visible",
-          }}
+      <Card>
+        <MKBox
+          variant="gradient"
+          bgColor="info"
+          borderRadius="lg"
+          coloredShadow="success"
+          mx={2}
+          mt={-3}
+          p={3}
+          mb={1}
+          textAlign="center"
         >
-          {/* Header Section */}
-          <MKBox
-            sx={{
-              position: "relative",
-              background: "linear-gradient(135deg, #579EF9 0%, #024BAA 100%)",
-              borderRadius: "20px 20px 0 0",
-              p: 4,
-              textAlign: "center",
-              "&::before": {
-                content: '""',
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                background: "linear-gradient(135deg, rgba(87, 158, 249, 0.9) 0%, rgba(2, 75, 170, 0.9) 100%)",
-                borderRadius: "20px 20px 0 0",
-              },
-            }}
-          >
-            <MKBox sx={{ position: "relative", zIndex: 1 }}>
-              {/* Icon */}
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-              >
-                <MKBox
-                  sx={{
-                    width: "70px",
-                    height: "70px",
-                    borderRadius: "15px",
-                    background: "rgba(255,255,255,0.2)",
-                    backdropFilter: "blur(10px)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    mx: "auto",
-                    mb: 2,
-                    border: "2px solid rgba(255,255,255,0.3)",
-                  }}
-                >
-                  <Icon sx={{ fontSize: "2.5rem", color: "white" }}>person_add</Icon>
-                </MKBox>
-              </motion.div>
-
-              <MKTypography variant="h2" fontWeight="bold" color="white" mb={1}>
-                Request a Demo
-              </MKTypography>
-              <MKTypography variant="body1" color="white" opacity={0.9}>
-                Register for ND Health and get started with our clinic management solutions
-              </MKTypography>
-
-              {/* Trust Indicators */}
-              <MKBox
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  gap: 2,
-                  mt: 3,
-                  flexWrap: "wrap",
-                }}
-              >
-                <MKBox
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 0.5,
-                    background: "rgba(255,255,255,0.15)",
-                    backdropFilter: "blur(10px)",
-                    px: 2,
-                    py: 0.5,
-                    borderRadius: "20px",
-                    border: "1px solid rgba(255,255,255,0.2)",
-                  }}
-                >
-                  <Icon sx={{ fontSize: "1rem", color: "white" }}>schedule</Icon>
-                  <MKTypography variant="caption" color="white" fontWeight="medium">
-                    Quick Setup
-                  </MKTypography>
-                </MKBox>
-                <MKBox
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 0.5,
-                    background: "rgba(255,255,255,0.15)",
-                    backdropFilter: "blur(10px)",
-                    px: 2,
-                    py: 0.5,
-                    borderRadius: "20px",
-                    border: "1px solid rgba(255,255,255,0.2)",
-                  }}
-                >
-                  <Icon sx={{ fontSize: "1rem", color: "white" }}>verified_user</Icon>
-                  <MKTypography variant="caption" color="white" fontWeight="medium">
-                    HIPAA Compliant
-                  </MKTypography>
-                </MKBox>
-              </MKBox>
-            </MKBox>
-          </MKBox>
+          <MKTypography variant="h4" fontWeight="medium" color="white" mt={1}>
+            Request a Demo
+          </MKTypography>
+          <MKTypography variant="body2" color="white" opacity={0.8} mt={1}>
+            Register for ND Health and get started with our clinic management solutions.
+          </MKTypography>
+        </MKBox>
 
         <MKBox p={3}>
           <Grid container spacing={3}>
@@ -445,16 +349,7 @@ function Cover() {
             </Grid>
 
             <Grid item xs={12} sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
-              <MKButton
-                onClick={handleClose}
-                color="secondary"
-                variant="outlined"
-                sx={{
-                  borderRadius: "10px",
-                  px: 4,
-                  py: 1.2,
-                }}
-              >
+              <MKButton onClick={handleClose} color="secondary" variant="outlined">
                 Cancel
               </MKButton>
               <MKButton
@@ -462,25 +357,6 @@ function Cover() {
                 color="info"
                 variant="contained"
                 disabled={!isFormValid() || isSubmitting}
-                sx={{
-                  borderRadius: "10px",
-                  px: 4,
-                  py: 1.2,
-                  background: "linear-gradient(135deg, #579EF9 0%, #024BAA 100%)",
-                  boxShadow: "0 8px 20px rgba(87, 158, 249, 0.3)",
-                  transition: "all 0.3s ease",
-                  "&:hover": {
-                    transform: "translateY(-2px)",
-                    boxShadow: "0 12px 28px rgba(87, 158, 249, 0.4)",
-                  },
-                  "&:active": {
-                    transform: "translateY(0)",
-                  },
-                  "&:disabled": {
-                    opacity: 0.7,
-                    background: "linear-gradient(135deg, #579EF9 0%, #024BAA 100%)",
-                  },
-                }}
               >
                 {isSubmitting ? "Submitting..." : "Submit Request"}
               </MKButton>
@@ -488,7 +364,6 @@ function Cover() {
           </Grid>
         </MKBox>
       </Card>
-      </motion.div>
 
       <Dialog open={openAgreementPopup} onClose={handleCloseAgreementPopup} maxWidth="md" fullWidth>
         <DialogTitle>Terms and Conditions</DialogTitle>
